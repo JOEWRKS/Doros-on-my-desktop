@@ -21,8 +21,11 @@
   new-shortcut collision refusal, uninstall/data preservation, reinstall desktop
   opt-in, same-version desktop opt-out, installed launch/duplicate exit0 PASS.
   Old desktop-owned migration remains untested; unsigned/clean-PC limits disclosed.
-- [ ] Rename repository, commit/push, publish checked installer with checksums and
-  source-vs-installer guidance; verify anonymous download and downloaded bytes.
+- [x] Main7b77d01 and annotatedv0.1.1 pushed; public preview release published
+  with Setup EXE andSHA256SUMS.txt. Anonymous API, full installer download and
+  checksum bytes match verified candidate. Public README direct link/source ZIP
+  warning verified. Installed0.1.1 PID56736 running; original data prefix retained.
+  User's Downloads/Doropet-main source extraction and other worktrees untouched.
 
 ## Main checkpoint and bilingual README — 2026-09-14
 

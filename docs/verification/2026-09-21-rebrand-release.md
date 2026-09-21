@@ -57,6 +57,12 @@ were removed only after exact-content verification. Installation backups remain.
 
 ## Provenance and limits
 
+Public release: [v0.1.1](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.1),
+tagged source commit `7b77d01b35ae51870810cf2c3dd7c94245bd47d8`.
+Anonymous API access, full Setup EXE download and checksum download all passed.
+The downloaded installer matches the SHA256 above and GitHub's asset digest.
+The public README's direct installer link and source-ZIP warning were verified.
+
 - Product candidate: `artifacts/product-shell/candidate-20260921-rebrand-02`.
 - Installer candidate: `artifacts/installer/candidate-20260921-rebrand-01`.
 - Guarded host evidence: `artifacts/installer/host-rebrand-20260921`.
