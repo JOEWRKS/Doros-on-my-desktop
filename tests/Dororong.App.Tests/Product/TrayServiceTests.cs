@@ -1,4 +1,5 @@
 using Dororong.App.Product;
+using System.Reflection;
 using DrawingIcon = System.Drawing.Icon;
 using FormsContextMenuStrip = System.Windows.Forms.ContextMenuStrip;
 using FormsNotifyIcon = System.Windows.Forms.NotifyIcon;
@@ -128,6 +129,79 @@ public class TrayServiceTests
 
         Assert.Equal(1, openCount);
         Assert.Equal(1, exitCount);
+    }
+
+    // Catches missing left-button wiring without opening a popup on the user's
+    // desktop. The real menu raises Opening; cancellation stops native display.
+    [Theory]
+    [InlineData(System.Windows.Forms.MouseButtons.Left, 1)]
+    [InlineData(System.Windows.Forms.MouseButtons.Right, 0)]
+    [InlineData(System.Windows.Forms.MouseButtons.Middle, 0)]
+    public void Left_button_requests_the_existing_menu_and_other_buttons_stay_native(
+        System.Windows.Forms.MouseButtons button, int expectedOpenings)
+    {
+        using var icon = (DrawingIcon)System.Drawing.SystemIcons.Application.Clone();
+        using var notifyIcon = new FormsNotifyIcon();
+        using var menu = new FormsContextMenuStrip();
+        using var service = new TrayService(
+            (DrawingIcon)icon.Clone(), notifyIcon, menu, () => { }, () => { }, visible: false);
+        var openings = 0;
+        menu.Opening += (_, e) => { openings++; e.Cancel = true; };
+
+        RaiseMouseUp(notifyIcon, button);
+
+        Assert.Equal(expectedOpenings, openings);
+        Assert.Same(menu, notifyIcon.ContextMenuStrip);
+        Assert.True(menu.AutoClose);
+        Assert.False(menu.Visible);
+    }
+
+    [Fact]
+    public void Disposed_adapter_no_longer_opens_a_reassigned_menu()
+    {
+        using var notifyIcon = new FormsNotifyIcon();
+        using var adapter = new FormsTrayNotifyIcon(notifyIcon);
+        adapter.Dispose();
+        using var menu = new FormsContextMenuStrip();
+        menu.Items.Add("test");
+        var openings = 0;
+        menu.Opening += (_, e) => { openings++; e.Cancel = true; };
+        notifyIcon.ContextMenuStrip = menu;
+
+        RaiseMouseUp(notifyIcon, System.Windows.Forms.MouseButtons.Left);
+
+        Assert.Equal(0, openings);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Active_adapter_ignores_missing_or_disposed_menu(bool disposedMenu)
+    {
+        using var notifyIcon = new FormsNotifyIcon();
+        using var adapter = new FormsTrayNotifyIcon(notifyIcon);
+        using var menu = new FormsContextMenuStrip();
+        menu.Items.Add("test");
+        var openings = 0;
+        menu.Opening += (_, e) => { openings++; e.Cancel = true; };
+        if (disposedMenu)
+        {
+            menu.Dispose();
+            notifyIcon.ContextMenuStrip = menu;
+        }
+
+        var error = Record.Exception(() => RaiseMouseUp(notifyIcon, System.Windows.Forms.MouseButtons.Left));
+
+        Assert.Null(error);
+        Assert.Equal(0, openings);
+    }
+
+    internal static void RaiseMouseUp(FormsNotifyIcon icon, System.Windows.Forms.MouseButtons button)
+    {
+        // NotifyIcon is sealed. Raise its real event at the framework boundary;
+        // no production-only-for-testing entry point and no global mouse input.
+        var method = typeof(FormsNotifyIcon).GetMethod("OnMouseUp", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        method.Invoke(icon, [new System.Windows.Forms.MouseEventArgs(button, 1, 0, 0, 0)]);
     }
 
     [Fact]

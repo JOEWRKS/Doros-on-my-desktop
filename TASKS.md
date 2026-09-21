@@ -1,5 +1,113 @@
 # Plan
 
+## Close current version and push main — approved 2026-09-21
+
+User requested committing and pushing the accepted current version to main.
+Scope: tray left-click implementation/tests, package usage text, and local
+upgrade/acceptance records. Preserve public v0.1.2 tag and release assets; no
+new release, version bump, installer upload, force push or workspace cleanup.
+Preflight: normal repository on main, HEAD/origin/main both958ebff before work.
+Run fresh full Core/App suites, inspect/stage only the ten scoped files, commit,
+push main normally, then verify remote commit parity and clean working tree.
+Fresh pre-commit verification PASS: Core241/App1081, zero failures/skips;
+App receipt tests/Dororong.App.Tests/TestResults/tray-left-click-commit.trx.
+Staged diff whitespace checks PASS. Source was already reviewed and installed
+manual acceptance confirmed; no code changed since that acceptance.
+Ready for the authorized commit/push; transport result is reported in chat.
+
+## Tray left-click menu — approved bounded change 2026-09-21
+
+Approved in-chat design: left/right click opens the same existing three-item
+menu; outside click/Esc dismiss, repeated clicks never duplicate the menu;
+log-folder and Exit commands unchanged. Change only tray adapter/lifecycle and
+regression tests; preserve publicv0.1.2 and prior host-verification documents.
+Use TDD; verify current full Core/App suites. No public release or push requested.
+Record local implementation/testing separately from installed-copy acceptance.
+
+- [x] Observe a real NotifyIcon left-button menu-opening regression fail.
+  RED: Left expected1 opening, actual0;11 other tests passed. GREEN after adapter
+  change:12 passed. Real Opening canceled to avoid interactive desktop effects.
+- [x] Implement left-button adapter routing with foreground/menu lifecycle
+  handling; preserve native right-click path and detach on disposal.
+  Left MouseUp reuses existing menu and skips visible/disposed/null menus;
+  foreground activation after display; disposal removes the handler.
+- [x] Verify repeat click, other buttons, missing menu/disposal, existing
+  commands and isolated native popup/Esc behavior; run full suites and review.
+  Focused15 tests PASS, including three real popup scenarios on isolated desktop
+  processes: repeat/Esc/reopen/commands, outside-window message-filter dismissal,
+  native right-click. Initial per-thread desktop harness was rejected after
+  ERROR_BUSY170; native enumeration identified CicLoaderWndClass/persistent IME
+  threads. Process isolation fixed cleanup without changing product behavior.
+  Final full suites: Core241/App1081 PASS,0 failures/skips. App receipt:
+  tests/Dororong.App.Tests/TestResults/tray-left-click-final.trx. Review found no
+  critical/important defect; added both missing/disposed-menu cases requested
+  by the reviewer before the final full run. git diff --check PASS.
+- [x] Record tested local artifact and arrange installed-copy/manual tray check
+  without replacing the immutable publicv0.1.2 release.
+  Local publish PASS; package guide now says left/right click. Fresh portable:
+  artifacts/product-shell/candidate-20260921-tray-left-01;
+  ZIP SHA256 82E86BAFA4565F8D761550FACEB941E4F577C23D8F518F4687C5A07539B6B03F.
+  Publisher verified tested App/Core DLL parity. Strict package startup smoke,
+  installer creation and host replacement pending normal exit (PID26312 still
+  running at handoff). Exit requested; no force kill or installed-file changes.
+  Native probes are synchronous framework paths, not physical Explorer input;
+  actual left/right, outside-click and Esc acceptance still pending. Public
+  v0.1.2 archive, installer and tracked builder pin untouched; no commit/push.
+  Continuation: user confirmed normal exit; no pet process at preflight.
+  Strict package/native smoke and local installer build PASS (exit0 each).
+  Artifact-only Build-Local.ps1 pins the new ZIP and original trusted compiler;
+  tracked public builder unchanged. Setup SHA256:
+  485F3F5E7215CDB6A699FA26FD5943887B7296CED963BD170D94DD5DA4369B03.
+  Fresh host-tray-left-20260921 backup verified472 installation files,1 data
+  file, registry and Start shortcut. Proceed with user-approved local update;
+  no uninstall, public release, version bump or force termination.
+  Local Setup exit0; installed469 payload hashes/472 total files match, user
+  data unchanged during update, Start shortcut/desktop opt-out preserved.
+  Launch PASS: installedPID59856 responding; duplicate exit0; original data
+  prefix preserved. Diagnostic Started present, no failure observed for this
+  PID. Backup/evidence: artifacts/installer/host-tray-left-20260921.
+  Await user acceptance of physical left/right clicks, outside click and Esc;
+  do not represent automated native probes as interactive acceptance.
+  User subsequently confirmed "잘된다" after the installed-copy left-click /
+  outside-click / Esc check request. Local tray-menu acceptance complete;
+  this does not imply mixed-DPI or clean-PC coverage. No public release/push.
+
+## Public v0.1.2 current-host upgrade acceptance — approved 2026-09-21
+
+User approved the proposed next step: back up installed0.1.1/data, update using
+the verified public0.1.2 Setup, then inspect identity, preserved data/shortcuts,
+startup/single-instance and visible interactions. No uninstall/reinstall,
+signing, security-setting changes, source-code edits, commit/push or new release.
+Use artifact-only adaptation of the previous host verification harness.
+
+- [x] Read-only preflight and fresh verified installation/data/registry/shortcut
+  backups under artifacts/installer/host-v012-upgrade-20260921.
+  Installed0.1.1, no running pet;472 installation files +1 data file backed up
+  with exact hashes, registry exported, Start shortcut copied. Desktop opt-out0.
+- [x] Verify the new-payload check rejects old installation; run public Setup
+  once, then verify469 payload hashes,0.1.2 registration, unchanged user data,
+  desktop shortcut preference and no automatic launch.
+  Pre-upgrade verifier correctly rejected old Dororong.App.deps.json (initial
+  outer check expected App.dll; corrected the expected first mismatch, not the
+  verifier). Public Setup exit0, no restart; all469 installed payload hashes,
+  ownership,472 total installed files and0.1.2 registration match. Data unchanged;
+  Start target correct and desktop opt-out preserved. No automatic launch.
+- [ ] Launch installed copy, check duplicate exit and preserved original data;
+  inspect visible app/menu when supported and distinguish manual checks needed.
+  InstalledPID26312 running/responding, duplicate exit0, original data prefix
+  preserved. Exact installed executable and bundled coreclr paths confirmed;
+  own diagnostic log records Started/version0.1.2, no failure for this PID.
+  Computer Use initialized successfully but list_windows returned no pet window;
+  list_apps returned its installation with windows[]. No guessed handles or
+  alternate UI injection used. Visible character/tray/normal exit/motion checks
+  require the user's confirmation; no claim of visual acceptance.
+  User subsequently confirmed the character is visible; then requested the
+  separate left-click tray enhancement. Other visual/exit checks remain pending.
+- [x] Record host-only acceptance and remaining limitations; retain backup and
+  leave installed0.1.2 running for user validation. Do not claim clean-PC coverage.
+  Local report: docs/verification/2026-09-21-v012-host-upgrade.md. Source and
+  release binaries unchanged; no commit/push, uninstall or security bypass.
+
 ## Publish v0.1.2 preview — approved 2026-09-21
 
 **Goal/spec:** User explicitly approved committing/pushing main and publicly

@@ -1,4 +1,5 @@
 using Dororong.App.Runtime;
+using Dororong.App.Interop;
 using DrawingIcon = System.Drawing.Icon;
 using FormsContextMenuStrip = System.Windows.Forms.ContextMenuStrip;
 using FormsNotifyIcon = System.Windows.Forms.NotifyIcon;
@@ -155,10 +156,12 @@ internal interface ITrayNotifyIcon : IDisposable
 internal sealed class FormsTrayNotifyIcon : ITrayNotifyIcon
 {
     private readonly FormsNotifyIcon notifyIcon;
+    private int disposed;
 
     internal FormsTrayNotifyIcon(FormsNotifyIcon notifyIcon)
     {
         this.notifyIcon = notifyIcon ?? throw new ArgumentNullException(nameof(notifyIcon));
+        notifyIcon.MouseUp += OnMouseUp;
     }
 
     public DrawingIcon? Icon
@@ -182,7 +185,36 @@ internal sealed class FormsTrayNotifyIcon : ITrayNotifyIcon
         set => notifyIcon.Visible = value;
     }
 
-    public void Dispose() => notifyIcon.Dispose();
+    private void OnMouseUp(object? sender, System.Windows.Forms.MouseEventArgs e)
+    {
+        // Right click keeps NotifyIcon's native menu route. MouseUp also covers
+        // the second release of a double click without creating a second popup.
+        if (disposed != 0 || e.Button != System.Windows.Forms.MouseButtons.Left ||
+            notifyIcon.ContextMenuStrip is not { IsDisposed: false, Visible: false } menu)
+        {
+            return;
+        }
+
+        menu.Show(System.Windows.Forms.Cursor.Position,
+            System.Windows.Forms.ToolStripDropDownDirection.AboveLeft);
+        if (menu.Visible)
+        {
+            // Standalone tray popups need foreground ownership for keyboard
+            // navigation and dismissal when focus moves to another application.
+            NativeMethods.SetForegroundWindow(menu.Handle);
+        }
+    }
+
+    public void Dispose()
+    {
+        if (Interlocked.Exchange(ref disposed, 1) != 0)
+        {
+            return;
+        }
+
+        notifyIcon.MouseUp -= OnMouseUp;
+        notifyIcon.Dispose();
+    }
 }
 
 internal sealed class TrayServiceResources : IDisposable

@@ -20,6 +20,7 @@ internal static class Program
             "abandon" when args.Length == 2 => Abandon(args[1]),
             "write-log" when args.Length == 3 && int.TryParse(args[2], out var count) => WriteLog(args[1], count),
             "hold-log-lock" when args.Length == 2 => HoldLogLock(args[1]),
+            "tray-menu" when args.Length == 3 => TrayMenuProbe.Run(args[1], args[2]),
             _ => 64
         };
     }

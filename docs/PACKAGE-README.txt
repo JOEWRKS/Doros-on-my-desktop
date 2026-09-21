@@ -8,7 +8,7 @@ EXE만 따로 옮기면 실행되지 않습니다. .NET 런타임은 포함되�
 머리 드래그: 이동 / 볼 드래그: 늘이기 / 가까운 마우스: 추적·도약
 창·작업표시줄 가장자리에서 앞발 준비 동작이 보일 때 놓으면 매달립니다.
 매달린 앞발 클릭·드래그: 한쪽 발 휘젓기·당기기
-트레이 우클릭: 로그 폴더 열기 / 종료. 업데이트·제거 전 먼저 종료하세요.
+트레이 좌클릭·우클릭: 로그 폴더 열기 / 종료. 업데이트·제거 전 먼저 종료하세요.
 제거: Windows 앱 목록에서 '도로롱이 내 컴에?!'를 선택하세요.
 로그는 %LOCALAPPDATA%\JOEWRKS\Dororong\logs에 남으며 자동 전송하지 않습니다.
 
@@ -20,7 +20,7 @@ Do not move the EXE by itself. The .NET runtime is included.
 Drag head: move / Drag cheek: stretch / Nearby pointer: tracking and pouncing
 Release near a window/taskbar edge when the front paws show readiness to hang.
 Click or pull a hanging front paw to wave or stretch that paw.
-Right-click the tray icon: open logs / exit. Exit before updating or uninstalling.
+Left- or right-click the tray icon: open logs / exit. Exit before updating or uninstalling.
 Uninstall through Windows' app list. Local logs are not uploaded automatically.
 
 Unsigned preview / 코드 서명 없는 미리보기
