@@ -34,9 +34,11 @@ the local disk; preserve current source, assets, tools, tests and documentation.
   source folder. Core241/App1081 PASS, zero failures/skips; App clean-main.trx.
   src/tests/tools/installer Git trees match the archive exactly. All132 local
   archived files match their original Git blobs; zero tracked artifacts remain.
-- [ ] Commit/push cleaned main and verify remote parity, zero tracked files in
+- [x] Commit/push cleaned main and verify remote parity, zero tracked files in
   the excluded areas, preserved archive commit, and clean working tree.
-  Ready for normal main push; final transport/parity results reported in chat.
+  Cleanup commit d9e90a3 pushed and verified against remote main. Archive still
+  points to abe15b5 with all132 files; excluded areas empty in the main tree.
+  Working tree clean after cleanup push. This ledger closes the verified task.
 
 No history rewrite, force push, release changes, local backup deletion or
 product behavior changes are part of this cleanup.
