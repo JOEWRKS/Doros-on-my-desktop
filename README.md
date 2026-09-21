@@ -1,103 +1,53 @@
 # 도로롱이 내 컴에?! · Doro's on my desktop?!
 
-## Download · 다운로드
+니케의 도로롱(Doro) 팬 캐릭터를 바탕으로 만든 Windows 데스크톱 펫.
+A Windows desktop pet based on the NIKKE-derived Dororong (Doro) fan character.
 
-### [Windows 설치 파일 받기 · Download Windows installer](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/v0.1.2/Doros-on-my-desktop-Setup-0.1.2-win-x64.exe)
+## 다운로드 · Download
 
-**Windows x64 · 0.1.2 preview · .NET runtime included / 런타임 포함**
+**[Windows 설치 파일 · Windows installer](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/v0.1.2/Doros-on-my-desktop-Setup-0.1.2-win-x64.exe)**
 
-다운로드한 `Doros-on-my-desktop-Setup-0.1.2-win-x64.exe`를 실행해 설치한 뒤, 시작 메뉴의 **도로롱이 내 컴에!**를 실행하세요. 관리자 권한이나 개발 도구는 필요 없습니다.
+Windows x64 · v0.1.2 Preview · 런타임 포함 / Runtime included · 관리자 권한 불필요 / No admin required
 
-Run the downloaded installer, then open **도로롱이 내 컴에!** from the Start menu. No administrator rights or developer tools are required.
+설치 후 시작 메뉴의 **도로롱이 내 컴에!**에서 실행하세요. 업데이트 전에는 트레이에서 종료하세요.
+Install, then launch **도로롱이 내 컴에!** from the Start menu. Exit through the tray before updating.
 
-> **Code → Download ZIP**과 **Source code (zip)**은 개발용 소스이며 설치 파일이 아닙니다. 이미 받았다면 위 설치 파일만 다시 받으세요.
-> **Code → Download ZIP** and **Source code (zip)** contain source code, not the installer. Use the download link above to install the pet.
+**Code → Download ZIP / Source code는 설치 파일이 아닙니다. / Source-code ZIPs are not installers.**
 
-[Release notes & checksums · 변경 사항·체크섬](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.2)
+## 기능·사용법 · Features & controls
 
-Unsigned preview: Windows may show an unrecognized-publisher warning. Clean-PC compatibility has not been certified. / 코드 서명이 없는 미리보기 버전으로 Windows 경고가 표시될 수 있으며, 모든 PC에서의 호환성을 보증하지 않습니다.
-
-A small Windows desktop pet based on Dororong (Doro), a fan character derived from **GODDESS OF VICTORY: NIKKE**.
-
-**승리의 여신: 니케**에서 파생된 팬 캐릭터 **도로롱(Doro)**을 바탕으로 만든 Windows 데스크톱 펫입니다.
-
-## 한국어
-
-### 기능
-
-- 걷기·숨쉬기·눈 깜빡임·수면 등 자율 애니메이션
-- 마우스 방향 추적, 가까이 머물면 준비 자세 후 짧은 도약
-- 머리 잡아 이동, 볼 당기기와 탄성 복원·반동
-- 창·작업표시줄 가장자리에 매달리기, 매달린 앞발 당기기·한쪽 발 휘젓기
-- 앉기 메뉴, 트레이 종료·로그 폴더 열기, 중복 실행 방지
-
-### 사용법
-
-1. 위 **Windows 설치 파일 받기**로 설치한 뒤 시작 메뉴에서 실행합니다.
-2. 머리를 드래그해 이동합니다. 가장자리에서 앞발 준비 동작이 보일 때 놓으면 매달립니다.
-3. 볼은 드래그하면 제자리에서 늘어나고 놓으면 복원됩니다. 매달린 앞발은 클릭하거나 당길 수 있습니다.
-4. 마우스를 가까이 두면 쫓아보고, 더 가까운 범위에 머물면 폴짝 뜁니다.
-5. 캐릭터 우클릭 → **앉아 / Exit**, 트레이 우클릭 → **로그 폴더 열기 / 종료**를 사용합니다.
-
-설치는 현재 사용자 계정에만 적용됩니다. 업데이트 전에는 트레이에서 종료하세요. 제거는 Windows 앱 목록의 **도로롱이 내 컴에?!**에서 합니다. 파일·바로가기 이름에서는 Windows 제한 때문에 `?`를 생략합니다.
-
-### 상태
-
-현재 **0.1.2 미리보기**입니다. 검증 범위는 릴리스 노트에 기록합니다. 이번 버전은 코드 서명을 생략했으며, 깨끗한 PC에서의 검증 및 캐릭터 배포 권한 확인은 남아 있습니다. 자동 업데이트·자동 시작·계정·데이터 전송 기능은 없습니다.
-
-## English
-
-### Features
-
-- Autonomous walking, breathing, blinking and sleeping
-- Mouse tracking and a short pounce after the pointer lingers nearby
-- Head dragging, stretchy cheeks and spring-back reactions
-- Window/taskbar edge hanging, with individual front-paw pulls and waves
-- Sit command, tray controls, local logs and single-instance protection
-
-### Usage
-
-1. Use **Download Windows installer** above, install it, then launch it from the Start menu.
-2. Drag the head to move the pet. Release near a compatible edge when the front-paw readiness animation appears to hang.
-3. Pull a cheek to stretch it in place; release to spring back. Click or drag a hanging front paw to interact with that side.
-4. Move the pointer nearby to attract attention; linger closer to trigger a short pounce.
-5. Right-click the character for **앉아 (Sit) / Exit**, or the tray icon for **로그 폴더 열기 (Open logs) / 종료 (Exit)**.
-
-Installation is per-user. Exit through the tray before updating. Uninstall **도로롱이 내 컴에?!** through Windows' app list. Filenames and shortcuts omit `?` because Windows does not allow it.
-
-### Status
-
-This is a **0.1.2 preview**. The release notes describe verification coverage. Code signing is deferred for this release; clean-machine acceptance and character distribution permissions remain pending. No auto-update, autostart, accounts or data upload.
-
-## Structure · 구성
-
-| Path | Purpose · 역할 |
+| 조작 · Control | 동작 · Action |
 | --- | --- |
-| `src/Dororong.App` | WPF UI, rendering and Windows integration · 화면·렌더링·Windows 연동 |
-| `src/Dororong.Core` | Behavior and platform logic · 행동·발판 로직 |
-| `tests` | Regression and packaging checks · 회귀·패키지 검사 |
-| `tools` / `installer` | Animation tools, publishing and installer · 애니메이션 도구·패키징·설치 |
-| `docs` | Design and verification notes · 설계·검증 기록 |
+| 머리 드래그 · Drag head | 이동 · Move |
+| 볼 드래그 · Pull cheek | 늘이기·탄성 복원 · Stretch & spring back |
+| 마우스 접근·머무르기 · Move/linger nearby | 추적·짧은 도약 · Track & pounce |
+| 창·작업표시줄 가장자리에서 준비 동작 후 놓기 · Release at an edge when ready | 매달리기 · Hang |
+| 매달린 앞발 클릭·드래그 · Click/drag a hanging paw | 한쪽 발 휘젓기·당기기 · Wave & stretch |
+| 캐릭터 우클릭 · Right-click character | 앉아 / Exit · Sit / Exit |
+| 트레이 우클릭 · Right-click tray | 로그 폴더 열기 / 종료 · Open logs / Exit |
 
-## Development · 개발
+걷기·숨쉬기·눈 깜빡임·수면은 자동으로 재생됩니다. 제거는 Windows 앱 목록에서 가능합니다.
+Walking, breathing, blinking and sleeping are automatic. Uninstall through Windows' app list.
 
-Windows + .NET 8-compatible SDK:
+**main 추가 기능:** 트레이 좌클릭 지원, 바깥 클릭·Esc로 닫기. 현재 공개 v0.1.2 설치 파일에는 좌클릭 지원이 포함되지 않았습니다.
+**Added on main:** left-click tray menu, dismissed by outside click or Esc. Left-click support is not included in the public v0.1.2 installer yet.
 
-```powershell
-dotnet restore DororongDesktopPet.sln
-dotnet run --project src/Dororong.App/Dororong.App.csproj -c Release
-```
+## 구성·개발 · Structure & development
 
-[Build, test & package · 빌드·검사·패키징](docs/BUILD.md) · [Task log · 작업 기록](TASKS.md)
+- `src/Dororong.App`: WPF 화면·Windows 연동 / UI & Windows integration
+- `src/Dororong.Core`: 행동·발판 로직 / Behavior & platform logic
+- `tests`: 회귀 검사 / Regression tests
+- `tools`, `installer`, `docs`: 도구·설치·문서 / Tools, packaging & documentation
 
-## License & credits · 라이선스와 출처
+[빌드·검사 안내 · Build & test](docs/BUILD.md) · [릴리스·체크섬 · Release & checksums](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.2)
 
-Original project source code is available under the [MIT License](LICENSE), allowing modification, redistribution and commercial use of that code with the required notices. **Character art, sprites, derived animation assets, names and trademarks are excluded**; their rights remain with their respective owners. Third-party dependencies retain their own licenses.
+## 주의·라이선스 · Notes & license
 
-직접 작성한 프로젝트 소스 코드는 [MIT 라이선스](LICENSE)로 공개하며, 고지 유지 조건으로 수정·재배포·코드의 상업적 이용을 허용합니다. **캐릭터·원본 이미지·스프라이트·파생 애니메이션 리소스·명칭·상표는 MIT 적용 대상이 아니며**, 권리는 각 권리자에게 있습니다. 외부 의존성에는 각자의 라이선스가 적용됩니다.
+코드 서명 없는 미리보기로 Windows 경고가 표시될 수 있습니다. 보안 기능을 끄지 마세요. 모든 PC·혼합 DPI 검증은 완료되지 않았습니다. 자동 업데이트·자동 시작·계정·데이터 전송은 없습니다.
+Unsigned preview: Windows may show a warning; do not disable security checks. Clean-PC/mixed-DPI coverage is incomplete. No auto-update, autostart, accounts or data upload.
 
-Dororong artwork here is adapted from user-supplied reference images of the NIKKE-derived fan character, not an original character created by this project. This is an **unofficial, non-commercial fan-made derivative work**, not affiliated with or endorsed by NIKKE's developers or publishers. The original fan artist and asset distribution permissions have not yet been verified. The code license does not authorize commercial use or redistribution of the character assets.
+직접 작성한 코드는 [MIT](LICENSE). 캐릭터·원본/파생 이미지·명칭·상표는 제외되며 각 권리자에게 귀속됩니다. 외부 의존성은 각 라이선스를 따릅니다.
+Original code is [MIT](LICENSE); character art, derived assets, names and trademarks are excluded and belong to their respective owners. Dependencies retain their own licenses.
 
-사용된 도로롱은 프로젝트가 창작한 독자 캐릭터가 아니라, 사용자가 제공한 NIKKE 파생 팬 캐릭터 이미지를 바탕으로 제작했습니다. **상업적 목적 없이 만든 비공식 팬메이드 2차창작**이며, NIKKE 개발사·배급사의 공식 승인이나 제휴를 의미하지 않습니다. 원 팬아트 작가 및 이미지 배포 허락은 아직 확인되지 않았습니다. 코드의 MIT 라이선스는 캐릭터 리소스의 상업적 이용이나 재배포 권한을 부여하지 않습니다.
-
-NIKKE official copyright notice · NIKKE 공식 저작권 표기: © Proxima Beta Pte. Ltd. © SHIFT UP CORP. ([Official site · 공식 사이트](https://www.nikke-kr.com/indexm.html)). Attribution does not grant redistribution rights. 출처 표기는 재배포 허락을 대신하지 않습니다.
+**승리의 여신: 니케에서 파생된 도로롱 팬 캐릭터 이미지를 바탕으로 한 비공식·비상업 목적의 팬메이드 2차창작**입니다. 공식 승인·제휴는 없으며 원 팬아트 작가와 이미지 배포 허락은 아직 확인되지 않았습니다. 코드 라이선스는 캐릭터 리소스의 이용·재배포 권한을 부여하지 않습니다.
+An **unofficial, non-commercial fan-made derivative** using reference images of the **GODDESS OF VICTORY: NIKKE**-derived Doro fan character. No official affiliation or endorsement. Original fan-artist and asset distribution permissions remain unverified; the code license grants no rights to the character assets.

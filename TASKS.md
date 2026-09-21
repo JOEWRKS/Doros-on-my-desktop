@@ -1,5 +1,20 @@
 # Plan
 
+## Concise public documentation — approved 2026-09-21
+
+User requested a brief bilingual main README and public release description.
+Scope: README.md, docs/releases/0.1.2.md and the existing v0.1.2 release body.
+Keep installer/tag/assets unchanged. Distinguish main-only tray left-click from
+the public right-click-only installer. Retain installation, core controls,
+structure, unsigned-preview caveats and MIT-code/non-commercial fan-art notices.
+Documentation-only checks: diff, required links/notices, remote body parity and
+unchanged release asset IDs/sizes/digests. No product rebuild needed.
+Completed content/link checks and published release392884088 body parity.
+Immediate cached GET initially returned the old body; cache-busted read matched
+the exact new text. Asset IDs578847556/578848279, sizes and SHA256 digests unchanged.
+README reduced from103 to53 lines; bilingual controls and licensing retained.
+Commit/push these three documentation files only; remote parity checked in chat.
+
 ## Close current version and push main — approved 2026-09-21
 
 User requested committing and pushing the accepted current version to main.
