@@ -1,4 +1,4 @@
-도로롱이 내 컴에?! / Doro's on my desktop?! — 0.1.1 Preview
+도로롱이 내 컴에?! / Doro's on my desktop?! — 0.1.2 Preview
 
 한국어
 설치본: 시작 메뉴의 '도로롱이 내 컴에!'를 실행하세요.

@@ -60,7 +60,7 @@ Assert-True (Test-Path -LiteralPath $referenceCorePath -PathType Leaf) `
 $referenceAppDll = (Resolve-Path -LiteralPath $referenceAppPath).Path
 $referenceCoreDll = (Resolve-Path -LiteralPath $referenceCorePath).Path
 $runtimePath = Join-Path $candidateRoot 'runtime'
-$archivePath = Join-Path $candidateRoot 'Doros-on-my-desktop-Portable-0.1.1-win-x64.zip'
+$archivePath = Join-Path $candidateRoot 'Doros-on-my-desktop-Portable-0.1.2-win-x64.zip'
 
 New-Item -ItemType Directory -Path $candidateRoot | Out-Null
 
@@ -71,7 +71,8 @@ New-Item -ItemType Directory -Path $candidateRoot | Out-Null
     --output $runtimePath `
     --nologo `
     -p:RuntimeFrameworkVersion=$RuntimeVersion `
-    -p:TargetLatestRuntimePatch=false
+    -p:TargetLatestRuntimePatch=false `
+    -p:CopyOutputSymbolsToPublishDirectory=false
 if ($LASTEXITCODE -ne 0)
 {
     throw "dotnet publish failed with exit code $LASTEXITCODE. Partial output remains at $candidateRoot for inspection."

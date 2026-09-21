@@ -6,7 +6,7 @@ namespace Dororong.App.Product;
 internal static class ProductIdentity
 {
     internal static string DisplayName => "도로롱이 내 컴에?!";
-    internal static string Version => "0.1.1";
+    internal static string Version => "0.1.2";
     internal static string Publisher => "JOEWRKS";
     internal static string ExecutableName => "Dororong.exe";
     internal static string LogDirectory => Path.Combine(

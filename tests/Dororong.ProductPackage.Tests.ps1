@@ -429,6 +429,11 @@ if ($PSCmdlet.ParameterSetName -eq 'MissingReferences')
 $packageRoot = (Resolve-Path -LiteralPath $PackagePath).Path
 $archive = (Resolve-Path -LiteralPath $ArchivePath).Path
 
+$unwanted = @(Get-ChildItem -LiteralPath $packageRoot -File -Recurse -Force |
+    Where-Object { $_.Extension -eq '.pdb' -or
+        $_.Name -eq 'dororong-canonical-source.png' })
+Assert-Equal 0 $unwanted.Count 'Development-only files remain in the package.'
+
 foreach ($notice in @('README.txt', 'LICENSE.txt', 'licenses/NET-LICENSE.txt',
     'licenses/NET-THIRD-PARTY-NOTICES.txt', 'licenses/WINDOWS-DESKTOP-LICENSE.txt'))
 {
@@ -460,8 +465,8 @@ Assert-Equal '도로롱이 내 컴에?!' $version.FileDescription 'Product execu
 Assert-Equal 'Dororong.App.dll' $version.InternalName 'Product executable internal name changed.'
 Assert-Equal 'Dororong.App.dll' $version.OriginalFilename 'Product executable original filename changed.'
 Assert-Equal 'JOEWRKS' $version.CompanyName 'Product metadata company changed.'
-Assert-Equal '0.1.1' $version.ProductVersion 'Product metadata version changed.'
-Assert-Equal '0.1.1.0' $version.FileVersion 'Product file version changed.'
+Assert-Equal '0.1.2' $version.ProductVersion 'Product metadata version changed.'
+Assert-Equal '0.1.2.0' $version.FileVersion 'Product file version changed.'
 
 Add-Type -AssemblyName System.Drawing.Common
 $icon = [Drawing.Icon]::ExtractAssociatedIcon($apphost)

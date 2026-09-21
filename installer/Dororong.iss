@@ -1,7 +1,7 @@
 #ifndef BuildRoot
   #error Build only through tools/Build-Installer.ps1
 #endif
-#define ProductVersion "0.1.1"
+#define ProductVersion "0.1.2"
 #define ProductName "도로롱이 내 컴에?!"
 #define ProductId "{928A9BC7-3A87-4C52-9161-1E5D08DB410A}"
 
@@ -10,7 +10,7 @@ AppId={{928A9BC7-3A87-4C52-9161-1E5D08DB410A}
 AppName={#ProductName}
 AppVersion={#ProductVersion}
 AppPublisher=JOEWRKS
-VersionInfoVersion=0.1.1.0
+VersionInfoVersion=0.1.2.0
 VersionInfoProductVersion={#ProductVersion}
 VersionInfoCompany=JOEWRKS
 VersionInfoDescription=도로롱이 내 컴에?! 설치
@@ -34,7 +34,7 @@ RestartApplications=no
 RestartIfNeededByRun=no
 AlwaysRestart=no
 OutputDir={#BuildRoot}
-OutputBaseFilename=Doros-on-my-desktop-Setup-0.1.1-win-x64
+OutputBaseFilename=Doros-on-my-desktop-Setup-0.1.2-win-x64
 Compression=lzma2/normal
 SolidCompression=yes
 WizardStyle=modern

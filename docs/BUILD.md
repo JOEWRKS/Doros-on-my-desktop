@@ -32,19 +32,26 @@ Choose a new, unused candidate directory.
 
 ```powershell
 pwsh -NoProfile -File tools/Publish-Product.ps1 -OutputPath artifacts/product-shell/candidate-NEW
-pwsh -NoProfile -File tests/Dororong.ProductPackage.Tests.ps1 -PackagePath artifacts/product-shell/candidate-NEW/runtime -ArchivePath artifacts/product-shell/candidate-NEW/Doros-on-my-desktop-Portable-0.1.1-win-x64.zip
+pwsh -NoProfile -File tests/Dororong.ProductPackage.Tests.ps1 -PackagePath artifacts/product-shell/candidate-NEW/runtime -ArchivePath artifacts/product-shell/candidate-NEW/Doros-on-my-desktop-Portable-0.1.2-win-x64.zip
 ```
 
 The complete runtime folder is required; distributing only the EXE will not work.
 Runtime and native host versions are pinned to 8.0.31 by the packaging tools.
+New packages produced by `Publish-Product.ps1` exclude PDB debug symbols and the loose
+`Assets/dororong-canonical-source.png`; ordinary build output keeps them.
+The package validator rejects their reintroduction before its native smoke test.
+Embedded character resources and all license notices remain included.
+
+새 배포본에는 디버그 심볼과 작업용 원본 이미지를 넣지 않습니다.
+개발용 빌드·원본 파일은 보존하며, 실행에 필요한 내장 이미지는 유지합니다.
 
 ## Installer and verification
 
-The 0.1.1 rebrand candidate is `candidate-20260921-rebrand-01`.
-See [release verification](verification/2026-09-21-rebrand-release.md) for hashes
+The 0.1.2 candidate is `candidate-20260921-v012-01`.
+See [release verification](verification/2026-09-21-v012-release.md) for hashes
 and the exact acceptance coverage. Local `artifacts/` outputs are intentionally
 not committed. End users should download the Setup EXE from
-[GitHub Releases](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.1),
+[GitHub Releases](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.2),
 not GitHub's source-code ZIP.
 
 Installer builds require the verified payload archive and pinned Inno Setup
@@ -53,12 +60,55 @@ included by cloning this repository. The builder pins the payload SHA256 and
 refuses an existing output directory.
 
 ```powershell
-pwsh -NoProfile -File tools/Build-Installer.ps1 -PackagePath artifacts/product-shell/candidate-20260921-rebrand-02/runtime -ArchivePath artifacts/product-shell/candidate-20260921-rebrand-02/Doros-on-my-desktop-Portable-0.1.1-win-x64.zip -CompilerPath artifacts/installer/toolchain-inno-7.1.0-x64-20260912-02/ISCC.exe -OutputPath artifacts/installer/candidate-NEW
+pwsh -NoProfile -File tools/Build-Installer.ps1 -PackagePath artifacts/product-shell/candidate-20260921-v012-01/runtime -ArchivePath artifacts/product-shell/candidate-20260921-v012-01/Doros-on-my-desktop-Portable-0.1.2-win-x64.zip -CompilerPath C:/your-verified-toolchain/ISCC.exe -OutputPath artifacts/installer/candidate-NEW
 ```
+
+The builder pins the verified 0.1.2 archive. Replace the compiler placeholder
+with your verified Inno Setup 7.1.0 path. An independently rebuilt archive is
+not automatically trusted: validate it and deliberately update the hash pin.
+The published v0.1.1 release remains available unchanged.
+The preceding 0.1.1 payload-hygiene candidate passed current-host update,
+uninstall and reinstall checks; see [host lifecycle acceptance](verification/2026-09-21-payload-hygiene-host.md).
+That historical evidence is not a 0.1.2 host-upgrade or clean-machine test.
 
 Exit the pet before package/installer validation: it includes a strict
 single-instance application smoke test. Historical Sandbox handoffs retain
 older candidate pins and do not validate the current build.
+
+## Code-signing readiness (2026-09-21)
+
+The maintainer chose to defer code signing for this release. It is not an active
+release gate; the notes below are future prerequisites only. Keep unsigned
+disclosure, published checksums and package/installer validation. Windows may
+show an unknown-publisher or SmartScreen warning; do not disable security checks.
+This decision does not waive the separate artwork-rights or installation checks.
+
+이번 출시에서는 사용자 결정으로 코드 서명을 생략합니다. 미서명 안내와 파일 해시·
+배포 검증은 유지하며, 인증서 신청·결제·연동은 별도 요청 전까지 진행하지 않습니다.
+
+Signing is **not configured**. Local Windows certificate stores contain no
+code-signing certificate; the Windows SDK SignTool is available. No account,
+application, certificate purchase or trust-store change has been made.
+
+[SignPath Foundation](https://signpath.org/terms) offers free signing to eligible
+open-source projects, but requires open-source licensing of all components,
+verifiable builds, contributor MFA and release approval. Our MIT code license
+explicitly excludes character assets, whose distribution permissions remain
+unverified. Eligibility therefore needs provider clarification and asset-rights
+evidence; do not claim acceptance or change the art license to qualify.
+The [application page](https://signpath.org/apply) is the next step only after
+that clarification and the maintainer's approval.
+
+Before a future signed release, configure the approved provider, sign only
+project-owned binaries before packaging and sign the final installer afterward.
+Verify trusted signatures and timestamps, and compute release hashes **after**
+signing. Update the unsigned apphost-parity checks to verify both payload
+provenance and signature integrity; never merely skip those checks. A valid
+signature does not guarantee immediate SmartScreen reputation
+([Microsoft guidance](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/code-signing-options)).
+
+무료 서명은 캐릭터 리소스의 라이선스·배포 권리와 서비스 자격 확인이 선행되어야 합니다.
+현재 서명 완료 상태가 아니며, 인증서 신청이나 결제는 하지 않았습니다.
 
 ## Installation, support and release limits
 

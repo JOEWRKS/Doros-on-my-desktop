@@ -1,5 +1,252 @@
 # Plan
 
+## Publish v0.1.2 preview — approved 2026-09-21
+
+**Goal/spec:** User explicitly approved committing/pushing main and publicly
+releasing v0.1.2 with unsigned disclosure and checksums, preserving v0.1.1.
+**Architecture:** Existing release pipeline and stable app/data/instance IDs;
+version-only product change plus already-tested payload hygiene. Runtime8.0.31.
+**Execution:** Continue natively in the user-approved main checkout. This is the
+approved release sequence, not a new feature/design. TASKS.md remains sole ledger.
+**Review focus:** version parity in app/tray/log/PE/installer; preserved0.1.1
+release; clean469-file payload with licenses; tested/packaged byte parity;
+anonymous download hashes and accurate unsigned/acceptance limitations.
+
+- [x] Change active metadata/packaging tests to0.1.2 and observe expected failure
+  against0.1.1; update ProductIdentity, App csproj, installer/publisher names,
+  active packaging fixtures, README/package guide and bilingual0.1.2 notes.
+  Historical version fixtures/reports remain intact.
+  Observed RED: four expected identity/log/tray/assembly failures (22 passed).
+  GREEN: Core241 and full App1072 passed, zero skips; App TRX v012-verified.trx.
+  README, package guide and bilingual release notes now point to0.1.2.
+- [x] Run Core + complete App win-x64 Release tests; publish fresh
+  product-shell/candidate-20260921-v012-01; validate native smoke, exact tested
+  DLLs, notices and archive round-trip. Ask user to exit live pet before smoke.
+  User exited; full package validator PASS including private-desktop launch,
+  duplicate exit0 and owned WM_CLOSE exit0. Verified archive SHA256
+  4110E96A273DBB7B916A41D6C4006DECBE3F34131A8A44F15CC33B1A4F800D31.
+- [x] Pin the new verified archive hash, run installer payload/refusal/policy/
+  build checks; build installer/candidate-20260921-v012-01. Existing0.1.1 host
+  lifecycle evidence is historical, not proof of a0.1.2 host upgrade.
+  Payload test caught remaining0.1.1 module allowlist RED; corrected pins GREEN.
+  Full refusal/policy/build PASS;469 files; unsigned Setup SHA256
+  D3AEB4CB700B6B64823A6CA455D8913351AE648F7BD7ABE261D84D3357C4DB6C.
+- [ ] Independent final diff review, checksum/release evidence, explicit staging
+  excluding generated binaries/backups/data; commit main and annotatedv0.1.2.
+  Fresh-context final review: no Critical, Important or Minor findings. Reviewer
+  independently checked469 runtime/staged/ZIP files, tested DLL parity, App TRX,
+  build-input/artifact hashes and release orchestration. No fix pass required.
+  Final: Ruling: public availability/download parity await publication — retain
+  actual anonymous-download gate before completion — if wrong, broken downloads.
+  Final: Ruling: remote0.1.1 preservation needs a live check — compare both old
+  asset digests before/after delivery — if wrong, prior release could be altered.
+  Final: Ruling: no0.1.2 host/clean-PC/mixed-DPI/recovery acceptance — disclose
+  limits; this run authorizes publishing, not another host lifecycle — if wrong,
+  environment-specific installation defects remain untested.
+  Final: Ruling: signing/provider/artwork rights remain deferred or unresolved —
+  preserve explicit notices, claim no clearance — if wrong, warnings/rights risk.
+  Final: Ruling: reviewer did not rerun executable suites — use this executor's
+  fresh Core241/App1072 and package/installer results plus independent receipts —
+  if wrong, unnoticed test/environment drift could weaken confidence.
+  Final: Ruling: unchanged motion and broader installer architecture remain
+  outside this diff review — retain full regression suite and preview limits —
+  if wrong, pre-existing defects could remain. Deferred minors: none.
+- [ ] Push without force; create new GitHub preview release with Setup EXE and
+  SHA256SUMS.txt (no replacement of0.1.1). Verify anonymous metadata/download
+  hashes and README links; record delivery state. No signing/purchase.
+
+## Host payload-hygiene lifecycle acceptance — 2026-09-21
+
+- User explicitly approved backup, actual current-user update, uninstall and
+  reinstall of the local unsigned candidate. Preserve user data and original
+  shortcuts/preferences; finish with the verified new installation. No signing,
+  commit, push, public release or clean-machine claim.
+- Candidate: installer/candidate-20260921-payload-hygiene-01, Setup SHA256
+  2098CDAFB486EEA3DEB3F402666701273108ED0B5F89F939DBAD2D76DE29BD7D.
+- Read-only preflight: installed0.1.1, DesktopIconOwned0, no pet process.
+  Target C:/Users/tjdwo/AppData/Local/Programs/JOEWRKS/Dororong;
+  data C:/Users/tjdwo/AppData/Local/JOEWRKS/Dororong.
+- Use a fresh artifact-only host harness and evidence directory. Do not bypass
+  the historical Sandbox harness's guest guard. No production implementation
+  changes: verify actual installer side effects against frozen manifests/hashes.
+- [x] Verify old/new candidate hashes and identity; back up installation, data,
+  project registration and existing shortcuts with matching hashes.
+  Evidence: artifacts/installer/host-payload-hygiene-20260921. Backed up475
+  installation files and1 data file; both trees, Start link and registry export
+  verified. No host installation mutation occurred during this backup phase.
+- [x] Same-version update: all469 new payload hashes, removal of three obsolete
+  owned files, preserved user data and shortcut preference, no auto-launch.
+  Before update, Verify correctly rejected old installed App DLL bytes; after
+  actual setup exit0, all assertions passed. Original files remain in backup.
+- [x] Uninstall: owned payload/registration/shortcuts removed, data preserved.
+  Initial immediate file-count assertion raced the uninstaller's temporary
+  cleanup. Its exit0 check passed, log later reported Removed all/Success and
+  the entire target disappeared without intervention. Artifact-only harness now
+  waits up to10s for root absence; read-only VerifyUninstalled PASS. No forced
+  deletion, product code change or guest-guard bypass.
+- [x] Reinstall: payload/registration/shortcuts restored, data preserved; verify
+  installed launch and duplicate exit, retain original backups and record limits.
+  Setup exit0,469 payload files + ownership/uninstaller metadata verified; Start
+  shortcut restored, desktop opt-out preserved. Installed process17744 running;
+  duplicate exited0 and original data bytes remain an exact prefix of the log.
+- Complete for this host: no production changes, no signing/commit/push/public
+  release. Original475-file installation, data, registry export and Start link
+  retained under host-payload-hygiene-20260921. Not a clean-machine, mixed-DPI,
+  visual-interaction, failure-recovery or artwork-rights acceptance.
+
+## Release payload hygiene and code-signing readiness — 2026-09-21
+
+> Execution plan: native implementation in this session is recommended;
+> use superpowers:executing-plans after the user's plan review. This file is
+> the sole plan ledger. No second plan or progress file.
+
+**Goal:** Exclude development-only files from future distributions, preserve
+source/debugging material, and prepare genuine publicly trusted signing.
+**Architecture:** Keep ordinary build output intact; change publish selection
+and reject unwanted files at package validation. Sign only through an approved
+identity/provider, after choosing the provider and confirming its prerequisites.
+**Tech stack:** .NET 8/WPF, PowerShell, Inno Setup, Windows SDK SignTool.
+**Spec:** User's current request: "런타임 패치는 필수야? 배포 파일이랑 코드 서명은 진행".
+**Latest scope decision:** User subsequently said "그래 이건 건너뛰자" about
+code signing. Signing is deferred by choice, not an active release blocker.
+
+### Constraints and evidence
+
+- Runtime stays 8.0.31 for this change. No test-dependency updates, pet behavior,
+  artwork edits, new autoupdater, or runtime-major migration in this scope.
+- Preserve source artwork, build PDBs, prior candidates, installed product and
+  published v0.1.1. Build a fresh candidate; no existing-release replacement.
+- Do not buy certificates, enroll accounts, submit applications, export private
+  keys, install trust roots or make self-signed public-distribution claims.
+- Windows SDK x64 SignTool exists at
+  `C:/Program Files (x86)/Windows Kits/10/bin/10.0.26100.0/x64/signtool.exe`.
+  Read succeeded for CurrentUser/My and LocalMachine/My: zero code-signing certs.
+  External/cloud signing accounts and hardware tokens remain unverified.
+- Previous audit found 472 release files including Dororong.App.pdb,
+  Dororong.Core.pdb and Assets/dororong-canonical-source.png. Source runtime
+  consumers use embedded resources, not the loose canonical-source image.
+- Trusted signatures authenticate publisher/integrity; they do not guarantee
+  instant SmartScreen reputation. Free OSS signing eligibility is unresolved
+  because art rights are separately reserved; do not assert OSS eligibility.
+
+### Review focus
+
+1. Debug information remains available in build output, but never in runtime ZIP.
+2. Required embedded artwork, guides, licenses and runtime DLLs remain available.
+3. Adding a PDB or development art back to a candidate causes validation failure.
+4. Fresh candidate generation never overwrites a prior candidate or public asset.
+5. Signed apphost/installer hashes and timestamp verification must precede any
+   signed-release claim; existing unsigned byte-parity checks cannot be bypassed.
+
+### Task 1 — publish selection and regression checks (complete, local only)
+
+- User approved the plan and explicitly chose the existing main work folder;
+  no separate worktree, commit, push or public-release mutation.
+- Ruling: use this existing single ledger and explicit commands rather than SDD
+  scripts that create another ledger/commits — repository and approved plan
+  constraints take precedence; evidence must be recorded here manually.
+  Cost if wrong: evidence must be reconstructed from the recorded commands/logs.
+- Pre-flight: publish output feeds package validation and future signing. Keep
+  unsigned host parity intact until a signing provider is chosen; changing
+  payload selection does not authorize bypassing signature/provenance checks.
+- RED observed: the new early package check rejects immutable rebrand-02 with
+  expected count 0, observed 3, before any application launch. Core241 PASS;
+  App1072 PASS (0 failed/0 skipped in both suites). Source-art SHA256 remains
+  F96EC30CBD18429E6BA1138BFA4EB44F331974C9820D36EE97A02FE518E46504.
+- Ruling: include the installer consumer in this payload change — its pinned
+  archive and test fixture currently point at the old 472-file package. After
+  validating the new package, update that exact pin and its fixture/docs and
+  build a fresh unsigned local installer. Otherwise the advertised installer
+  workflow would reject the cleaned output; public release remains untouched.
+  Cost if wrong: restore the previous local pin/fixtures, preserving both archives.
+- Milestone: candidate payload-hygiene-01 correctly failed the new guard with
+  one remaining Core PDB. SDK9.0.304 routes referenced-project symbols through
+  ReferenceCopyLocalPaths independently of CopyOutputSymbolsToPublishDirectory.
+  A publish-only ResolvedFileToPublish filter now honors that flag for all PDBs;
+  normal build PDBs remain. Failed candidate retained for diagnosis.
+- GREEN: fresh payload-hygiene-02 has469 files, exact tested App/Core bytes,
+  Core/Desktop/host8.0.31, ZIP round-trip and isolated native launch/duplicate/
+  close PASS. Reintroduced PDB in a copied negative fixture fails before launch.
+  Existing-output publisher refusal PASS. Source-art hash and both build PDBs
+  preserved. Installer rejected the new ZIP under its old hash pin as expected;
+  exact verified pin and both installer test fixtures now target the clean ZIP.
+- Installer payload and All(refusal/policy/build) suites PASS. New Setup SHA256
+  2098CDAFB486EEA3DEB3F402666701273108ED0B5F89F939DBAD2D76DE29BD7D,
+  469 staged payload files + ownership manifest; NotSigned as expected. No host
+  lifecycle/install test or public mutation. Final independent read-only review
+  approved the local handoff: no Critical/Important/Minor implementation findings.
+  It independently confirmed ZIP inventory, source/build preservation, tested
+  DLL parity, artifact hashes and evidence-source correspondence.
+- Final: Ruling: reviewer did not rerun native/test executables — executor's
+  fresh Core241/App1072 and package/installer PASS results plus independently
+  checked artifact correspondence suffice for this local handoff. Cost if wrong:
+  reproduce tests before any new release claim; no lifecycle claim is made.
+- Final: Ruling: installation lifecycle, visual behavior and provider eligibility
+  remain outside this review's acceptance — no pet source changes or installation
+  were requested, and signing is explicitly blocked on external prerequisites.
+  Cost if wrong: these gates must be validated before broader release/signing claims.
+- Final: deferred minors: none. Kept main and all candidates in place as requested;
+  HEAD remains01cc859, no commit/push/release/install/certificate mutation.
+
+Files: `src/Dororong.App/Dororong.App.csproj`, `tools/Publish-Product.ps1`,
+`tests/Dororong.ProductPackage.Tests.ps1`, `tools/Build-Installer.ps1`,
+`tests/Dororong.InstallerBuild.Tests.ps1`, `tests/Dororong.InstallerPayload.Tests.ps1`,
+`docs/BUILD.md`, `docs/verification/2026-09-21-payload-hygiene.md`.
+Existing validator consumes PackagePath and ArchivePath; publisher consumes a
+fresh direct artifacts/product-shell/candidate-* OutputPath and prints hashes.
+
+- [x] Add the early package-content assertion before any executable smoke test:
+
+  ```powershell
+  $unwanted = @(Get-ChildItem -LiteralPath $packageRoot -File -Recurse |
+      Where-Object { $_.Extension -eq '.pdb' -or
+          $_.Name -eq 'dororong-canonical-source.png' })
+  Assert-Equal 0 $unwanted.Count 'Development-only files remain in the package.'
+  ```
+
+- [x] Run the validator on immutable candidate-20260921-rebrand-02 to demonstrate
+  RED for exactly these three files, before its app-launch phase.
+- [x] Add `CopyToPublishDirectory="Never"` to the canonical-source None item,
+  keeping CopyToOutputDirectory unchanged. Add
+  `-p:CopyOutputSymbolsToPublishDirectory=false` to dotnet publish. Do not delete
+  source/build files or change embedded resource declarations.
+- [x] Run Core and matching win-x64 App Release suites using docs/BUILD.md commands.
+  Publish a fresh candidate-20260921-payload-hygiene-02 and validate its ZIP,
+  DLL parity, required notices/runtime and unwanted-file absence. Before any
+  strict smoke phase confirm the user has exited the installed pet.
+- [x] Check fresh publisher existing-output refusal and archive round-trip. Check
+  a disposable copied candidate with an added PDB is rejected before launch.
+  Preserve the original candidate. Document commands, hashes and any failures.
+- [x] Record source-art hashes unchanged and required artwork loaded by tests.
+  Update build notes and this ledger; inspect diff and perform final review.
+  Do not publish a replacement or commit/push without a delivery decision.
+
+### Task 2 — trusted signing (deferred by user; excluded from this release scope)
+
+- [x] User confirmed individual status and explicitly chose to skip code signing.
+  Stop provider research, applications, purchases and signing integration unless
+  explicitly resumed. Keep unsigned disclosure, hashes and existing package/
+  installer validation. This does not waive installation or artwork-rights checks,
+  authorize public release, or change the installed program.
+- [x] Inspect code-signing certificate metadata and SignTool availability only.
+- [x] User approved free-OSS eligibility research, not submission. Reviewed
+  https://signpath.org/terms and https://signpath.org/apply on2026-09-21.
+  Current asset exclusions cannot establish its all-components OSS requirement;
+  provider clarification and asset-rights evidence are needed. MFA, verifiable
+  build pipeline and approval roles also need confirmation. No application,
+  account, certificate, payment or unsupported acceptance claim was created.
+Future prerequisites only, not active tasks:
+
+- User confirms an existing external signing identity, or selects a provider
+  and separately authorizes the next application step after eligibility clarification.
+  Provider choice is a separate approval from purchase/account enrollment.
+- After provider selection, specify its signing/approval mechanism and tests
+  before implementing integration: product-owned binaries first, final installer
+  last, SHA256 digest plus trusted timestamp, final Authenticode verification,
+  and post-signing manifests/checksums. Do not re-sign Microsoft's runtime files.
+- Only then build and verify a fresh signed release candidate; no claim of
+  signed distribution while certificate/provider access is unavailable.
+
 ## Friendly public installer and rebrand — 2026-09-21
 
 - [x] User approved bounded design: Korean title 도로롱이 내 컴에?!,

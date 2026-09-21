@@ -104,7 +104,7 @@ public class TrayServiceTests
         Assert.Collection(menu.Items.Cast<System.Windows.Forms.ToolStripItem>(),
             item =>
             {
-                Assert.Equal("도로롱이 내 컴에?! 0.1.1", item.Text);
+                Assert.Equal("도로롱이 내 컴에?! 0.1.2", item.Text);
                 Assert.False(item.Enabled);
             },
             item => Assert.Equal("로그 폴더 열기", item.Text),
