@@ -31,7 +31,7 @@ anonymous download hashes and accurate unsigned/acceptance limitations.
   Payload test caught remaining0.1.1 module allowlist RED; corrected pins GREEN.
   Full refusal/policy/build PASS;469 files; unsigned Setup SHA256
   D3AEB4CB700B6B64823A6CA455D8913351AE648F7BD7ABE261D84D3357C4DB6C.
-- [ ] Independent final diff review, checksum/release evidence, explicit staging
+- [x] Independent final diff review, checksum/release evidence, explicit staging
   excluding generated binaries/backups/data; commit main and annotatedv0.1.2.
   Fresh-context final review: no Critical, Important or Minor findings. Reviewer
   independently checked469 runtime/staged/ZIP files, tested DLL parity, App TRX,
@@ -51,9 +51,23 @@ anonymous download hashes and accurate unsigned/acceptance limitations.
   Final: Ruling: unchanged motion and broader installer architecture remain
   outside this diff review — retain full regression suite and preview limits —
   if wrong, pre-existing defects could remain. Deferred minors: none.
-- [ ] Push without force; create new GitHub preview release with Setup EXE and
+- [x] Push without force; create new GitHub preview release with Setup EXE and
   SHA256SUMS.txt (no replacement of0.1.1). Verify anonymous metadata/download
   hashes and README links; record delivery state. No signing/purchase.
+  Release commit d1c7e1cc81afa8c7a42dc073e2ca11db848de5c5; annotatedv0.1.2
+  and main pushed atomically without force. Fresh draft392884088 received only
+  Setup + SHA256SUMS.txt; exact asset count/size/digests verified before public
+  prerelease publication. Anonymous re-download hashes and main README installer
+  link PASS; both originalv0.1.1 asset digests unchanged. Release URL:
+  https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.2
+  Local artifact delivery-verified.json retains receipt and downloaded copies.
+  One orchestration-only pre-create failure came from wrapping the REST array
+  in @(...), producing a nested array. Read-only reproduction confirmed it;
+  direct assignment fixed collection enumeration. No release existed at failure,
+  no product/build files changed, no duplicate release or blind retry occurred.
+  Final local host check: installed0.1.1; no pet running. No local0.1.2 upgrade
+  or automatic launch performed. All six final-review boundaries above remain
+  recorded; publication/preservation gates now have fresh successful evidence.
 
 ## Host payload-hygiene lifecycle acceptance — 2026-09-21
 
