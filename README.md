@@ -41,6 +41,8 @@ Walking, breathing, blinking and sleeping are automatic. Uninstall through Windo
 
 [빌드·검사 안내 · Build & test](docs/BUILD.md) · [릴리스·체크섬 · Release & checksums](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.2)
 
+[예전 실험·작업 기록 · Historical experiments & notes](docs/ARCHIVE.md)
+
 ## 주의·라이선스 · Notes & license
 
 코드 서명 없는 미리보기로 Windows 경고가 표시될 수 있습니다. 보안 기능을 끄지 마세요. 모든 PC·혼합 DPI 검증은 완료되지 않았습니다. 자동 업데이트·자동 시작·계정·데이터 전송은 없습니다.

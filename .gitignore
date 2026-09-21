@@ -3,5 +3,6 @@
 **/TestResults/
 .vs/
 artifacts/
+.superpowers/
 *.user
 *.suo
