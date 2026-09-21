@@ -1,5 +1,29 @@
 # Plan
 
+## Friendly public installer and rebrand — 2026-09-21
+
+- [x] User approved bounded design: Korean title 도로롱이 내 컴에?!,
+  English Doro's on my desktop?!, repository Doros-on-my-desktop;
+  Windows installer in GitHub Releases and prominent bilingual download link.
+  Downloaded source ZIP has no installer; public releases API returned [].
+- [x] New visible identity/version0.1.1 and legacy shortcut migration implemented;
+  stable AppId/data/install/executable identities preserved. Read-only installer
+  review found no actionable defect. New README has bilingual direct Setup link
+  and explicit source ZIP warning; package includes quick start and license notices.
+- [x] Core241/App1072 PASS. Re-run exposed test-order-dependent WPF pack URI
+  initialization; test-only Application static bootstrap fixes isolated9 and
+  full1072. Product rendering unchanged. Final tested/published App bytes match.
+  Repository renamed to Doros-on-my-desktop; remote updated, main still2a016a2.
+- [x] Final package472 files, runtime8.0.31, notices, archive round-trip and tested
+  App/Core byte parity PASS. Installer payload/refusal/compiled policy/build PASS.
+  SetupSHA5D8C747D8BB8A1B9BCD2B9AA83AD0726426A40112206592AEE070BC9D264313B.
+- [x] Backed up original470 files/data/registry/link. Actual0.1.0→0.1.1 upgrade,
+  new-shortcut collision refusal, uninstall/data preservation, reinstall desktop
+  opt-in, same-version desktop opt-out, installed launch/duplicate exit0 PASS.
+  Old desktop-owned migration remains untested; unsigned/clean-PC limits disclosed.
+- [ ] Rename repository, commit/push, publish checked installer with checksums and
+  source-vs-installer guidance; verify anonymous download and downloaded bytes.
+
 ## Main checkpoint and bilingual README — 2026-09-14
 
 - [x] User explicitly selected main integration and push. Code is open under

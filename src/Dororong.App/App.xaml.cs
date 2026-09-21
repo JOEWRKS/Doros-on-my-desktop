@@ -111,8 +111,8 @@ public partial class App : Application
     private static void ShowStartupError(Exception exception)
     {
         MessageBox.Show(
-            $"Dororong encountered an unexpected error and must close.\n\n{exception.Message}",
-            "Dororong",
+            $"{ProductIdentity.DisplayName} encountered an unexpected error and must close.\n\n{exception.Message}",
+            ProductIdentity.DisplayName,
             MessageBoxButton.OK,
             MessageBoxImage.Error);
     }

@@ -99,12 +99,12 @@ public class TrayServiceTests
             (DrawingIcon)icon.Clone(), notifyIcon, menu, () => { }, () => { }, visible: false);
 
         Assert.False(notifyIcon.Visible);
-        Assert.Equal("도로롱 (Dororong)", notifyIcon.Text);
+        Assert.Equal("도로롱이 내 컴에?!", notifyIcon.Text);
         Assert.Same(menu, notifyIcon.ContextMenuStrip);
         Assert.Collection(menu.Items.Cast<System.Windows.Forms.ToolStripItem>(),
             item =>
             {
-                Assert.Equal("도로롱 0.1.0", item.Text);
+                Assert.Equal("도로롱이 내 컴에?! 0.1.1", item.Text);
                 Assert.False(item.Enabled);
             },
             item => Assert.Equal("로그 폴더 열기", item.Text),

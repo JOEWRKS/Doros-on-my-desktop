@@ -238,11 +238,11 @@ public class ProductShellTests
         var assembly = typeof(Dororong.App.App).Assembly;
         var file = FileVersionInfo.GetVersionInfo(assembly.Location);
 
-        Assert.Equal(new Version(0, 1, 0, 0), assembly.GetName().Version);
-        Assert.Equal("도로롱 (Dororong)", assembly.GetCustomAttribute<AssemblyProductAttribute>()?.Product);
+        Assert.Equal(new Version(0, 1, 1, 0), assembly.GetName().Version);
+        Assert.Equal("도로롱이 내 컴에?!", assembly.GetCustomAttribute<AssemblyProductAttribute>()?.Product);
         Assert.Equal("JOEWRKS", assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company);
-        Assert.Equal("0.1.0", file.ProductVersion);
-        Assert.Equal("0.1.0.0", file.FileVersion);
+        Assert.Equal("0.1.1", file.ProductVersion);
+        Assert.Equal("0.1.1.0", file.FileVersion);
         Assert.Contains("Dororong.App.Assets.dororong.ico", assembly.GetManifestResourceNames());
     }
 

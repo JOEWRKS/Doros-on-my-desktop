@@ -13,8 +13,8 @@ $output = Assert-InstallerOutputPath -OutputPath $OutputPath
 $payload = Get-InstallerPayload -PackagePath $PackagePath
 $archive = (Resolve-Path -LiteralPath $ArchivePath).Path
 $archiveHash = (Get-FileHash -LiteralPath $archive).Hash
-if ($archiveHash -cne 'D32CE2FEA6304EA7BFEEB85922649A693BDB7FB118EE85FC5EAD9D01455ABA6A') {
-    throw 'Archive hash does not match the approved 0.1.0 candidate.'
+if ($archiveHash -cne '980BA470180226A450277B25F915B31FC63B2ABC346B5B5A3462AAA656E66E31') {
+    throw 'Archive hash does not match the approved 0.1.1 candidate.'
 }
 $compiler = (Resolve-Path -LiteralPath $CompilerPath).Path
 $compilerHash = (Get-FileHash -LiteralPath $compiler).Hash
@@ -109,11 +109,11 @@ foreach ($source in $sourceHashes) {
 foreach ($generated in $generatedHashes) {
     if ((Get-FileHash (Join-Path $output $generated.path)).Hash -cne $generated.sha256) { throw 'Generated input changed during compilation.' }
 }
-$installer = Join-Path $output 'Dororong-Setup-0.1.0-win-x64.exe'
+$installer = Join-Path $output 'Doros-on-my-desktop-Setup-0.1.1-win-x64.exe'
 $installerInfo = (Get-Item -LiteralPath $installer).VersionInfo
-if ($installerInfo.ProductVersion.Trim() -cne '0.1.0' -or $installerInfo.CompanyName.Trim() -cne 'JOEWRKS') { throw 'Installer metadata parity failed.' }
+if ($installerInfo.ProductVersion.Trim() -cne '0.1.1' -or $installerInfo.CompanyName.Trim() -cne 'JOEWRKS') { throw 'Installer metadata parity failed.' }
 [pscustomobject]@{
-    schemaVersion=1; createdUtc=[datetime]::UtcNow.ToString('o'); version='0.1.0'
+    schemaVersion=1; createdUtc=[datetime]::UtcNow.ToString('o'); version='0.1.1'
     packageRoot=$payload.Root; archivePath=$archive; archiveSha256=$archiveHash
     payloadFileCount=$payload.Files.Count; stagedPayloadRoot=$stage; payloadParity='verified before and after compile'
     compilerPath=$compiler; compilerVersion=$compilerVersion; compilerSha256=$compilerHash

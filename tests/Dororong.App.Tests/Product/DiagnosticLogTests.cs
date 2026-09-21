@@ -17,8 +17,8 @@ public sealed class DiagnosticLogTests
         var fileVersion = FileVersionInfo.GetVersionInfo(assembly.Location);
 
         Assert.Equal("Dororong.App", assembly.GetName().Name);
-        Assert.Equal("도로롱 (Dororong)", assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title);
-        Assert.Equal("도로롱 (Dororong)", fileVersion.FileDescription);
+        Assert.Equal("도로롱이 내 컴에?!", assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title);
+        Assert.Equal("도로롱이 내 컴에?!", fileVersion.FileDescription);
         Assert.Equal("Dororong.App.dll", fileVersion.InternalName);
         Assert.Equal("Dororong.App.dll", fileVersion.OriginalFilename);
     }
@@ -26,8 +26,8 @@ public sealed class DiagnosticLogTests
     [Fact]
     public void Product_identity_uses_approved_values_and_a_version_independent_current_user_lease()
     {
-        Assert.Equal("도로롱 (Dororong)", ProductIdentity.DisplayName);
-        Assert.Equal("0.1.0", ProductIdentity.Version);
+        Assert.Equal("도로롱이 내 컴에?!", ProductIdentity.DisplayName);
+        Assert.Equal("0.1.1", ProductIdentity.Version);
         Assert.Equal("JOEWRKS", ProductIdentity.Publisher);
         Assert.Equal("Dororong.exe", ProductIdentity.ExecutableName);
         Assert.Equal(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -58,7 +58,7 @@ public sealed class DiagnosticLogTests
         Assert.Equal(new[] { "event", "exceptionType", "hresult", "method", "pid", "timestamp", "version" }, fields);
         Assert.Equal("LoopFailure", record.RootElement.GetProperty("event").GetString());
         Assert.Equal(Environment.ProcessId, record.RootElement.GetProperty("pid").GetInt32());
-        Assert.Equal("0.1.0", record.RootElement.GetProperty("version").GetString());
+        Assert.Equal("0.1.1", record.RootElement.GetProperty("version").GetString());
         Assert.Equal(typeof(InvalidOperationException).FullName,
             record.RootElement.GetProperty("exceptionType").GetString());
         Assert.Equal(error.HResult, record.RootElement.GetProperty("hresult").GetInt32());

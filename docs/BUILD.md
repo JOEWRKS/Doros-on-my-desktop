@@ -32,7 +32,7 @@ Choose a new, unused candidate directory.
 
 ```powershell
 pwsh -NoProfile -File tools/Publish-Product.ps1 -OutputPath artifacts/product-shell/candidate-NEW
-pwsh -NoProfile -File tests/Dororong.ProductPackage.Tests.ps1 -PackagePath artifacts/product-shell/candidate-NEW/runtime -ArchivePath artifacts/product-shell/candidate-NEW/Dororong-win-x64.zip
+pwsh -NoProfile -File tests/Dororong.ProductPackage.Tests.ps1 -PackagePath artifacts/product-shell/candidate-NEW/runtime -ArchivePath artifacts/product-shell/candidate-NEW/Doros-on-my-desktop-Portable-0.1.1-win-x64.zip
 ```
 
 The complete runtime folder is required; distributing only the EXE will not work.
@@ -40,10 +40,12 @@ Runtime and native host versions are pinned to 8.0.31 by the packaging tools.
 
 ## Installer and verification
 
-The latest locally verified candidate is `candidate-20260914-idle-blink-01`.
-See [delivery evidence](verification/2026-09-14-idle-blink-rump.md) for hashes,
-test counts and installed update/startup results. Local `artifacts/` outputs
-are intentionally not committed and are not downloadable release assets.
+The 0.1.1 rebrand candidate is `candidate-20260921-rebrand-01`.
+See [release verification](verification/2026-09-21-rebrand-release.md) for hashes
+and the exact acceptance coverage. Local `artifacts/` outputs are intentionally
+not committed. End users should download the Setup EXE from
+[GitHub Releases](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.1),
+not GitHub's source-code ZIP.
 
 Installer builds require the verified payload archive and pinned Inno Setup
 compiler. Existing toolchain/payload paths are local prerequisites, not files
@@ -51,7 +53,7 @@ included by cloning this repository. The builder pins the payload SHA256 and
 refuses an existing output directory.
 
 ```powershell
-pwsh -NoProfile -File tools/Build-Installer.ps1 -PackagePath artifacts/product-shell/candidate-20260914-idle-blink-01/runtime -ArchivePath artifacts/product-shell/candidate-20260914-idle-blink-01/Dororong-win-x64.zip -CompilerPath artifacts/installer/toolchain-inno-7.1.0-x64-20260912-02/ISCC.exe -OutputPath artifacts/installer/candidate-NEW
+pwsh -NoProfile -File tools/Build-Installer.ps1 -PackagePath artifacts/product-shell/candidate-20260921-rebrand-02/runtime -ArchivePath artifacts/product-shell/candidate-20260921-rebrand-02/Doros-on-my-desktop-Portable-0.1.1-win-x64.zip -CompilerPath artifacts/installer/toolchain-inno-7.1.0-x64-20260912-02/ISCC.exe -OutputPath artifacts/installer/candidate-NEW
 ```
 
 Exit the pet before package/installer validation: it includes a strict
@@ -66,13 +68,15 @@ older candidate pins and do not validate the current build.
   are opt-in. Silent installation does not launch the pet.
 - Exit normally before replacing or uninstalling. Retain the previous portable
   folder for rollback. Portable copies are not imported or removed by the installer.
-- Same-version installed update, payload parity, original-data preservation,
-  startup and duplicate prevention were verified for the latest candidate.
-- The installer is unsigned. Clean-machine, real cross-version and failure-path
+- Display name: `도로롱이 내 컴에?!` / `Doro's on my desktop?!`.
+  Shortcut: `도로롱이 내 컴에!` (Windows forbids `?` in filenames).
+  Internal executable, AppId and data paths retain the old Dororong identity
+  so existing installations are recognized rather than duplicated.
+- The installer is unsigned. Clean-machine and broader failure-path
   acceptance, mixed-DPI/live Windows coverage and rights review remain release gates.
   No power-loss rollback guarantee is made.
 - For support, provide the candidate hash, Windows version, reproduction steps
   and reviewed logs. Installer logging: `/LOG="C:\your-folder\dororong-setup.log"`.
 
 설치·테스트 성공은 모든 Windows 환경의 동작이나 캐릭터 재배포 권한을 보장하지 않습니다.
-공개 배포 전 남은 검증과 권리 확인이 필요합니다.
+미리보기 배포이며 남은 검증과 권리 확인이 필요합니다.

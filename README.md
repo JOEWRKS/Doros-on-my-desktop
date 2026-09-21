@@ -1,4 +1,21 @@
-# Doropet · 도로롱
+# 도로롱이 내 컴에?! · Doro's on my desktop?!
+
+## Download · 다운로드
+
+### [Windows 설치 파일 받기 · Download Windows installer](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/v0.1.1/Doros-on-my-desktop-Setup-0.1.1-win-x64.exe)
+
+**Windows x64 · 0.1.1 preview · .NET runtime included / 런타임 포함**
+
+다운로드한 `Doros-on-my-desktop-Setup-0.1.1-win-x64.exe`를 실행해 설치한 뒤, 시작 메뉴의 **도로롱이 내 컴에!**를 실행하세요. 관리자 권한이나 개발 도구는 필요 없습니다.
+
+Run the downloaded installer, then open **도로롱이 내 컴에!** from the Start menu. No administrator rights or developer tools are required.
+
+> **Code → Download ZIP**과 **Source code (zip)**은 개발용 소스이며 설치 파일이 아닙니다. 이미 받았다면 위 설치 파일만 다시 받으세요.
+> **Code → Download ZIP** and **Source code (zip)** contain source code, not the installer. Use the download link above to install the pet.
+
+[Release notes & checksums · 변경 사항·체크섬](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.1)
+
+Unsigned preview: Windows may show an unrecognized-publisher warning. Clean-PC compatibility has not been certified. / 코드 서명이 없는 미리보기 버전으로 Windows 경고가 표시될 수 있으며, 모든 PC에서의 호환성을 보증하지 않습니다.
 
 A small Windows desktop pet based on Dororong (Doro), a fan character derived from **GODDESS OF VICTORY: NIKKE**.
 
@@ -16,17 +33,17 @@ A small Windows desktop pet based on Dororong (Doro), a fan character derived fr
 
 ### 사용법
 
-1. **Windows x64**에서 설치 파일을 실행하거나, 포터블 ZIP 전체를 풀고 `Dororong.exe`를 실행합니다. 배포용 패키지는 .NET 런타임을 포함합니다.
+1. 위 **Windows 설치 파일 받기**로 설치한 뒤 시작 메뉴에서 실행합니다.
 2. 머리를 드래그해 이동합니다. 가장자리에서 앞발 준비 동작이 보일 때 놓으면 매달립니다.
 3. 볼은 드래그하면 제자리에서 늘어나고 놓으면 복원됩니다. 매달린 앞발은 클릭하거나 당길 수 있습니다.
 4. 마우스를 가까이 두면 쫓아보고, 더 가까운 범위에 머물면 폴짝 뜁니다.
 5. 캐릭터 우클릭 → **앉아 / Exit**, 트레이 우클릭 → **로그 폴더 열기 / 종료**를 사용합니다.
 
-설치는 관리자 권한 없이 사용자 계정에만 적용됩니다. 업데이트 전에는 트레이에서 종료하세요. 제거는 Windows 앱 목록의 **도로롱 (Dororong)**에서 합니다.
+설치는 현재 사용자 계정에만 적용됩니다. 업데이트 전에는 트레이에서 종료하세요. 제거는 Windows 앱 목록의 **도로롱이 내 컴에?!**에서 합니다. 파일·바로가기 이름에서는 Windows 제한 때문에 `?`를 생략합니다.
 
 ### 상태
 
-현재 **0.1.0 개발 빌드**입니다. 설치본 교체와 실행을 검증했지만, 코드 서명·깨끗한 PC·버전 간 업그레이드 검증 및 캐릭터 배포 권한 확인은 남아 있습니다. 자동 업데이트·자동 시작·계정·데이터 전송 기능은 없습니다.
+현재 **0.1.1 미리보기**입니다. 검증 범위는 릴리스 노트에 기록합니다. 코드 서명·깨끗한 PC에서의 검증 및 캐릭터 배포 권한 확인은 남아 있습니다. 자동 업데이트·자동 시작·계정·데이터 전송 기능은 없습니다.
 
 ## English
 
@@ -40,17 +57,17 @@ A small Windows desktop pet based on Dororong (Doro), a fan character derived fr
 
 ### Usage
 
-1. On **Windows x64**, run the installer or extract the entire portable ZIP and launch `Dororong.exe`. Packaged builds include the .NET runtime.
+1. Use **Download Windows installer** above, install it, then launch it from the Start menu.
 2. Drag the head to move the pet. Release near a compatible edge when the front-paw readiness animation appears to hang.
 3. Pull a cheek to stretch it in place; release to spring back. Click or drag a hanging front paw to interact with that side.
 4. Move the pointer nearby to attract attention; linger closer to trigger a short pounce.
 5. Right-click the character for **앉아 (Sit) / Exit**, or the tray icon for **로그 폴더 열기 (Open logs) / 종료 (Exit)**.
 
-Installation is per-user and requires no administrator rights. Exit through the tray before updating. Uninstall **도로롱 (Dororong)** through Windows' app list.
+Installation is per-user. Exit through the tray before updating. Uninstall **도로롱이 내 컴에?!** through Windows' app list. Filenames and shortcuts omit `?` because Windows does not allow it.
 
 ### Status
 
-This is a **0.1.0 development build**. Installed updates and startup have been checked; code signing, clean-machine and cross-version acceptance, and character distribution permissions remain pending. No auto-update, autostart, accounts or data upload.
+This is a **0.1.1 preview**. The release notes describe verification coverage. Code signing, clean-machine acceptance and character distribution permissions remain pending. No auto-update, autostart, accounts or data upload.
 
 ## Structure · 구성
 

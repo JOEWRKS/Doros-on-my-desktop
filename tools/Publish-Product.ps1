@@ -60,7 +60,7 @@ Assert-True (Test-Path -LiteralPath $referenceCorePath -PathType Leaf) `
 $referenceAppDll = (Resolve-Path -LiteralPath $referenceAppPath).Path
 $referenceCoreDll = (Resolve-Path -LiteralPath $referenceCorePath).Path
 $runtimePath = Join-Path $candidateRoot 'runtime'
-$archivePath = Join-Path $candidateRoot 'Dororong-win-x64.zip'
+$archivePath = Join-Path $candidateRoot 'Doros-on-my-desktop-Portable-0.1.1-win-x64.zip'
 
 New-Item -ItemType Directory -Path $candidateRoot | Out-Null
 
@@ -146,6 +146,17 @@ finally
 Move-Item -LiteralPath $developmentApphost -Destination $productApphost
 Assert-True (Test-Path -LiteralPath $productApphost -PathType Leaf) 'Product apphost rename did not create Dororong.exe.'
 Assert-True (-not (Test-Path -LiteralPath $developmentApphost)) 'Development apphost remains after product rename.'
+
+# Ship the user guide and the actual licenses of the bundled runtime packs.
+Copy-Item -LiteralPath (Join-Path $repositoryRoot 'docs/PACKAGE-README.txt') -Destination (Join-Path $resolvedRuntime 'README.txt')
+Copy-Item -LiteralPath (Join-Path $repositoryRoot 'LICENSE') -Destination (Join-Path $resolvedRuntime 'LICENSE.txt')
+$licenses = Join-Path $resolvedRuntime 'licenses'
+New-Item -ItemType Directory -Path $licenses | Out-Null
+$corePack = Join-Path (Get-NuGetRoot) "microsoft.netcore.app.runtime.win-x64/$RuntimeVersion"
+$desktopPack = Join-Path (Get-NuGetRoot) "microsoft.windowsdesktop.app.runtime.win-x64/$RuntimeVersion"
+Copy-Item -LiteralPath (Join-Path $corePack 'LICENSE.TXT') -Destination (Join-Path $licenses 'NET-LICENSE.txt')
+Copy-Item -LiteralPath (Join-Path $corePack 'THIRD-PARTY-NOTICES.TXT') -Destination (Join-Path $licenses 'NET-THIRD-PARTY-NOTICES.txt')
+Copy-Item -LiteralPath (Join-Path $desktopPack 'LICENSE') -Destination (Join-Path $licenses 'WINDOWS-DESKTOP-LICENSE.txt')
 
 Compress-Archive -Path (Join-Path $resolvedRuntime '*') -DestinationPath $archivePath -CompressionLevel Optimal
 $archiveHash = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash

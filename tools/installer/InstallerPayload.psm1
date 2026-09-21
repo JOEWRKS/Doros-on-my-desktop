@@ -141,9 +141,9 @@ function Get-InstallerPayload
     $executable = Get-Item -LiteralPath (Join-Path $root 'Dororong.exe')
     $version = [string]$executable.VersionInfo.ProductVersion
     $fileVersion = [string]$executable.VersionInfo.FileVersion
-    if ($version -ne '0.1.0')
+    if ($version -ne '0.1.1')
     { throw "Payload Dororong.exe has unsupported product version '$version'." }
-    if ($fileVersion -ne '0.1.0.0')
+    if ($fileVersion -ne '0.1.1.0')
     { throw "Payload Dororong.exe has unsupported file version '$fileVersion'." }
 
     return [pscustomobject]@{

@@ -50,13 +50,13 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Assets\dororong.ico</ApplicationIcon>
-    <AssemblyTitle>도로롱 (Dororong)</AssemblyTitle>
-    <Product>도로롱 (Dororong)</Product>
+    <AssemblyTitle>도로롱이 내 컴에?!</AssemblyTitle>
+    <Product>도로롱이 내 컴에?!</Product>
     <Company>JOEWRKS</Company>
-    <Version>0.1.0</Version>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
-    <InformationalVersion>0.1.0</InformationalVersion>
+    <Version>0.1.1</Version>
+    <AssemblyVersion>0.1.1.0</AssemblyVersion>
+    <FileVersion>0.1.1.0</FileVersion>
+    <InformationalVersion>0.1.1</InformationalVersion>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 

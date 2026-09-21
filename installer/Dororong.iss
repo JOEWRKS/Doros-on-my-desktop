@@ -1,8 +1,8 @@
 #ifndef BuildRoot
   #error Build only through tools/Build-Installer.ps1
 #endif
-#define ProductVersion "0.1.0"
-#define ProductName "도로롱 (Dororong)"
+#define ProductVersion "0.1.1"
+#define ProductName "도로롱이 내 컴에?!"
 #define ProductId "{928A9BC7-3A87-4C52-9161-1E5D08DB410A}"
 
 [Setup]
@@ -10,10 +10,10 @@ AppId={{928A9BC7-3A87-4C52-9161-1E5D08DB410A}
 AppName={#ProductName}
 AppVersion={#ProductVersion}
 AppPublisher=JOEWRKS
-VersionInfoVersion=0.1.0.0
+VersionInfoVersion=0.1.1.0
 VersionInfoProductVersion={#ProductVersion}
 VersionInfoCompany=JOEWRKS
-VersionInfoDescription=도로롱 사용자별 설치기
+VersionInfoDescription=도로롱이 내 컴에?! 설치
 PrivilegesRequired=lowest
 SetupArchitecture=x64
 ArchitecturesAllowed=x64compatible
@@ -34,7 +34,7 @@ RestartApplications=no
 RestartIfNeededByRun=no
 AlwaysRestart=no
 OutputDir={#BuildRoot}
-OutputBaseFilename=Dororong-Setup-0.1.0-win-x64
+OutputBaseFilename=Doros-on-my-desktop-Setup-0.1.1-win-x64
 Compression=lzma2/normal
 SolidCompression=yes
 WizardStyle=modern
@@ -55,11 +55,11 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; Flags: unchecked
 Name: "{app}"; Flags: uninsalwaysuninstall; Check: InstallerOwnsRoot
 
 [Icons]
-Name: "{userprograms}\도로롱"; Filename: "{app}\Dororong.exe"; WorkingDir: "{app}"
-Name: "{userdesktop}\도로롱"; Filename: "{app}\Dororong.exe"; WorkingDir: "{app}"; Tasks: desktopicon
+Name: "{userprograms}\도로롱이 내 컴에!"; Filename: "{app}\Dororong.exe"; WorkingDir: "{app}"
+Name: "{userdesktop}\도로롱이 내 컴에!"; Filename: "{app}\Dororong.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\Dororong.exe"; Description: "{cm:LaunchProgram,도로롱}"; Flags: nowait postinstall skipifsilent unchecked; Check: InstallationVerified
+Filename: "{app}\Dororong.exe"; Description: "{cm:LaunchProgram,도로롱이 내 컴에?!}"; Flags: nowait postinstall skipifsilent unchecked; Check: InstallationVerified
 
 [Code]
 #include "InstallerPolicy.iss"
@@ -68,8 +68,10 @@ Filename: "{app}\Dororong.exe"; Description: "{cm:LaunchProgram,도로롱}"; Fla
 const
   RegistrationKey = 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductId}_is1';
   OwnershipFile = 'dororong-owned-files.txt';
-  ShortcutFile = '도로롱.lnk';
+  ShortcutFile = '도로롱이 내 컴에!.lnk';
+  LegacyShortcutFile = '도로롱.lnk';
 var
+  PreviousShortcutFile: String;
   OperationGate: THandle;
   Incoming, IncomingHashes, Previous: TArrayOfString;
   InstallStarted, InstallVerified: Boolean;
@@ -133,7 +135,10 @@ begin
     if not RegQueryStringValue(HKCU64, RegistrationKey, 'InstallLocation', Location) then Exit;
     if not RegQueryStringValue(HKCU64, RegistrationKey, 'DisplayName', Name) then Exit;
     if not RegQueryStringValue(HKCU64, RegistrationKey, 'Publisher', Publisher) then Exit;
-    if not SamePath(Location, FixedRoot) or (Name <> '{#ProductName}') or (Publisher <> 'JOEWRKS') then Exit;
+    if not SamePath(Location, FixedRoot) or (Publisher <> 'JOEWRKS') then Exit;
+    { Only the known 0.1.0 product may migrate its old display name. }
+    if (Name <> '{#ProductName}') and
+      not ((Name = '도로롱 (Dororong)') and (Version = '0.1.0')) then Exit;
     if not VersionAllowed('{#ProductVersion}', Version) then begin
       Reason := 'Downgrade or malformed installed version refused. Uninstall the newer product first.'; Exit;
     end;
@@ -154,11 +159,14 @@ begin
 end;
 
 function ReadShortcutOwnership(var Reason: String): Boolean;
-var Value: String;
+var Value, Name: String;
 begin
   Result := False;
   DesktopPreviouslyOwned := False;
+  PreviousShortcutFile := ShortcutFile;
   if RegKeyExists(HKCU64, RegistrationKey) then begin
+    if not RegQueryStringValue(HKCU64, RegistrationKey, 'DisplayName', Name) then Exit;
+    if Name = '도로롱 (Dororong)' then PreviousShortcutFile := LegacyShortcutFile;
     { GetPreviousData is supported by both Setup and Uninstall in pinned Inno 7.1. }
     Value := GetPreviousData('DesktopIconOwned', '');
     if (Value <> '0') and (Value <> '1') then begin
@@ -182,12 +190,14 @@ begin
   if not PreflightOwnedFiles(FixedRoot, Previous, Reason) then Exit;
   if not PreflightOwnedFiles(FixedRoot, Incoming, Reason) then Exit;
   if not PreflightOwnedShortcuts(ExpandConstant('{userprograms}'), ExpandConstant('{userdesktop}'),
-    ShortcutFile, DesktopPreviouslyOwned or DesktopWillBeOwned, Reason) then Exit;
-  if not RegKeyExists(HKCU64, RegistrationKey) and
+    PreviousShortcutFile, DesktopPreviouslyOwned, Reason) then Exit;
+  if not PreflightOwnedShortcuts(ExpandConstant('{userprograms}'), ExpandConstant('{userdesktop}'),
+    ShortcutFile, DesktopWillBeOwned, Reason) then Exit;
+  if ((PreviousShortcutFile <> ShortcutFile) or not RegKeyExists(HKCU64, RegistrationKey)) and
     FileExists(ExpandConstant('{userprograms}\') + ShortcutFile) then begin
     Reason := 'An unowned file occupies the Dororong Start menu shortcut path.'; Exit;
   end;
-  if DesktopWillBeOwned and not DesktopPreviouslyOwned and
+  if DesktopWillBeOwned and ((PreviousShortcutFile <> ShortcutFile) or not DesktopPreviouslyOwned) and
     FileExists(ExpandConstant('{userdesktop}\') + ShortcutFile) then begin
     Reason := 'An unowned file occupies the Dororong desktop shortcut path.'; Exit;
   end;
@@ -270,7 +280,7 @@ begin
       a successfully created link. A deselected desktop link stays removed. }
     if RegKeyExists(HKCU64, RegistrationKey) then begin
       if not RemoveOwnedShortcuts(ExpandConstant('{userprograms}'), ExpandConstant('{userdesktop}'),
-        ShortcutFile, DesktopPreviouslyOwned, Reason) then RaiseException(Reason);
+        PreviousShortcutFile, DesktopPreviouslyOwned, Reason) then RaiseException(Reason);
     end;
     if not RemoveOwnedFiles(FixedRoot, Obsolete, Reason) then RaiseException(Reason);
   end;

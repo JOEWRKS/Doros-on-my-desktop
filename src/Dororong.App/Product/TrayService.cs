@@ -55,7 +55,7 @@ internal sealed class TrayService : IDisposable
         {
             ArgumentNullException.ThrowIfNull(openLogs);
             ArgumentNullException.ThrowIfNull(exit);
-            versionItem = new FormsToolStripMenuItem($"도로롱 {ProductIdentity.Version}")
+            versionItem = new FormsToolStripMenuItem($"{ProductIdentity.DisplayName} {ProductIdentity.Version}")
             {
                 Enabled = false
             };

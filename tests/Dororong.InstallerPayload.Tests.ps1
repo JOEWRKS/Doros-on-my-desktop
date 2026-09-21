@@ -43,7 +43,7 @@ $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $modulePath = Join-Path $repositoryRoot 'tools/installer/InstallerPayload.psm1'
 $prepareScript = Join-Path $repositoryRoot 'tools/installer/Prepare-InnoSetup.ps1'
 $installerArtifacts = Join-Path $repositoryRoot 'artifacts/installer'
-$candidateRuntime = Join-Path $repositoryRoot 'artifacts/product-shell/candidate-20260914-idle-blink-01/runtime'
+$candidateRuntime = Join-Path $repositoryRoot 'artifacts/product-shell/candidate-20260921-rebrand-02/runtime'
 $testRoot = Join-Path $installerArtifacts ('.task-1001-test-' + [Guid]::NewGuid().ToString('N'))
 $sentinelRoot = $null
 $toolchainSentinel = $null
@@ -74,8 +74,8 @@ try
     $inventory = Get-InstallerPayload -PackagePath $package
     $after = @(Get-TreeState $package)
 
-    Assert-Equal '0.1.0' $inventory.Version 'The payload product version changed.'
-    Assert-Equal '0.1.0.0' $inventory.FileVersion 'The payload file version changed.'
+    Assert-Equal '0.1.1' $inventory.Version 'The payload product version changed.'
+    Assert-Equal '0.1.1.0' $inventory.FileVersion 'The payload file version changed.'
     Assert-Equal ([IO.Path]::GetFullPath($package)) $inventory.Root 'The payload root was not canonicalized.'
     Assert-Equal ($before -join "`n") ($after -join "`n") 'Inventory modified its input tree.'
 
@@ -95,8 +95,8 @@ try
     Assert-True (-not ($relativePaths -match '\\')) 'A payload relative path used a backslash.'
 
     $preservedInventory = Get-InstallerPayload -PackagePath $candidateRuntime
-    Assert-Equal '0.1.0' $preservedInventory.Version 'Actual preserved candidate product metadata was not read.'
-    Assert-Equal '0.1.0.0' $preservedInventory.FileVersion 'Actual preserved candidate file metadata was not read.'
+    Assert-Equal '0.1.1' $preservedInventory.Version 'Actual preserved candidate product metadata was not read.'
+    Assert-Equal '0.1.1.0' $preservedInventory.FileVersion 'Actual preserved candidate file metadata was not read.'
     Assert-True (@($preservedInventory.Files).Count -gt 0) 'The actual preserved candidate produced an empty inventory.'
 
     Assert-ThrowsLike {
