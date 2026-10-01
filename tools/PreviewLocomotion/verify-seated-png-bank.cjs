@@ -4,7 +4,9 @@ const canvas=require(process.env.LOCOMOTION_CANVAS||path.join(process.env.USERPR
 (async()=>{
   const root=path.resolve(__dirname,'../..'),size=96*96*4;
   const bank=zlib.gunzipSync(fs.readFileSync(path.join(root,'src/Dororong.App/Assets/locomotion.pbgra.gz')));
-  assert.equal(bank.length,20+642*size);
+  const count=bank.readUInt32LE(16),eyeFrames=count/2;
+  assert.ok(count===642||count===772,'unsupported locomotion frame count');
+  assert.equal(bank.length,20+count*size);
   const source=await canvas.loadImage(path.join(__dirname,'assets/seated-final-10-2.png'));
   const registered=canvas.createCanvas(96,96);registered.getContext('2d').drawImage(source,3,-12);
   const closed=await canvas.loadImage(path.join(root,'src/Dororong.App/Assets/dororong-closed-eyes.png'));
@@ -15,16 +17,17 @@ const canvas=require(process.env.LOCOMOTION_CANVAS||path.join(process.env.USERPR
     const native=canvas.createCanvas(96,96),nc=native.getContext('2d');nc.drawImage(render,32,32,192,192,0,0,96,96);
     const rgba=nc.getImageData(0,0,96,96).data,expected=Buffer.alloc(size);
     for(let i=0;i<size;i+=4){const a=rgba[i+3];expected[i+3]=a;for(let c=0;c<3;c++)expected[i+c]=Math.round(rgba[i+2-c]*a/255);}
-    const frame=blink?385:64,actual=bank.subarray(20+frame*size,20+(frame+1)*size);
+    const frame=(blink?eyeFrames:0)+64,actual=bank.subarray(20+frame*size,20+(frame+1)*size);
     assert.ok(actual.equals(expected),`seated ${blink?'closed':'open'} endpoint does not match transparent PNG export`);
     const i=(24*96+35)*4;
     assert.ok(actual[i+3]<110&&actual[i]<35,'white JPG halo remains at upper hair fringe');
   }
   if(process.argv[2]){
-    const before=zlib.gunzipSync(fs.readFileSync(process.argv[2]));assert.equal(before.length,bank.length);
+    const before=zlib.gunzipSync(fs.readFileSync(process.argv[2])),beforeEye=before.readUInt32LE(16)/2;
     let unchanged=0;
-    for(let frame=0;frame<642;frame++)if(frame%321===0||frame%321>=65){
-      const o=20+frame*size;assert.ok(bank.subarray(o,o+size).equals(before.subarray(o,o+size)),`unrelated standing/walking frame ${frame} changed`);unchanged++;
+    for(let eye=0;eye<2;eye++)for(let frame=0;frame<321;frame++)if(frame===0||frame>=65){
+      const o=20+(eye*eyeFrames+frame)*size,b=20+(eye*beforeEye+frame)*size;
+      assert.ok(bank.subarray(o,o+size).equals(before.subarray(b,b+size)),`unrelated standing/walking frame ${eye}/${frame} changed`);unchanged++;
     }
     console.log(`PASS: all ${unchanged} standing/walking frames byte-exact`);
     if(process.argv[3]){

@@ -465,8 +465,8 @@ Assert-Equal '도로롱이 내 컴에?!' $version.FileDescription 'Product execu
 Assert-Equal 'Dororong.App.dll' $version.InternalName 'Product executable internal name changed.'
 Assert-Equal 'Dororong.App.dll' $version.OriginalFilename 'Product executable original filename changed.'
 Assert-Equal 'JOEWRKS' $version.CompanyName 'Product metadata company changed.'
-Assert-Equal '0.1.2' $version.ProductVersion 'Product metadata version changed.'
-Assert-Equal '0.1.2.0' $version.FileVersion 'Product file version changed.'
+Assert-Equal '0.1.3' $version.ProductVersion 'Product metadata version changed.'
+Assert-Equal '0.1.3.0' $version.FileVersion 'Product file version changed.'
 
 Add-Type -AssemblyName System.Drawing.Common
 $icon = [Drawing.Icon]::ExtractAssociatedIcon($apphost)

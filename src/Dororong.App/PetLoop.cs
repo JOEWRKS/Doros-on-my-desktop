@@ -425,6 +425,7 @@ internal sealed class PetLoop : IDisposable
             _host.SetLocomotionBlocked?.Invoke(platforms?.SuspendsAutonomousMotion ?? false);
             _host.Render(current, directCurrent, delta);
             platforms?.AfterRender(platformPose, targetSole);
+            _host.MaintainWindowLayer?.Invoke(elapsed);
             if (directCurrent.IsPerchReady ||
                 platforms?.PerchPhase is EdgePerchPhase.Entering or EdgePerchPhase.Attached)
                 _host.MaintainPerchLayer?.Invoke();
@@ -567,6 +568,7 @@ internal sealed class PetLoop : IDisposable
             ?? throw new InvalidOperationException("The WPF window source is unavailable.");
         var stopwatch = new Stopwatch();
         var viewport = new PetWindowViewport(window, presenter);
+        var windowLayer = new WindowLayerGuard();
         var dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal, window.Dispatcher)
         {
             Interval = TickInterval
@@ -597,6 +599,7 @@ internal sealed class PetLoop : IDisposable
             presenter.RenderDesktop)
         {
             MaintainPerchLayer = () => PerchTaskbarLayerGuard.EnsureAboveOverlappingTaskbar(source.Handle),
+            MaintainWindowLayer = elapsed => windowLayer.Maintain(source.Handle, elapsed),
             HoldLocomotionWalk = presenter.HoldLocomotionWalk,
             SetLocomotionBlocked = presenter.SetLocomotionBlocked,
             SetSittingRequested = presenter.SetSittingRequested,

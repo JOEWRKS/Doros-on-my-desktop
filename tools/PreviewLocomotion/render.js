@@ -223,10 +223,14 @@
     }
     function render(p,{bodyOnly=false}={}){
       ctx.clearRect(0,0,256,256);
-      if((authored||finalBank)&&p.sit>0){
-        if(finalBank){const frame=Math.round(Math.max(0,Math.min(1,p.sit))*64);ctx.drawImage(finalBank,(frame%8)*256,Math.floor(frame/8)*256,256,256,0,0,256,256);}
-        else ctx.drawImage(authored.render(p.sit,2),32,32);
-        if(p.blink&&closed){ctx.save();ctx.beginPath();ctx.rect(72,114,58,42);ctx.clip();ctx.drawImage(closed,32,32,192,192);ctx.restore();}
+      if((authored||finalBank)&&(p.sit>0||p.rising)){
+        const rising=!!p.rising,time=rising?1-p.sit:p.sit;
+        if(finalBank){const frame=finalBank.height>2304&&rising?65+Math.round(time*64):Math.round(Math.max(0,Math.min(1,p.sit))*64);ctx.drawImage(finalBank,(frame%8)*256,Math.floor(frame/8)*256,256,256,0,0,256,256);}
+        else ctx.drawImage(authored.render(time,2,rising?'rise':'sit'),32,32);
+        if(p.blink&&closed){
+          const shift=root.seatingMotion?.pose(time,rising?'rise':'sit').head||[0,0];
+          ctx.save();ctx.translate(shift[0]*2,shift[1]*2);ctx.beginPath();ctx.rect(72,114,58,42);ctx.clip();ctx.drawImage(closed,32,32,192,192);ctx.restore();
+        }
         return surface;
       }
       // Exact standing endpoint uses the same authored bitmap path as the

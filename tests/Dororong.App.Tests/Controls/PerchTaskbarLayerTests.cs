@@ -11,6 +11,41 @@ namespace Dororong.App.Tests.Controls;
 
 public sealed class PerchTaskbarLayerTests
 {
+    [Fact]
+    public void Ordinary_window_order_is_repaired_after_native_topmost_is_lost() => CheekProductTests.Sta(() =>
+    {
+        using var h = new NativePair("DororongOrdinaryOccluder", overlap: true, ordinary: true);
+        h.LowerPet();
+        Assert.True(Above(h.Support, h.Pet));
+        Assert.Equal(0, NativeMethods.GetWindowLongPtr(h.Pet, -20).ToInt64() & 8);
+        var petBounds = Bounds(h.Pet); var supportBounds = Bounds(h.Support);
+        var foreground = Api.GetForegroundWindow();
+        var supportStyle = NativeMethods.GetWindowLongPtr(h.Support, -20);
+        h.MaintainOrdinary(1000);
+        Assert.True(Above(h.Pet, h.Support), "Actual order, not the style bit, must be restored.");
+        Assert.Equal(petBounds, Bounds(h.Pet)); Assert.Equal(supportBounds, Bounds(h.Support));
+        Assert.Equal(supportStyle, NativeMethods.GetWindowLongPtr(h.Support, -20));
+        Assert.Equal(foreground, Api.GetForegroundWindow());
+        Assert.Equal(1, h.PetPositionMessages);
+        h.MaintainOrdinary(1500); h.MaintainOrdinary(2000);
+        Assert.Equal(1, h.PetPositionMessages);
+        h.LowerPet();
+        h.MaintainOrdinary(2016);
+        Assert.True(Above(h.Support, h.Pet)); // No per-frame repair churn.
+        h.MaintainOrdinary(2500);
+        Assert.True(Above(h.Pet, h.Support));
+        Assert.Equal(foreground, Api.GetForegroundWindow());
+    });
+
+    [Fact]
+    public void General_layer_guard_does_not_compete_with_other_topmost_windows() => CheekProductTests.Sta(() =>
+    {
+        using var h = new NativePair("DororongOtherTopmost", overlap: true);
+        h.MaintainOrdinary(1000);
+        Assert.True(Above(h.Support, h.Pet));
+        Assert.Equal(0, h.PetPositionMessages);
+    });
+
     // Catches missing production wiring as well as a repair that changes focus,
     // geometry, styles, or repeatedly raises an already correctly ordered pet.
     [Theory]
@@ -81,7 +116,7 @@ public sealed class PerchTaskbarLayerTests
         internal nint Support { get; }
         internal int PetPositionMessages { get; private set; }
 
-        internal NativePair(string className, bool overlap)
+        internal NativePair(string className, bool overlap, bool ordinary = false)
         {
             _className = className;
             var wc = new Api.WndClass { Procedure = _procedure, Instance = Api.GetModuleHandleW(null), ClassName = className };
@@ -100,17 +135,32 @@ public sealed class PerchTaskbarLayerTests
             _host = (PetLoopHost)runtime.GetType().GetProperty("Host")!.GetValue(runtime)!;
             _window.UpdateLayout();
             var bounds = Bounds(Pet);
-            Support = Api.CreateWindowExW(0x08080088, className, "", 0x80000000,
+            Support = Api.CreateWindowExW(ordinary ? 0x08080080u : 0x08080088u, className, "", 0x80000000,
                 overlap ? bounds.Left : bounds.Right + 50, bounds.Top + 190, 336, 40,
                 0, 0, wc.Instance, 0);
             Assert.NotEqual(0, Support);
             Assert.True(Api.SetLayeredWindowAttributes(Support, 0, 0, 2));
             Api.ShowWindow(Support, 4);
-            NativeMethods.SetWindowPosChecked(Support, new(-1), 0, 0, 0, 0, 0x13);
+            NativeMethods.SetWindowPosChecked(Support, new(ordinary ? 0 : -1), 0, 0, 0, 0, 0x13);
             _source.AddHook(ObservePosition);
         }
 
         internal void Maintain() => _host.MaintainPerchLayer?.Invoke();
+
+        internal void MaintainOrdinary(double milliseconds)
+        {
+            var property = typeof(PetLoopHost).GetProperty("MaintainWindowLayer", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(property);
+            var maintain = Assert.IsType<Action<TimeSpan>>(property.GetValue(_host));
+            maintain(TimeSpan.FromMilliseconds(milliseconds));
+        }
+
+        internal void LowerPet()
+        {
+            NativeMethods.SetWindowPosChecked(Pet, new(-2), 0, 0, 0, 0, 0x213);
+            NativeMethods.SetWindowPosChecked(Support, 0, 0, 0, 0, 0, 0x213);
+            PetPositionMessages = 0;
+        }
 
         private nint ObservePosition(nint hwnd, int message, nint wParam, nint lParam, ref bool handled)
         {

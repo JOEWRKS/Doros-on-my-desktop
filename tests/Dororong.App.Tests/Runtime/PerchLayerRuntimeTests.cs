@@ -10,6 +10,20 @@ namespace Dororong.App.Tests.Runtime;
 public partial class PetLoopPlatformTests
 {
     [Fact]
+    public void Ordinary_layer_maintenance_runs_without_perching() => CheekProductTests.Sta(() =>
+    {
+        using var h = new Harness(realPresenter: true, perchEnabled: true);
+        var host = typeof(PetLoop).GetField("_host", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(h.Loop)!;
+        var property = typeof(PetLoopHost).GetProperty("MaintainWindowLayer", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(property);
+        var calls = 0;
+        property.SetValue(host, (Action<TimeSpan>)(_ => { Assert.False(h.Direct.IsPerchReady); calls++; }));
+        h.Start();
+        h.Tick(); h.Tick();
+        Assert.Equal(2, calls);
+    });
+
+    [Fact]
     public void Eligible_held_preview_maintains_taskbar_layer_after_render_and_stops_outside_range() => CheekProductTests.Sta(() =>
     {
         using var h = new Harness(realPresenter: true, perchEnabled: true);

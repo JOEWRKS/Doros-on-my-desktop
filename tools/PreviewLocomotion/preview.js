@@ -13,14 +13,18 @@
     ctx.save();ctx.translate(320+s.position*($('mirror').checked?-1:1),24);if(flip)ctx.scale(-1,1);ctx.translate(-128,0);
     ctx.imageSmoothingEnabled=true;
     if(original)ctx.drawImage(renderer.original,32,32,192,192);else ctx.drawImage(frame,0,0);
-    if(!original&&$('joints').checked){const p=rig.pose(s);ctx.fillStyle='#d55288';for(const leg of p.legs){ctx.beginPath();ctx.arc((leg.tip[0]+16)*2,(leg.tip[1]+16)*2,3,0,Math.PI*2);ctx.fill();}}
+    if(!original&&$('joints').checked){
+      const p=rig.pose(s),motion=seatingMotion.pose(p.rising?1-p.sit:p.sit,p.rising?'rise':'sit');
+      const feet=p.walk>0?p.legs.map(leg=>leg.tip):[...motion.frontFeet,...motion.hindFeet];
+      ctx.fillStyle='#d55288';for(const foot of feet){ctx.beginPath();ctx.arc((foot[0]+16)*2,(foot[1]+16)*2,3,0,Math.PI*2);ctx.fill();}
+    }
     ctx.restore();
   }
   function tick(now){
     const dt=Math.min(.05,(now-last)/1000);last=now;if(!paused)time+=dt*Number($('speed').value);
     const s=rig.scenario(time,mode),p=rig.pose(s);p.blink=time%3.7>3.47&&time%3.7<3.61;
     // Cache phase samples, not alpha crossfades between different silhouettes.
-    const key=[Math.round((s.distance%rig.cycle)*12),Math.round(s.walk*40),Math.round(s.sit*64),p.blink].join('/');
+    const key=[Math.round((s.distance%rig.cycle)*12),Math.round(s.walk*40),Math.round(s.sit*64),p.blink,p.rising].join('/');
     if(key!==lastRender){
       if(cache.has(key))frame=cache.get(key);else{
         const rendered=renderer.render(p),copy=document.createElement('canvas');copy.width=copy.height=256;copy.getContext('2d').drawImage(rendered,0,0);frame=copy;

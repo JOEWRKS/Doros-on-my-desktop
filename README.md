@@ -5,6 +5,10 @@ A Windows desktop pet based on the NIKKE-derived Dororong (Doro) fan character.
 
 ## 다운로드 · Download
 
+현재 저장소는 배포 권한 확인을 위해 비공개이며, v0.1.3은 로컬 검증본입니다.
+The repository is private pending distribution permission; v0.1.3 is a locally tested candidate.
+아래 링크는 보존된 이전 v0.1.2 파일입니다. / The link below is the preserved v0.1.2 installer.
+
 **[Windows 설치 파일 · Windows installer](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/v0.1.2/Doros-on-my-desktop-Setup-0.1.2-win-x64.exe)**
 
 Windows x64 · v0.1.2 Preview · 런타임 포함 / Runtime included · 관리자 권한 불필요 / No admin required
@@ -29,8 +33,8 @@ Install, then launch **도로롱이 내 컴에!** from the Start menu. Exit thro
 걷기·숨쉬기·눈 깜빡임·수면은 자동으로 재생됩니다. 제거는 Windows 앱 목록에서 가능합니다.
 Walking, breathing, blinking and sleeping are automatic. Uninstall through Windows' app list.
 
-**main 추가 기능:** 트레이 좌클릭 지원, 바깥 클릭·Esc로 닫기. 현재 공개 v0.1.2 설치 파일에는 좌클릭 지원이 포함되지 않았습니다.
-**Added on main:** left-click tray menu, dismissed by outside click or Esc. Left-click support is not included in the public v0.1.2 installer yet.
+**main / v0.1.3:** 트레이 좌클릭, 관절 기반 앉기·일어서기, 머리 선명도 개선, 일반 창 뒤로 밀림 복구. 이전 v0.1.2 설치 파일에는 포함되지 않습니다.
+**main / v0.1.3:** left-click tray menu, articulated sit/rise, sharper head rendering and window-layer recovery. Not included in the older v0.1.2 installer.
 
 ## 구성·개발 · Structure & development
 

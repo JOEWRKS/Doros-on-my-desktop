@@ -1,5 +1,9 @@
 # Build, test and package
 
+The working tree prepares **unpublished v0.1.3**. The public release remains
+v0.1.2; new publication is on hold for [rights clarification](RIGHTS-REVIEW.md).
+See the [other-environment checklist](ENVIRONMENT-TESTING.md) for manual acceptance.
+
 Run from the repository root on Windows x64 with a .NET 8-compatible SDK.
 Run build/test commands sequentially to avoid WPF assembly locks.
 저장소 루트에서 실행하며, WPF 파일 잠금 방지를 위해 빌드·검사는 순서대로 실행합니다.
@@ -32,7 +36,7 @@ Choose a new, unused candidate directory.
 
 ```powershell
 pwsh -NoProfile -File tools/Publish-Product.ps1 -OutputPath artifacts/product-shell/candidate-NEW
-pwsh -NoProfile -File tests/Dororong.ProductPackage.Tests.ps1 -PackagePath artifacts/product-shell/candidate-NEW/runtime -ArchivePath artifacts/product-shell/candidate-NEW/Doros-on-my-desktop-Portable-0.1.2-win-x64.zip
+pwsh -NoProfile -File tests/Dororong.ProductPackage.Tests.ps1 -PackagePath artifacts/product-shell/candidate-NEW/runtime -ArchivePath artifacts/product-shell/candidate-NEW/Doros-on-my-desktop-Portable-0.1.3-win-x64.zip
 ```
 
 The complete runtime folder is required; distributing only the EXE will not work.
@@ -47,7 +51,11 @@ Embedded character resources and all license notices remain included.
 
 ## Installer and verification
 
-The 0.1.2 candidate is `candidate-20260921-v012-01`.
+The historical public 0.1.2 candidate is `candidate-20260921-v012-01`.
+The current installed local 0.1.3 candidate is `candidate-20261002-window-layer-01`;
+see the [current verification record](../TASKS.md#ordinary-window-layer-recovery--2026-10-02).
+The earlier `candidate-20260921-v013-01` and its
+[verification report](verification/2026-09-21-v013-local-candidate.md) are historical.
 See [release verification](verification/2026-09-21-v012-release.md) for hashes
 and the exact acceptance coverage. Local `artifacts/` outputs are intentionally
 not committed. End users should download the Setup EXE from
@@ -60,10 +68,14 @@ included by cloning this repository. The builder pins the payload SHA256 and
 refuses an existing output directory.
 
 ```powershell
-pwsh -NoProfile -File tools/Build-Installer.ps1 -PackagePath artifacts/product-shell/candidate-20260921-v012-01/runtime -ArchivePath artifacts/product-shell/candidate-20260921-v012-01/Doros-on-my-desktop-Portable-0.1.2-win-x64.zip -CompilerPath C:/your-verified-toolchain/ISCC.exe -OutputPath artifacts/installer/candidate-NEW
+pwsh -NoProfile -File tools/Build-Installer.ps1 -PackagePath artifacts/product-shell/candidate-20260921-v013-01/runtime -ArchivePath artifacts/product-shell/candidate-20260921-v013-01/Doros-on-my-desktop-Portable-0.1.3-win-x64.zip -CompilerPath C:/your-verified-toolchain/ISCC.exe -OutputPath artifacts/installer/candidate-NEW
 ```
 
-The builder pins the verified 0.1.2 archive. Replace the compiler placeholder
+The tracked builder still pins the historical September21 candidate shown above;
+it does not silently package the newer October2 binaries. The current local installer
+used a separately hash-pinned builder retained with its local evidence. Before making
+a new distributable, validate the chosen archive and deliberately update the pin.
+Replace the compiler placeholder
 with your verified Inno Setup 7.1.0 path. An independently rebuilt archive is
 not automatically trusted: validate it and deliberately update the hash pin.
 The published v0.1.1 release remains available unchanged.

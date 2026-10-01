@@ -7,16 +7,20 @@ namespace Dororong.App.Controls;
 
 internal static class LocomotionFrames
 {
-    private const int EyeFrames = 65 + 8 * 32;
+    private const int EyeFrames = 65 + 8 * 32 + 65;
     internal static IReadOnlyList<BitmapSource> All { get; } = Load();
     private static readonly HashSet<BitmapSource> Frames = new(All);
 
     internal static bool Contains(object? frame) => frame is BitmapSource bitmap && Frames.Contains(bitmap);
 
-    internal static BitmapSource Sit(double amount, bool closed = false)
+    internal static BitmapSource Sit(double amount, bool closed = false, bool rising = false)
     {
         Validate(amount);
-        return All[(closed ? EyeFrames : 0) + (int)Math.Round(Math.Clamp(amount, 0, 1) * 64)];
+        var progress = Math.Clamp(amount, 0, 1);
+        // Shared endpoint objects also preserve frozen interaction captures.
+        if (rising && progress > 0 && progress < 1)
+            return All[(closed ? EyeFrames : 0) + 65 + 8 * 32 + (int)Math.Round((1-progress) * 64)];
+        return All[(closed ? EyeFrames : 0) + (int)Math.Round(progress * 64)];
     }
 
     internal static BitmapSource Walk(double amplitude, double distance, bool closed = false)
@@ -40,7 +44,7 @@ internal static class LocomotionFrames
             ?? throw new InvalidDataException("Missing approved locomotion bank.");
         using var gzip = new GZipStream(resource, CompressionMode.Decompress);
         using var reader = new BinaryReader(gzip);
-        if (new string(reader.ReadChars(4)) != "LOCO" || reader.ReadUInt32() != 1 ||
+        if (new string(reader.ReadChars(4)) != "LOCO" || reader.ReadUInt32() != 2 ||
             reader.ReadUInt32() != 96 || reader.ReadUInt32() != 96 || reader.ReadUInt32() != EyeFrames * 2)
             throw new InvalidDataException("Invalid locomotion bank geometry/version.");
         var frames = new BitmapSource[EyeFrames * 2];

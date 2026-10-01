@@ -5,12 +5,13 @@ const files={
   '/preview.js':['preview.js','text/javascript'],
   '/authored-sit.js':['authored-sit.js','text/javascript'],
   '/sit-correspondence.js':['sit-correspondence.js','text/javascript'],
+  '/seating-motion.js':['seating-motion.js','text/javascript'],
   '/contour.js':['../GenerateLayeredPull/contour.js','text/javascript'],
   '/canonical.png':['../../src/Dororong.App/Assets/dororong-canonical.png','image/png'],
   '/closed.png':['../../src/Dororong.App/Assets/dororong-closed-eyes.png','image/png'],
   '/sleep.png':['../../src/Dororong.App/Assets/dororong-sleep.png','image/png'],
   '/seated-final.png':['assets/seated-final-10-2.png','image/png'],
-  '/seated-bank.png':['assets/seated-final-10-2-bank.png','image/png']
+  '/seated-bank.png':['assets/seated-articulated-bank.png','image/png']
 };
 // Keep textures in the delivered document: detached/captured previews must not
 // resolve new root-relative Image requests against a different host.

@@ -37,7 +37,7 @@ public sealed class ManualSitLoopTests
     {
         using var h = new Harness(); h.Loop.Start(); h.Tick(23);
         var heldPosition = h.Position;
-        h.Sit(); h.Tick(7);
+        h.Sit(); h.Tick(11);
         Assert.Equal(heldPosition, h.Position);
         Assert.Same(LocomotionFrames.Sit(1), h.Image.Source);
         var frames = new HashSet<object>();
@@ -49,7 +49,7 @@ public sealed class ManualSitLoopTests
     [Fact]
     public void Mere_head_click_keeps_sitting_and_position_locked() => Controls.EdgePerchPresentationTests.Sta(() =>
     {
-        using var h = new Harness(); h.Loop.Start(); h.Sit(); h.Tick(7);
+        using var h = new Harness(); h.Loop.Start(); h.Sit(); h.Tick(11);
         var heldPosition = h.Position;
         h.PressHead(); h.Tick(); h.Down = false; h.Tick(25);
         Assert.Equal(heldPosition, h.Position);
@@ -59,7 +59,7 @@ public sealed class ManualSitLoopTests
     [Fact]
     public void Actual_head_drag_releases_hold_and_autonomous_walking_resumes() => Controls.EdgePerchPresentationTests.Sta(() =>
     {
-        using var h = new Harness(); h.Loop.Start(); h.Sit(); h.Tick(7);
+        using var h = new Harness(); h.Loop.Start(); h.Sit(); h.Tick(11);
         Assert.Same(LocomotionFrames.Sit(1), h.Image.Source);
         var heldPosition = h.Position;
         h.PressHead(); h.Tick();
@@ -75,7 +75,7 @@ public sealed class ManualSitLoopTests
     [Fact]
     public void Whole_paw_carry_releases_hold() => Controls.EdgePerchPresentationTests.Sta(() =>
     {
-        using var h = new Harness(); h.Loop.Start(); h.Sit(); h.Tick(7);
+        using var h = new Harness(); h.Loop.Start(); h.Sit(); h.Tick(11);
         var held = h.Position;
         h.PressPart(false); h.Tick();
         h.Pointer = new(true, h.Pointer.Position + new PointD(-60, -15)); h.Tick(10);
@@ -124,7 +124,7 @@ public sealed class ManualSitLoopTests
     [Fact]
     public void Local_cheek_tug_does_not_release_hold() => Controls.EdgePerchPresentationTests.Sta(() =>
     {
-        using var h = new Harness(); h.Loop.Start(); h.Sit(); h.Tick(7);
+        using var h = new Harness(); h.Loop.Start(); h.Sit(); h.Tick(11);
         var held = h.Position;
         h.PressPart(true); h.Tick();
         h.Pointer = new(true, h.Pointer.Position + new PointD(-10, 0)); h.Tick(10);

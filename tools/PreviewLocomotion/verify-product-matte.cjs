@@ -5,9 +5,14 @@ const current=!process.argv[2]||process.argv[2]==='-';
 const file=current?path.resolve(__dirname,'../../src/Dororong.App/Assets/locomotion.pbgra.gz'):process.argv[2];
 const raw=zlib.gunzipSync(fs.readFileSync(file)),frameSize=96*96*4;
 assert.equal(raw.toString('ascii',0,4),'LOCO');
-assert.deepEqual([4,8,12,16].map(i=>raw.readUInt32LE(i)),[1,96,96,642]);
-assert.equal(raw.length,20+642*frameSize);
-const edge=20+64*frameSize+(85*96+67)*4;
+const version=raw.readUInt32LE(4),count=raw.readUInt32LE(16),eyeFrames=count/2;
+assert.deepEqual([4,8,12,16].map(i=>raw.readUInt32LE(i)),version===2?[2,96,96,772]:[1,96,96,642]);
+assert.equal(raw.length,20+count*frameSize);
+const referenceParts=current&&JSON.parse(fs.readFileSync(path.join(__dirname,'product-manifest.json'),'utf8')).sitRender?.startsWith('reference-parts');
+// (67,85) is now legitimate seated rump artwork, not background. Check the
+// new exterior at (76,85); full native reference equality is checked by
+// verify-articulated-bank.cjs instead of requiring an old silhouette's alpha.
+const edge=20+64*frameSize+(85*96+(referenceParts?76:67))*4;
 // The old exported edge had Pbgra [149,149,149,195]: opaque white-matte
 // contamination survived the 2x bank -> native96 downsample.
 assert.ok(raw[edge+3]<130,`native seated outside edge retained excessive coverage: ${Array.from(raw.subarray(edge,edge+4))}`);
@@ -20,16 +25,19 @@ if(current){
   for(const [source,hash] of Object.entries(manifest.sources))assert.equal(sha(fs.readFileSync(path.join(__dirname,source))),hash,`stale source manifest: ${source}`);
 }
 if(process.argv[3]){
-  const before=zlib.gunzipSync(fs.readFileSync(process.argv[3]));assert.equal(raw.length,before.length);
+  const before=zlib.gunzipSync(fs.readFileSync(process.argv[3])),beforeEye=before.readUInt32LE(16)/2;
   let protectedPixels=0;
-  for(let frame=0;frame<642;frame++){
-    const offset=20+frame*frameSize,isSit=frame%321<=64;
-    if(!isSit||frame%321===0){assert.deepEqual(raw.subarray(offset,offset+frameSize),before.subarray(offset,offset+frameSize),`standing/walking frame ${frame} changed`);continue;}
+  for(let eye=0;eye<2;eye++)for(let frame=0;frame<321;frame++){
+    const offset=20+(eye*eyeFrames+frame)*frameSize,beforeOffset=20+(eye*beforeEye+frame)*frameSize,isSit=frame<=64;
+    if(!isSit||frame===0&&!referenceParts){assert.deepEqual(raw.subarray(offset,offset+frameSize),before.subarray(beforeOffset,beforeOffset+frameSize),`standing/walking frame ${eye}/${frame} changed`);continue;}
+    // v2 deliberately moves the head with the shoulder; fixed-coordinate head
+    // equality is the old morph's constraint, not an articulated motion gate.
+    if(version===2)continue;
     for(let y=0;y<96;y++)for(let x=0;x<96;x++)if(rig.headDistance(x+.5,y+.5)===0){
-      const i=offset+(y*96+x)*4;assert.deepEqual(raw.subarray(i,i+4),before.subarray(i,i+4),`protected head/ribbon changed in native frame ${frame} at ${x},${y}`);protectedPixels++;
+      const i=offset+(y*96+x)*4,j=beforeOffset+(y*96+x)*4;assert.deepEqual(raw.subarray(i,i+4),before.subarray(j,j+4),`protected head/ribbon changed in native frame ${frame} at ${x},${y}`);protectedPixels++;
     }
   }
-  console.log(`PASS: standing + all512 walking frames exact; ${protectedPixels} protected head/ribbon pixels exact across128 seated frames`);
+  console.log(`PASS: all512 walking frames exact${referenceParts?' (standing deliberately updated)':' + standing exact'}; ${protectedPixels} protected head/ribbon pixel comparisons`);
   if(process.argv[4]){
     const canvas=require(process.env.LOCOMOTION_CANVAS||path.join(process.env.USERPROFILE,'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/@napi-rs/canvas'));
     const out=path.resolve(process.argv[4]);fs.mkdirSync(out,{recursive:true});
@@ -45,4 +53,4 @@ if(process.argv[3]){
     fs.writeFileSync(path.join(out,'seated-native-before-after-black-white-4x.png'),sheet.toBuffer('image/png'));
   }
 }
-console.log(`PASS: native seated edge Pbgra ${Array.from(raw.subarray(edge,edge+4))}; valid642-frame bank`);
+console.log(`PASS: native seated edge Pbgra ${Array.from(raw.subarray(edge,edge+4))}; valid ${count}-frame bank`);

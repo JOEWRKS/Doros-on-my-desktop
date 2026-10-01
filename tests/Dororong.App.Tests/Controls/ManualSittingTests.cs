@@ -27,7 +27,7 @@ public sealed class ManualSittingTests
             presenter.RenderDesktop(new(mode == 1 ? PetState.Walk : PetState.Idle,
                 new(100, 100), FacingDirection.Right, (ms % 500) / 500d, false, null),
                 DirectInteractionSnapshot.None, TimeSpan.FromMilliseconds(20));
-            if (ms < 1000) continue; // Complete pose entry before inspecting full-frame banks.
+            if (ms < 1100) continue; // Complete the 1050ms entry before inspecting full-frame banks.
             var closed = mode == 0
                 ? ReferenceEquals(image.Source,UprightRumpSource.Standing(true))
                 : ReferenceEquals(image.Source, mode == 2 ? LocomotionFrames.Sit(1, true) : LocomotionFrames.Walk(1, 0, true));

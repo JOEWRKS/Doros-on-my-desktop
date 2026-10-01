@@ -60,7 +60,7 @@ Assert-True (Test-Path -LiteralPath $referenceCorePath -PathType Leaf) `
 $referenceAppDll = (Resolve-Path -LiteralPath $referenceAppPath).Path
 $referenceCoreDll = (Resolve-Path -LiteralPath $referenceCorePath).Path
 $runtimePath = Join-Path $candidateRoot 'runtime'
-$archivePath = Join-Path $candidateRoot 'Doros-on-my-desktop-Portable-0.1.2-win-x64.zip'
+$archivePath = Join-Path $candidateRoot 'Doros-on-my-desktop-Portable-0.1.3-win-x64.zip'
 
 New-Item -ItemType Directory -Path $candidateRoot | Out-Null
 

@@ -61,7 +61,7 @@ public sealed class LocomotionTests
             var encoder=new PngBitmapEncoder();encoder.Frames.Add(BitmapFrame.Create(bitmap));
             using var file=File.Create(Path.Combine(destination,"wpf-"+name+".png"));encoder.Save(file);
         }
-        Capture("standing",0);p.SetSittingRequested(true);Capture("half-sit",325);Capture("sit",325);
+        Capture("standing",0);p.SetSittingRequested(true);Capture("half-sit",525);Capture("sit",525);
         snapshot=snapshot with {Phase=.7};Capture("sit-blink",1590);
         p.SetSittingRequested(false);
         snapshot=snapshot with {State=PetState.Walk,Phase=0};Capture("half-rise",325);Capture("risen",325);
@@ -115,7 +115,7 @@ public sealed class LocomotionTests
     {
         var p = new LocomotionPresentation();
         p.Advance(999, false, 0, false); Assert.Equal(0, p.Sit);
-        p.Advance(325, false, 0, false, true); Assert.Equal(.5, p.Sit, 6);
+        p.Advance(525, false, 0, false, true); Assert.Equal(.5, p.Sit, 6);
         p.Advance(100, true, 0, false); Assert.InRange(p.Sit, 0.1, .5);
         Assert.True(p.HoldWalking);
         p.Advance(650, true, 0, false); Assert.Equal(0, p.Sit);
@@ -123,7 +123,7 @@ public sealed class LocomotionTests
         p.Advance(180, true, 2, false); Assert.Equal(1, p.Walk);
         var distance = p.Distance;
         p.Advance(180, false, 0, false); Assert.Equal(distance, p.Distance); Assert.Equal(0, p.Walk);
-        p.Advance(650, false, 0, false, true); Assert.Equal(1, p.Sit);
+        p.Advance(1050, false, 0, false, true); Assert.Equal(1, p.Sit);
         p.Advance(16, false, 0, true); Assert.Equal(0, p.Sit); Assert.False(p.HoldWalking);
     }
 

@@ -94,7 +94,7 @@ public sealed class HuntingLoopTests
         var path=Path.Combine(Controls.EdgePerchPresentationTests.ProjectRoot(),"artifacts/repro/hunt-product-20260911/platform-timing.txt");
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         File.WriteAllText(path,$"120 sustained real WPF render + loop/platform measurement ticks: {elapsed.Elapsed.TotalMilliseconds:F1} ms; mean {elapsed.Elapsed.TotalMilliseconds/120:F2} ms/tick\n");
-        h.Loop.NotifySitRequested();for(var i=0;i<10;i++)h.Tick();
+        h.Loop.NotifySitRequested();for(var i=0;i<11;i++)h.Tick();
         var image=(System.Windows.Controls.Image)h.Presenter.FindName("DororongImage");
         Assert.True(ReferenceEquals(image.Source,LocomotionFrames.Sit(1)) || ReferenceEquals(image.Source,LocomotionFrames.Sit(1,true)));
     });

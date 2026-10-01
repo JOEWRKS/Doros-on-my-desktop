@@ -28,11 +28,33 @@
     return triangles.filter(tri=>tri.every(i=>i<n));
   }
   const triangles=triangulate(pairs.map(([a,b])=>a.map((v,k)=>(v+b[k])/2)));
-  function createMap(t,scale){
+  function landmarks(time,direction='sit'){
+    if(!root.seatingMotion)return pairs.map(([a,b])=>a.map((v,k)=>v+(b[k]-v)*time));
+    const p=root.seatingMotion.pose(time,direction),t=p.fold;
+    const q=pairs.map(([a,b])=>a.map((v,k)=>v+(b[k]-v)*t));
+    // The whole painted head travels rigidly, including the ribbon. Neck
+    // anchors follow it; no unrelated whole-character squash or fade.
+    for(let i=0;i<=10;i++)q[i]=pairs[i][0].map((v,k)=>v+p.head[k]);
+    q[11]=p.frontFeet[0].slice();q[14]=p.frontFeet[1].slice();
+    for(const i of [12,13,15]){
+      const blend=i===12?p.frontBlend[0]:p.frontBlend[1];
+      q[i]=pairs[i][0].map((v,k)=>v+(pairs[i][1][k]-v)*blend+p.shoulder[k]);
+    }
+    for(const i of [16,17,20,21]){q[i][0]+=p.pelvis[0]-2*t;q[i][1]+=p.settle;}
+    q[18]=p.hindFeet[0].slice();q[19]=p.hindFeet[1].slice();
+    // Preserve the authored end drawings while transporting the inner fold
+    // with the actual IK knee's curved path between those end configurations.
+    const start=root.seatingMotion.pose(0),end=root.seatingMotion.pose(1);
+    const knee=p.hindLegs[0].knee;
+    for(let k=0;k<2;k++)q[27][k]+=.5*(knee[k]-(start.hindLegs[0].knee[k]*(1-t)+end.hindLegs[0].knee[k]*t));
+    return q;
+  }
+  function createMap(t,scale,direction='sit'){
     const size=96*scale,result=new Float32Array(size*size*4);
+    const posed=landmarks(t,direction);
     for(let y=0;y<size;y++)for(let x=0;x<size;x++){const i=(y*size+x)*4;result.set([(x+.5)/scale-.5,(y+.5)/scale-.5,(x+.5)/scale-.5,(y+.5)/scale-.5],i);}
     for(const tri of triangles){
-      const from=tri.map(i=>pairs[i][0]),to=tri.map(i=>pairs[i][1]),q=from.map((a,i)=>a.map((v,k)=>v+(to[i][k]-v)*t));
+      const from=tri.map(i=>pairs[i][0]),to=tri.map(i=>pairs[i][1]),q=tri.map(i=>posed[i]);
       const den=cross(...q);
       if(cross(...from)*cross(...to)<=0)throw new Error('Folded sitting correspondence '+tri.join(','));
       const l=Math.max(0,Math.floor(Math.min(...q.map(p=>p[0]))*scale)),r=Math.min(size-1,Math.ceil(Math.max(...q.map(p=>p[0]))*scale));
@@ -45,5 +67,5 @@
     }
     return result;
   }
-  root.sitCorrespondence={createMap};
+  root.sitCorrespondence={createMap,landmarks};
 })(globalThis);

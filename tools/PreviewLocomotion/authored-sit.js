@@ -62,12 +62,14 @@
       const at=(x,y)=>x<0||y<0||x>=96||y>=96?-96:layer.field[y*96+x];
       return (at(ix,iy)*(1-fx)+at(ix+1,iy)*fx)*(1-fy)+(at(ix,iy+1)*(1-fx)+at(ix+1,iy+1)*fx)*fy;
     }
-    function render(amount,scale=1){
+    function render(amount,scale=1,direction='sit'){
       if(!Number.isFinite(amount)||![1,2].includes(scale))throw new Error('Finite transition amount and scale1 or2 required');
-      const t=Math.max(0,Math.min(1,amount));
+      const time=Math.max(0,Math.min(1,amount));
+      const motion=root.seatingMotion?.pose(time,direction);
+      const t=motion?motion.fold:time;
       if(!surfaces.has(scale))surfaces.set(scale,makeCanvas(96*scale,96*scale));
       const output=surfaces.get(scale),ctx=output.getContext('2d');ctx.clearRect(0,0,output.width,output.height);
-      if(t===0||t===1){ctx.drawImage(t===0?original:target,0,0,output.width,output.height);return output;}
+      if(time===0||time===1){ctx.drawImage(t===0?original:target,0,0,output.width,output.height);return output;}
       if(!endpointPixels.has(scale)){
         endpointPixels.set(scale,[original,target].map(image=>{
           const c=makeCanvas(output.width,output.height),context=c.getContext('2d');
@@ -77,24 +79,31 @@
       }
       // Match canvas-filtered coverage at both exact endpoints. The narrow
       // premultiplied handoff prevents a one-frame outline pop at 2x export.
-      const endpoint=t<.06?0:t>.94?1:-1;
-      const coverage=endpoint<0?1:root.locomotion.smooth((endpoint===0?t:1-t)/.06);
+      const clock=motion?time:t;
+      const edge=clock<.06?0:clock>.94?1:-1;
+      const endpoint=edge<0?-1:motion&&direction==='rise'?1-edge:edge;
+      const coverage=edge<0?1:root.locomotion.smooth((edge===0?clock:1-clock)/.06);
       if(!headMasks.has(scale)){
         const mask=new Float32Array(output.width*output.height);
         for(let y=0;y<output.height;y++)for(let x=0;x<output.width;x++)mask[y*output.width+x]=1-root.locomotion.smooth(root.locomotion.headDistance((x+.5)/scale,(y+.5)/scale)/2);
         headMasks.set(scale,mask);
       }
-      const frame=ctx.createImageData(output.width,output.height),map=root.sitCorrespondence.createMap(t,scale);
+      const frame=ctx.createImageData(output.width,output.height),map=root.sitCorrespondence.createMap(motion?time:t,scale,direction);
       for(let y=0;y<output.height;y++)for(let x=0;x<output.width;x++){
         const p=[(x+.5)/scale-.5,(y+.5)/scale-.5],weight=headMasks.get(scale)[y*output.width+x],i=(y*output.width+x)*4;
-        const aa=texel(a,...p),bb=texel(b,...p),fixed=aa.map((v,k)=>v*(1-t)+bb[k]*t);
+        // Front paws finish their placement before pelvic descent. Their
+        // silhouette/crease handoff must follow that foot, not the pelvis.
+        const fw=motion?root.locomotion.smooth((p[1]-69)/9)*(1-root.locomotion.smooth((p[0]-45)/10)):0;
+        const near=root.locomotion.smooth((p[0]-28)/10);
+        const blend=motion?t*(1-fw)+(motion.frontBlend[0]*(1-near)+motion.frontBlend[1]*near)*fw:t;
+        const aa=texel(a,...p),bb=texel(b,...p),fixed=aa.map((v,k)=>v*(1-blend)+bb[k]*blend);
         const pa=[map[i],map[i+1]],pb=[map[i+2],map[i+3]];
         // A rounded-cell boolean here made moving knee ink switch by129 RGB
         // levels in one instant. Continuous depth gives a continuous handoff.
         const interior=root.locomotion.smooth((Math.min(depth(a,...pa),depth(b,...pb))-1)/3);
-        const ca=texel(a,...pa),cb=texel(b,...pb),transported=ca.map((v,k)=>v*(1-t)+cb[k]*t);
-        const contour=weight===1||interior===1?transported:root.contourTween.sample(a,b,pa,pb,t);
-        const moved=contour.map((v,k)=>v*(1-interior)+transported[k]*interior),rgba=moved.map((v,k)=>v*(1-weight)+fixed[k]*weight);
+        const ca=texel(a,...pa),cb=texel(b,...pb),transported=ca.map((v,k)=>v*(1-blend)+cb[k]*blend);
+        const contour=weight===1||interior===1?transported:root.contourTween.sample(a,b,pa,pb,blend);
+        const moved=contour.map((v,k)=>v*(1-interior)+transported[k]*interior),rgba=motion?moved:moved.map((v,k)=>v*(1-weight)+fixed[k]*weight);
         if(endpoint>=0){
           const pixels=endpointPixels.get(scale)[endpoint],alpha=pixels[i+3];
           for(let c=0;c<3;c++)rgba[c]=rgba[c]*coverage+pixels[i+c]*alpha/255*(1-coverage);

@@ -1,0 +1,114 @@
+{
+  "headPolygon": [[0,0],[96,0],[96,48],[69,48],[69,51],[67,55],[65,59],[63,63],[60,62],[58,58],[56,62],[52,66],[49,70],[46,72],[43,72],[42,66],[23,66],[21,68],[19,69],[14,69],[0,69]],
+  "headLandmarks": [[28,47],[42,48],[59,35]],
+  "standing": {
+    "head": {"pivot":[36,60],"angle":0},
+    "chest":[35,62], "pelvis":[64,61],
+    "legs":[
+      {"name":"farFront","joints":[[22,60],[23,70],[24,79]],"sole":[24,81]},
+      {"name":"nearFront","joints":[[40,60],[41,72],[42,84]],"sole":[42,86]},
+      {"name":"nearHind","joints":[[64,61],[65,71],[65,81]],"sole":[65,83]}
+    ]
+  },
+  "seated": {
+    "head":{"pivot":[36,60],"angle":0},"chest":[37,65],"pelvis":[61,68],
+    "legs":[
+      {"name":"farFront","joints":[[24,66],[24,76],[24,85]],"sole":[24,87]},
+      {"name":"nearFront","joints":[[35,62],[35,74],[35,86]],"sole":[35,88]},
+      {"name":"nearHind","joints":[[61,68],[61,78],[51.42,80.87]],"sole":[53,87]}
+    ]
+  },
+  "widthStations": {
+    "farFront":{"y":78,"minX":18,"maxX":29},
+    "nearFront":{"y":81,"minX":34,"maxX":50},
+    "nearHind":{"y":79,"minX":59,"maxX":73}
+  },
+  "artwork": {
+    "torso": {
+      "fill": [
+        {"op":"M","points":[[18,59,"chest"]]},
+        {"op":"C","points":[[18,48,"chest"],[34,48,"chest"],[48,49,"chest"]]},
+        {"op":"C","points":[[57,42,"pelvis"],[62,42,"pelvis"],[65.5,45,"pelvis"]]},
+        {"op":"C","points":[[70,48,"pelvis"],[73,52,"pelvis"],[74.5,56,"pelvis"]]},
+        {"op":"C","points":[[76,62,"pelvis"],[74,69,"pelvis"],[69.5,74.5,"pelvis"]]},
+        {"op":"C","points":[[65,77,"pelvis"],[61,76,"pelvis"],[58.5,73.5,"pelvis"]]},
+        {"op":"C","points":[[54.5,75.5,"pelvis"],[51,77.5,"chest"],[48.5,77.5,"chest"]]},
+        {"op":"C","points":[[42,79,"chest"],[36,78,"chest"],[32.5,76.5,"chest"]]},
+        {"op":"C","points":[[30,75.5,"chest"],[29,75.5,"chest"],[26.5,75.5,"chest"]]},
+        {"op":"C","points":[[20,73,"chest"],[16,68,"chest"],[18,59,"chest"]]},
+        {"op":"Z","points":[]}
+      ],
+      "ink": [
+        [{"op":"M","points":[[65.5,45,"pelvis"]]},
+         {"op":"C","points":[[70,48,"pelvis"],[73,52,"pelvis"],[74.5,56,"pelvis"]]},
+         {"op":"C","points":[[76,62,"pelvis"],[74,69,"pelvis"],[69.5,74.5,"pelvis"]]},
+         {"op":"C","points":[[65,77,"pelvis"],[61,76,"pelvis"],[58.5,73.5,"pelvis"]]}],
+        [{"op":"M","points":[[26.5,75.5,"chest"]]},
+         {"op":"C","points":[[29,75.5,"chest"],[30,75.5,"chest"],[32.5,76.5,"chest"]]}],
+        [{"op":"M","points":[[48.5,77.5,"chest"]]},
+         {"op":"C","points":[[52,77,"chest"],[56,75,"pelvis"],[58.5,73.5,"pelvis"]]}]
+      ],
+      "coverage": [[34,63,"chest"],[60,64,"pelvis"]]
+    },
+    "farFront": {
+      "fill": [
+        {"op":"M","points":[[16.5,57]]},
+        {"op":"C","points":[[15.5,64],[16.5,72],[19,78]]},
+        {"op":"C","points":[[21,82.5],[25,83],[26.5,79]]},
+        {"op":"C","points":[[27.5,76],[27,72],[28,66]]},
+        {"op":"C","points":[[28,60],[27,56],[23,55]]},
+        {"op":"C","points":[[20,54],[17,55],[16.5,57]]},
+        {"op":"Z","points":[]}
+      ],
+      "ink": [[{"op":"M","points":[[16.5,69]]},
+        {"op":"C","points":[[17,73],[18,77],[21,80.5]]},
+        {"op":"C","points":[[23,83],[26,81.8],[26.7,78]]},
+        {"op":"L","points":[[26.5,75.5]]}]],
+      "coverage": [[22,61],[23,66]]
+    },
+    "nearFront": {
+      "fill": [
+        {"op":"M","points":[[33,57]]},
+        {"op":"C","points":[[32,63],[32,70],[33.1,76.5]]},
+        {"op":"C","points":[[34.9,80],[37.5,85.8],[41.8,86.4]]},
+        {"op":"C","points":[[45.4,87.1],[48.6,85.4],[48.7,81.5]]},
+        {"op":"L","points":[[48.5,77.5]]},
+        {"op":"C","points":[[48.5,70],[48,63],[46,58]]},
+        {"op":"C","points":[[43,54],[37,54],[33,57]]},
+        {"op":"Z","points":[]}
+      ],
+      "ink": [[{"op":"M","points":[[33.1,76.5]]},
+        {"op":"C","points":[[34.9,80],[37.5,85.8],[41.8,86.4]]},
+        {"op":"C","points":[[45.4,87.1],[48.6,85.4],[48.7,81.5]]},
+        {"op":"L","points":[[48.5,77.5]]}]],
+      "coverage": [[40,61],[41,67]]
+    },
+    "nearHind": {
+      "fill": [
+        {"op":"M","points":[[57,57]]},
+        {"op":"C","points":[[57,52],[68,51],[71,57]]},
+        {"op":"C","points":[[74,64],[70,70],[69.5,74.5]]},
+        {"op":"C","points":[[69,77],[71.5,78],[70.7,81.1]]},
+        {"op":"C","points":[[69.8,83.9],[66,85.2],[63,83.2]]},
+        {"op":"C","points":[[60.5,81],[59.5,77],[59.3,73.5]]},
+        {"op":"C","points":[[58,67],[57,61],[57,57]]},
+        {"op":"Z","points":[]}
+      ],
+      "rootInk": [[{"op":"M","points":[[59.3,73.5]]},
+        {"op":"C","points":[[59.43,75.775],[59.898,78.26125],[60.8962375,80.3271125]]}]],
+      "ink": [[{"op":"M","points":[[60.8962375,80.3271125]]},
+        {"op":"C","points":[[61.43375,81.4395],[62.125,82.43],[63,83.2]]},
+        {"op":"C","points":[[66,85.2],[69.8,83.9],[71,81.1]]},
+        {"op":"C","points":[[71.5,78],[69,77],[69.5,74.5]]}]],
+      "coverage": [[64,62],[64.5,67]]
+    }
+  },
+  "metadata": {
+    "sourceSha256":"699348d1973709f228d843341ac5312aa7f449d57b9bfc76576256231e259a78",
+    "anatomy":"visible shafts and sole contacts measured from source; under-head shoulders and upper thigh are reconstructed anatomical estimates, not visible-source bone lengths",
+    "referenceAlignment":{"translation":[3,-12],"rotation":0,"scale":1,"method":"eye centres and ribbon centre; reference-only comparison"},
+    "referenceObservations":"two straight exposed forelegs; round descending rump; forward hindfoot; upright chest rather than belly compressed onto ground",
+    "outlineWidthMethod":"median integrated optical ink coverage across x70..79, y52..71; source measured, not a fixed stroke constant",
+    "measurementThreshold":128
+  }
+}

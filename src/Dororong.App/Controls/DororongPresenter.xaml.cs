@@ -522,7 +522,7 @@ public partial class DororongPresenter : UserControl
             // endpoint after rising; do not restore the old exterior fringe.
             if (_locomotionStarted)
                 DororongImage.Source = _locomotion.Sit > 0
-                    ? LocomotionFrames.Sit(_locomotion.Sit,closed)
+                    ? LocomotionFrames.Sit(_locomotion.Sit,closed,_locomotion.UsesRisePose)
                     : LocomotionFrames.Walk(_locomotion.Walk,_locomotion.Distance,closed);
             else
                 DororongImage.Source = UprightRumpSource.Standing(closed);

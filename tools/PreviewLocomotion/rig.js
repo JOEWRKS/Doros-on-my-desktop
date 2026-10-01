@@ -21,11 +21,11 @@
     const tuck=4-10*clamp((y-74)/8);
     return [x+tuck*rear,y+p.bob+lower*rear];
   }
-  function pose({distance=0,walk=0,sit=0}={}){
+  function pose({distance=0,walk=0,sit=0,rising=false}={}){
     if(![distance,walk,sit].every(Number.isFinite))throw Error('Finite pose inputs required');
     sit=clamp(sit);walk=clamp(walk)*(1-sit);
     const phase=((distance/cycle)%1+1)%1;
-    const p={sit,walk,distance,bob:walk?-.55*walk*(1-Math.cos(phase*4*Math.PI)):0,roll:walk?.009*walk*Math.sin(phase*2*Math.PI-.45):0,legs:[]};
+    const p={sit,walk,distance,rising,bob:walk?-.55*walk*(1-Math.cos(phase*4*Math.PI)):0,roll:walk?.009*walk*Math.sin(phase*2*Math.PI-.45):0,legs:[]};
     for(let i=0;i<rest.length;i++){
       // Two alternating diagonal pairs: far fore + near hind / the reverse.
       const q=(phase+(i%2===0?0:.5))%1,stance=.6,z=(q-stance)/(1-stance);
@@ -56,6 +56,14 @@
     return [base[0]+dx/Math.max(1,total),base[1]+dy/Math.max(1,total)];
   }
   function scenario(t,mode='sequence'){
+    if(root.seatingMotion){
+      if(mode==='sit')return {distance:0,walk:0,sit:clamp(t/.9),position:0,label:t<.9?'앞발 받치기 → 뒷발 접기 → 착석':'앉아서 쉬기'};
+      if(mode==='stand')return {distance:0,walk:0,sit:1-clamp(t/.65),rising:true,position:0,label:t<.65?'앞발 지지 → 엉덩이 들기 → 뒷발 딛기':'서 있기'};
+      if(mode==='sequence'&&t%8>=4.2){
+        const u=t%8;return {distance:46.2,walk:0,sit:u<5.1?clamp((u-4.2)/.9):u<6.8?1:1-clamp((u-6.8)/.65),
+          rising:u>=6.8,position:(Math.floor(t/8)%2?-1:1)*-46.2,flip:Math.floor(t/8)%2!==0,label:u<5.1?'체중 이동하며 앉기':u<6.8?'앉아서 쉬기':'앞발로 받치며 일어나기'};
+      }
+    }
     if(mode==='sit')return {distance:0,walk:0,sit:smooth(t/.65),position:0,label:t<.65?'앞발 고정 · 뒷다리 접기':'앉아서 쉬기'};
     if(mode==='stand')return {distance:0,walk:0,sit:1-smooth(t/.65),position:0,label:t<.65?'다시 일어나기':'서 있기'};
     if(mode==='walk')return {distance:t*14,walk:1,sit:0,position:0,label:'걷기 · 바닥이 이동하는 접지 비교',belt:t*28};

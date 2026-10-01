@@ -18,11 +18,18 @@ internal sealed class HuntEyes
         dx = Math.Clamp(dx, -.85, .85); dy = Math.Clamp(dy, -.65, .65);
         var index = closed ? 1 : 0;
         var source = HuntFrames.Instance.Head(index);
-        HuntFrames.Instance.CopyEnlargedHead(index,_rgba);
+        // Preserve authored texels until the pose transform samples the head.
+        // The baked enlarged image was already filtered; filtering it again
+        // during composition and native-size reduction softened the face.
+        for(var y=0;y<384;y++)for(var x=0;x<384;x++)
+            source.Span.Slice(((y/4)*96+x/4)*4,4).CopyTo(_rgba.AsSpan((y*384+x)*4,4));
         double Sample(double x, double y, int c)
         {
+            // Move on the same unfiltered working grid as the base head.
+            // Subtracting a differently filtered base leaves old eye ink behind.
+            x=x*4+1.5;y=y*4+1.5;
             var ix=(int)Math.Floor(x); var iy=(int)Math.Floor(y); var fx=x-ix; var fy=y-iy; double v=0;
-            for(var yy=0;yy<2;yy++)for(var xx=0;xx<2;xx++)v+=source.Span[((iy+yy)*96+ix+xx)*4+c]*(xx==1?fx:1-fx)*(yy==1?fy:1-fy);
+            for(var yy=0;yy<2;yy++)for(var xx=0;xx<2;xx++)v+=source.Span[(((iy+yy)/4)*96+(ix+xx)/4)*4+c]*(xx==1?fx:1-fx)*(yy==1?fy:1-fy);
             return v;
         }
         foreach(var e in new[]{new[]{15,43,30,60,15,17,27,30,43,46,57,60},new[]{32,46,46,63,32,34,43,46,46,49,60,63}})
@@ -48,26 +55,24 @@ internal sealed class HuntEyes
         // Deform in the head's authored coordinates, then carry the changed
         // head through its captured affine transform. Body pixels never enter
         // the cheek renderer. Apply only the premultiplied delta to retain the
-        // supersampled head and current eye tracking at the zero-pull endpoint.
+        // working-grid head and current eye tracking at the zero-pull endpoint.
+        // Both sides use the same texel replication, so old outline/alpha
+        // cancels exactly instead of leaving a filtered ghost at its old site.
         var original=head.ToArray();
         for(var i=0;i<original.Length;i+=4)(original[i],original[i+2])=(original[i+2],original[i]);
         var changed=OutlineCheekRenderer.Render(original,pull,eye,hair);
-        var delta=new double[original.Length];
+        var delta=new int[original.Length];
         for(var i=0;i<delta.Length;i+=4)
         {
-            for(var c=0;c<3;c++)delta[i+c]=(changed[i+c]*changed[i+3]-original[i+c]*original[i+3])/255d;
+            for(var c=0;c<3;c++)delta[i+c]=(changed[i+c]*changed[i+3]+127)/255-(original[i+c]*original[i+3]+127)/255;
             delta[i+3]=changed[i+3]-original[i+3];
         }
         for(var y=0;y<384;y++)for(var x=0;x<384;x++)
         {
-            var sx=Math.Clamp((x+.5)/4-.5,0,95);var sy=Math.Clamp((y+.5)/4-.5,0,95);
-            var ix=(int)sx;var iy=(int)sy;var fx=sx-ix;var fy=sy-iy;var at=(y*384+x)*4;
+            var from=((y/4)*96+x/4)*4;var at=(y*384+x)*4;
             for(var c=3;c>=0;c--)
             {
-                double d=0;
-                for(var yy=0;yy<2;yy++)for(var xx=0;xx<2;xx++)
-                    d+=delta[(Math.Min(95,iy+yy)*96+Math.Min(95,ix+xx))*4+c]*(xx==0?1-fx:fx)*(yy==0?1-fy:fy);
-                _pbgra[at+c]=(byte)Math.Clamp(Math.Round(_pbgra[at+c]+d),0,c==3?255:_pbgra[at+3]);
+                _pbgra[at+c]=(byte)Math.Clamp(_pbgra[at+c]+delta[from+c],0,c==3?255:_pbgra[at+3]);
             }
         }
     }

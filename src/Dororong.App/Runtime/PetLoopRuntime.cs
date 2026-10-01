@@ -51,6 +51,7 @@ internal sealed class PetLoopHost
 {
     internal PetPlatformRuntime? Platforms { get; init; }
     internal Action? MaintainPerchLayer { get; init; }
+    internal Action<TimeSpan>? MaintainWindowLayer { get; init; }
     internal Func<PetSnapshot,bool>? HoldLocomotionWalk { get; init; }
     internal Action<bool>? SetLocomotionBlocked { get; init; }
     internal Action<bool>? SetSittingRequested { get; init; }
