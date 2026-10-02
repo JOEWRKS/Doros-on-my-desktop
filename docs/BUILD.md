@@ -52,8 +52,9 @@ Embedded character resources and all license notices remain included.
 ## Installer and verification
 
 The historical public 0.1.2 candidate is `candidate-20260921-v012-01`.
-The current installed local 0.1.3 candidate is `candidate-20261002-window-layer-01`;
-see the [current verification record](../TASKS.md#ordinary-window-layer-recovery--2026-10-02).
+The current installed local 0.1.3 installer is `candidate-20261002-security-lifecycle-01`,
+using the unchanged `candidate-20261002-window-layer-01` app payload;
+see the [current host verification record](verification/2026-10-02-security-lifecycle-host.md).
 The earlier `candidate-20260921-v013-01` and its
 [verification report](verification/2026-09-21-v013-local-candidate.md) are historical.
 See [release verification](verification/2026-09-21-v012-release.md) for hashes

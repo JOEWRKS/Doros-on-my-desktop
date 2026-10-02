@@ -188,7 +188,7 @@ begin
   end;
   if not PreflightOwnedDirectories(FixedRoot, OwnedDirectories, Reason) then Exit;
   if not PreflightOwnedFiles(FixedRoot, Previous, Reason) then Exit;
-  if not PreflightOwnedFiles(FixedRoot, Incoming, Reason) then Exit;
+  if not PreflightIncomingFiles(FixedRoot, Incoming, Previous, Reason) then Exit;
   if not PreflightOwnedShortcuts(ExpandConstant('{userprograms}'), ExpandConstant('{userdesktop}'),
     PreviousShortcutFile, DesktopPreviouslyOwned, Reason) then Exit;
   if not PreflightOwnedShortcuts(ExpandConstant('{userprograms}'), ExpandConstant('{userdesktop}'),

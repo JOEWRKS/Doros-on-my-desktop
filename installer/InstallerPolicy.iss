@@ -135,6 +135,31 @@ begin
   Result := True;
 end;
 
+function PreflightIncomingFiles(Root: String; Incoming, Previous: TArrayOfString;
+  var Reason: String): Boolean;
+var I: Integer; Path: String; Attr, Err: LongWord;
+begin
+  Result := False;
+  if not PreflightOwnedFiles(Root, Incoming, Reason) then Exit;
+  for I := 0 to GetArrayLength(Incoming) - 1 do begin
+    { DirectoryListed is the shared case-insensitive relative-path membership
+      check. An existing leaf is replaceable only when previously file-owned. }
+    if not DirectoryListed(Previous, Incoming[I]) then begin
+      Path := AddBackslash(Root) + Incoming[I];
+      Attr := PolicyAttributes(Path);
+      if Attr <> $FFFFFFFF then begin
+        Reason := 'An unowned file occupies an incoming payload path: ' + Incoming[I];
+        Exit;
+      end;
+      Err := PolicyLastError;
+      if (Err <> 2) and (Err <> 3) then begin
+        Reason := 'Incoming payload path became inaccessible.'; Exit;
+      end;
+    end;
+  end;
+  Reason := ''; Result := True;
+end;
+
 function RemoveOwnedFiles(Root: String; Paths: TArrayOfString; var Reason: String): Boolean;
 var I: Integer; Path: String; Attr, Err: LongWord;
 begin

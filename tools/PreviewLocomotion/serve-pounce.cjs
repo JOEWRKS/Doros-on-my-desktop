@@ -7,7 +7,10 @@ for(const name of ['body-atlas.png','head.png']){const file=path.join(proof,name
 const port=Number(process.argv.find(x=>x.startsWith('--port='))?.slice(7)||2800);
 if(!Number.isInteger(port)||port<1024||port>65535)throw Error('Invalid port');
 http.createServer((req,res)=>{
- const route=routes[new URL(req.url,'http://localhost').pathname];
+ let pathname;
+ try{pathname=new URL(req.url,'http://localhost').pathname;}
+ catch{res.writeHead(400);res.end('Invalid request URL');return;}
+ const route=routes[pathname];
  if(!route){res.writeHead(404);res.end();return;}
  fs.readFile(path.resolve(__dirname,route[0]),(error,data)=>{res.writeHead(error?500:200,{'Content-Type':route[1],'Cache-Control':'no-store'});res.end(error?'Preview file unavailable':data);});
 }).listen(port,'127.0.0.1',()=>console.log('Pounce preview http://127.0.0.1:'+port+'/'));

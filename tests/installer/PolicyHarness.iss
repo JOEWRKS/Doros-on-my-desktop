@@ -25,9 +25,10 @@ end;
 
 function InitializeSetup: Boolean;
 var
-  Root, Reason, RecordValue: String;
+  Root, Reason, RecordValue, IncomingRoot: String;
+  Contents: AnsiString;
   Gate1, Gate2: THandle;
-  Paths, Directories: TArrayOfString;
+  Paths, Directories, PreviousFiles: TArrayOfString;
   RootOwned: Boolean;
 begin
   Result := False;
@@ -62,6 +63,34 @@ begin
   Check(not PreflightOwnedFiles(Root, Paths, Reason), 'locked file');
   Paths[0] := 'linked\file.txt';
   Check(not PreflightOwnedFiles(Root, Paths, Reason), 'reparse file');
+  { Incoming files may replace only entries in the previous ownership list.
+    Exercise the same shared policy that AllPreflight uses, without installing. }
+  IncomingRoot := Root + '\incoming';
+  ForceDirectories(IncomingRoot + '\shared');
+  SaveStringToFile(IncomingRoot + '\owned.txt', 'owned', False);
+  SaveStringToFile(IncomingRoot + '\new.txt', 'user addition', False);
+  SetArrayLength(PreviousFiles, 1); PreviousFiles[0] := 'OWNED.TXT';
+  SetArrayLength(Paths, 1); Paths[0] := 'new.txt';
+  Check(not PreflightIncomingFiles(IncomingRoot, Paths, PreviousFiles, Reason), 'unowned incoming collision refused');
+  Check(LoadStringFromFile(IncomingRoot + '\new.txt', Contents) and (Contents = 'user addition'), 'collision preserves user bytes');
+  Paths[0] := 'NEW.TXT';
+  Check(not PreflightIncomingFiles(IncomingRoot, Paths, PreviousFiles, Reason), 'case-variant unowned collision refused');
+  Paths[0] := 'owned.txt';
+  Check(PreflightIncomingFiles(IncomingRoot, Paths, PreviousFiles, Reason), 'case-insensitive owned update allowed');
+  SetArrayLength(Paths, 2); Paths[0] := 'owned.txt'; Paths[1] := 'shared\new.txt';
+  Check(PreflightIncomingFiles(IncomingRoot, Paths, PreviousFiles, Reason), 'new absent file under existing directory allowed');
+  Paths[1] := 'shared';
+  Check(not PreflightIncomingFiles(IncomingRoot, Paths, PreviousFiles, Reason), 'directory occupying incoming leaf refused');
+  Paths[1] := 'missing-owned.txt';
+  SetArrayLength(PreviousFiles, 2); PreviousFiles[1] := 'missing-owned.txt';
+  Check(PreflightIncomingFiles(IncomingRoot, Paths, PreviousFiles, Reason), 'missing owned repair file allowed');
+  SetArrayLength(PreviousFiles, 0);
+  SetArrayLength(Paths, 1); Paths[0] := 'absent\payload.txt';
+  Check(PreflightIncomingFiles(Root + '\fresh-incoming', Paths, PreviousFiles, Reason), 'fresh absent install allowed');
+  Paths[0] := 'new.txt';
+  Check(not PreflightIncomingFiles(IncomingRoot, Paths, PreviousFiles, Reason), 'removed then reintroduced user filename refused');
+  Paths[0] := '..\user-added.txt';
+  Check(not PreflightIncomingFiles(IncomingRoot, Paths, PreviousFiles, Reason), 'incoming traversal refused');
   SetArrayLength(Paths, 1); Paths[0] := 'obsolete.txt';
   Check(RemoveOwnedFiles(Root, Paths, Reason), 'explicit removal');
   Check(not FileExists(Root + '\obsolete.txt'), 'obsolete removed');

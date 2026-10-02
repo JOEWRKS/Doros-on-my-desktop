@@ -18,7 +18,10 @@ const files={
 const embeddedImages=[['sourceCanonical','/canonical.png'],['sourceClosed','/closed.png'],['sourceSleep','/sleep.png'],['sourceFinalSeated','/seated-final.png'],['sourceFinalBank','/seated-bank.png']]
   .map(([id,url])=>`<img id="${id}" hidden alt="" src="data:${files[url][1]};base64,${fs.readFileSync(path.resolve(__dirname,files[url][0])).toString('base64')}">`).join('');
 const server=http.createServer((req,res)=>{
-  const route=files[new URL(req.url,'http://localhost').pathname];
+  let pathname;
+  try{pathname=new URL(req.url,'http://localhost').pathname;}
+  catch{res.writeHead(400);res.end('Invalid request URL');return;}
+  const route=files[pathname];
   if(!route){res.writeHead(404);res.end();return;}
   fs.readFile(path.resolve(__dirname,route[0]),(err,data)=>{
     if(err){res.writeHead(500);res.end('Unable to load preview');return;}

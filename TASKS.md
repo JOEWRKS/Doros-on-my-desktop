@@ -4,6 +4,118 @@ Direction, current stage and release completion gates live in [ROADMAP](ROADMAP.
 This file remains the sole active execution/verification ledger; a finished task
 does not close a roadmap stage with open requirements.
 
+## Security and lifecycle — private main checkpoint — 2026-10-02
+
+- User chose to commit/push the current work after checking Windows11 test
+  options. Current host is Windows10 Pro; firmware virtualization is disabled
+  and no ready Windows11 environment was established. No setup/settings change.
+  R3 remains unverified, not waived; rights/public-release gates remain open.
+- Scope: preview URL guard, installer incoming ownership/collision guard,
+  regression tests and audit/lifecycle documentation. Generated installers,
+  backups, personal logs and test outputs stay ignored. No tag, release or
+  repository visibility change. Repository id1349611819 verified private/main;
+  fetched origin/main matched starting HEAD5e65307, without divergence.
+- Fresh pre-commit suites: Core241/App1099, zero failures/skips, and Node41/41.
+  Installer payload, build-refusal and compiled shared-policy checks pass with
+  explicitly pinned Inno7.1.0. Current installed Setup hash remains unchanged.
+  TRX files: artifacts/verification/security-checkpoint-20261002/. Diff checks
+  and credential-pattern scan pass. Remote commit equality/clean working tree
+  are checked after the normal push and reported in the completion handoff.
+- Fresh rebuilding changes App/Core DLL hashes relative to the frozen candidate.
+  Core informational version now records5e65307 instead of67f7504; Core method
+  bodies match in the read-only PE probe. App managed resources match, but the
+  candidate includes six WPF GeneratedInternalTypeHelper methods absent from
+  the rebuild; no App source files changed. Exact binary equivalence is not
+  claimed. Existing candidate/install/backup bytes are not replaced, nor is
+  package validation rerun against these new reference outputs. R5 requires a
+  freshly frozen/tested package and explicit archive pin before distribution.
+
+## Hardened installer — current-host lifecycle — 2026-10-02
+
+- User authorized the recommended next lifecycle verification. Scope: prepare a
+  fresh local candidate, verified recovery backups, same-version update, normal
+  exit, uninstall/reinstall and existing-data preservation. No commit/push/release.
+- New candidate `candidate-20261002-security-lifecycle-01` builds the current
+  incoming collision guard around the unchanged accepted469-file0.1.3 app.
+  Exact pinned archive/compiler/source/generated parity and fresh package/native
+  validation passed. Setup remains unsigned; previous candidates stay intact.
+- Verified full472-file installation, one user log, Start shortcut and uninstall
+  registration backups plus pinned recovery Setup before changing the host.
+  Non-elevated same-version update exit0; payload, data and shortcut preference
+  checks pass. Installed start/duplicate pass, current PID57080.
+- User tray exit confirmed; matching Started/Stopped events and absent process
+  checked. Verified new uninstaller exit0; installation root/registration/
+  shortcuts removed, post-exit user log unchanged. Reinstall exit0, all469
+  payload/ownership hashes correct; registration/Start shortcut restored and
+  desktop opt-out/log preserved. No forced process termination or root deletion.
+- Reinstalled launch/duplicate pass, installed PID1240 left running; actual
+  executable and loaded bundled runtime paths/hash verified, original log prefix
+  preserved. Re-ran Node41/41 with zero failures/skips. App source unchanged;
+  no redundant App/Core rebuild. Full prior Core241/App1099 is not a new run.
+- R2 current-host basic lifecycle is complete; R3 other environment and R4
+  rights remain open. Recovery copies preserved, not exercised. This does not
+  prove all failure paths, clean-PC compatibility or visual acceptance. Evidence:
+  [current-host report](docs/verification/2026-10-02-security-lifecycle-host.md).
+
+## Preview request and installer collision fixes — 2026-10-02
+
+- User authorized both follow-up fixes, without commit/push/publication or host
+  installation. Prior audit record and sealed scan remain unchanged.
+- Three loopback previews now catch only URL parse failure and return400;
+  normal routes, query/absolute HTTP targets, MIME types,404 and asset-error500
+  behavior preserved. Added tests/preview-servers.test.cjs: real Node parser
+  and response on in-memory Duplex, no listener or existing preview contacted.
+  Before patch9 malformed cases failed with ERR_INVALID_URL/15 controls passed;
+  after patch30 preview cases pass, full node --test41/41 passes.
+- Shared PreflightIncomingFiles checks safe/access/reparse/type policy and
+  refuses occupied incoming leaves absent from previous case-insensitive file
+  ownership. AllPreflight rechecks it at initialize, prepare and ssInstall.
+  Extended compiled PolicyHarness covers collision/case variants, user-byte
+  preservation, owned update/missing repair, fresh and nested absent files,
+  directory collisions and reintroduced filenames. Policy PASS; a temporary
+  accessibility-only mutation fails 'unowned incoming collision refused'.
+- In isolated temporary source copy: full Core241/App1099 pass, zero failures
+  or skips; Node41 pass. All169 product/patch files hash-match the tested copy.
+  Changed JS syntax and git diff --check pass (Git LF/CRLF notices only).
+  Full Inno7.1.0 installer script compiles with historical frozen staging inputs;
+  output is test-only compile evidence, not a new distributable installer.
+- Local Codex Security target-bound artifacts retain fix_report.md, Node log,
+  policy GREEN/mutation RED logs and both TRX files. Fresh independent boundary
+  investigation and candidate review found no confirmed in-scope regression.
+- Existing preflight/copy race against unrelated concurrent same-user writers
+  remains; absent paths are not reserved. No current-CVE or host lifecycle/
+  other-PC/rights validation added. Existing Setup/installed app unchanged;
+  already-running developer previews need restart to load this source fix.
+  R2/R3/R4 remain open. No code delivery or release-gate closure claimed.
+
+## Standard source security audit — 2026-10-02
+
+- User authorized a standard whole-repository audit, not remediation or delivery.
+  Audited immutable revision `5e6530749ac82daacc1612c177dddb2964c78a2d`.
+  Codex Security scan `624c9846-a023-4f75-b735-a7205fcbce7c` completed and sealed;
+  its local workbench retains report.md, findings.json, coverage.json and evidence.
+- All442 executable-source/project/markup/PSD1 paths fully reviewed;453 unique
+  files reviewed overall from689 tracked files. Remaining236 art, large literal
+  data and documentation files explicitly classified/excluded in coverage.
+- One validated LOW finding: malformed absolute HTTP request targets can throw
+  out of unguarded URL parsing and stop three optional loopback developer previews
+  (`tools/PreviewLocomotion/server.cjs:21`, `serve-pounce.cjs:10`,
+  `tools/CheekSpringPreview/server.cjs:4`). Exact callbacks and the native Node
+  v26.3.0 HTTP parser were checked with mocks/in-memory Duplex, without sockets.
+  Installed pet impact, disclosure, code execution or elevation not established.
+- Separate nonsecurity data-preservation concern: a newly added payload filename
+  may overwrite an unowned same-name user file during registered installer
+  upgrade (`installer/Dororong.iss:133-158,190-191`). No lower-authority attack
+  path established. Proposed follow-ups, not implemented: guarded URL parsing
+  returning400, and refusal of incoming paths absent from previous ownership.
+- No application, live preview, installer, build or full test suite executed.
+  Current CVE advisories/third-party implementations, host ACLs, installed binary
+  parity and the ignored October2 builder remain outside this source audit.
+  No safety certification, current test-pass claim or release-gate closure.
+- Source stayed clean through scan sealing. This subsequent ledger entry is the
+  only repository edit; no code fixes, commit, push or publication performed.
+  R2/R3 installation/environment and R4 rights gates remain unchanged.
+
 ## Accepted local v0.1.3 — main checkpoint — 2026-10-02
 
 - User confirmed the installed pet remains visible in front of Clipchamp, then
