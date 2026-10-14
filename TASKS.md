@@ -15,7 +15,14 @@ does not close a roadmap stage with open requirements.
 - Private repository and synchronized main confirmed before committing. Include
   current feature/UI/code/tests/docs plus preserved approved project records;
   exclude local installers, generated proofs, backups and build/test caches.
-  No new public release, visibility change or tag. Commit/push verification follows.
+  No new public release, visibility change or tag.
+- Implementation commit `de257270387c5a2ee58ea2bb8a67451ffb876d42` pushed to
+  private origin/main; remote ref matched exactly. Current handoff checksums,
+  staged path hygiene and credential-signature scan passed. The unmodified
+  upstream OFL notice retains its original trailing space; authored-text whitespace
+  checks passed. No application change after the recorded full-suite verification.
+- This documentation follow-up closes F2's accepted local UI checkpoint. Remaining:
+  F1 real login/uninstall checks, held R3 environment coverage and R4 rights.
 
 ## Figma tray support and clean installer handoff — 2026-10-14
 
