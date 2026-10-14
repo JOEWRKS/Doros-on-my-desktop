@@ -11,6 +11,14 @@ public sealed class TrayMenuNativeTests
     [InlineData("repeat-escape")]
     [InlineData("outside")]
     [InlineData("right")]
+    [InlineData("styled-repeat-escape")]
+    [InlineData("styled-right")]
+    [InlineData("styled-dispose-pending")]
+    [InlineData("styled-dispose-open")]
+    [InlineData("styled-state-commands")]
+    [InlineData("styled-outside")]
+    [InlineData("styled-character")]
+    [InlineData("styled-keyboard")]
     public void Real_tray_popup_preserves_dismissal_reuse_and_native_commands(string scenario)
     {
         var output = new DirectoryInfo(AppContext.BaseDirectory);

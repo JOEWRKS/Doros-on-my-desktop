@@ -338,12 +338,18 @@ begin
 end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
-var Reason: String;
+var Reason, StartupCommand: String;
 begin
   if CurUninstallStep = usUninstall then begin
     if not PreflightOwnedDirectories(FixedRoot, OwnedDirectories, Reason) then RaiseException(Reason);
     { Recheck all locations before checked shortcut-then-payload removal. A
       failure here is fatal; Inno later processes registration and its metadata. }
+    { Remove only this install's exact opt-in command; preserve a foreign entry. }
+    if RegQueryStringValue(HKCU64, 'Software\Microsoft\Windows\CurrentVersion\Run',
+      'JOEWRKS.Dororong', StartupCommand) and
+      (CompareText(StartupCommand, '"' + AddBackslash(FixedRoot) + 'Dororong.exe"') = 0) then
+      if not RegDeleteValue(HKCU64, 'Software\Microsoft\Windows\CurrentVersion\Run',
+        'JOEWRKS.Dororong') then RaiseException('Could not remove Dororong startup registration.');
     if not RemoveProductFiles(FixedRoot, ExpandConstant('{userprograms}'), ExpandConstant('{userdesktop}'),
       ShortcutFile, Previous, DesktopPreviouslyOwned, Reason) then RaiseException(Reason);
     if not RemoveOwnedDirectories(FixedRoot, OwnedDirectories, Reason) then RaiseException(Reason);

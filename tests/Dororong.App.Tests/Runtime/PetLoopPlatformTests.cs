@@ -234,18 +234,32 @@ public partial class PetLoopPlatformTests
         internal DesktopCoordinateMap Map=new(new(),new(),1,1);
         internal bool Down,ThrowWrite;internal int WritesThisTick,Captures,Releases;
         internal PetSnapshot Core;internal DirectInteractionSnapshot Direct;internal PlatformPose? LastPose;internal Exception? Fault;
+        internal SnackPose Snack;
         private TimeSpan elapsed;private EventHandler? tick;
-        internal Harness(Func<IReadOnlyList<DesktopMonitor>>? fallback=null,bool realPresenter=false,bool refuseLegacyArea=false,bool platformEnabled=true,bool walking=false,bool perchEnabled=false,double readbackStep=0)
+        internal Harness(Func<IReadOnlyList<DesktopMonitor>>? fallback=null,bool realPresenter=false,bool refuseLegacyArea=false,bool platformEnabled=true,bool walking=false,bool perchEnabled=false,double readbackStep=0,bool snackPresentation=false)
         {
             if(realPresenter)Presenter=new DororongPresenter{Width=144,Height=144};
             Platforms=new PetPlatformRuntime(new(Native),_=>Map,()=> Presenter is null ? (new(20,100,100,10),new(10,10,100,90)) : Presenter.MeasurePlatformGeometry(),
                 (pose,sole)=>{LastPose=pose;Presenter?.ApplyPlatformPose(pose,sole);},fallback,
                 perchEnabled ? facing => Presenter?.MeasureEdgePerchContact(facing) ?? new PerchContact(44,74,94,48) : null,
                 perchEnabled ? (phase,facing,delta,immediate)=>Presenter?.ApplyEdgePerch(phase,facing,delta,immediate) : null);
+            void Render(PetSnapshot core,DirectInteractionSnapshot direct,TimeSpan delta)
+            {
+                Core=core;Direct=direct;if(Presenter is null)return;
+                if(snackPresentation)Presenter.RenderDesktop(core,direct,delta);else Presenter.Render(core,direct);
+                Presenter.Measure(new(144,144));Presenter.Arrange(new(0,0,144,144));Presenter.UpdateLayout();
+            }
             var host=new PetLoopHost(()=>refuseLegacyArea?throw new InvalidOperationException("legacy primary area used"):new(0,0,800,600),()=>Presenter is null?new(120,100):new(144,144),()=>new(4,4),()=>Pointer,()=>Down,
                 ()=>readbackStep>0 ? new(Math.Round(Position.X/readbackStep)*readbackStep,Math.Round(Position.Y/readbackStep)*readbackStep) : Position,
                 p=>{if(ThrowWrite)throw new InvalidOperationException("host failure");Position=p;WritesThisTick++;},
-                (core,direct)=>{Core=core;Direct=direct;if(Presenter is not null){Presenter.Render(core,direct);Presenter.Measure(new(144,144));Presenter.Arrange(new(0,0,144,144));Presenter.UpdateLayout();}},()=>{Captures++;return true;},()=>{Releases++;Loop!.NotifyDirectInteractionCanceled();}){Platforms=platformEnabled?Platforms:null};
+                (core,direct)=>Render(core,direct,TimeSpan.FromMilliseconds(16)),()=>{Captures++;return true;},()=>{Releases++;Loop!.NotifyDirectInteractionCanceled();},Render)
+                {
+                    Platforms=platformEnabled?Platforms:null,
+                    PresentSnack=(pose,pointer)=>{Snack=pose;Presenter?.SetSnack(pose,pointer);},
+                    GetSnackMouth=()=>Presenter?.GetSnackMouth() ?? new PointD(54,84),
+                    SetSittingRequested=snackPresentation ? value=>Presenter!.SetSittingRequested(value) : null,
+                    SetLocomotionBlocked=snackPresentation ? value=>Presenter!.SetLocomotionBlocked(value) : null
+                };
             Loop=new(new(()=>elapsed,()=>{},()=>{}),new(h=>tick+=h,h=>tick-=h,()=>{},()=>{}),host,
                 _=>new(BehaviorTuning.Default with {IdleMin=walking?TimeSpan.FromMilliseconds(100):TimeSpan.FromMinutes(10),IdleMax=walking?TimeSpan.FromMilliseconds(100):TimeSpan.FromMinutes(10),IdleToWalkProbability=1},new SeededRandomSource(1),new(100,100)));
             Loop.Faulted+=(_,e)=>Fault=e;

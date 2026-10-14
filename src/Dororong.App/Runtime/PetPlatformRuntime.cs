@@ -174,7 +174,7 @@ internal sealed class PetPlatformRuntime
         return new(minX,minY,maxX-minX+petSize.Width,maxY-minY+petSize.Height);
     }
 
-    internal PlatformPose Advance(TimeSpan elapsed,TimeSpan delta,PointD displayed,PointD proposed,FootContact contact,bool directOwnsPosition,double supportedOffsetY = 0)
+    internal PlatformPose Advance(TimeSpan elapsed,TimeSpan delta,PointD displayed,PointD proposed,FootContact contact,bool directOwnsPosition,double supportedOffsetY = 0,double supportedLiftLimit = 12)
     {
         _presentationDelta=delta;
         if(directOwnsPosition)
@@ -207,7 +207,7 @@ internal sealed class PetPlatformRuntime
         var surfaces=_scene is null ? Array.Empty<PlatformSurface>() :
             PlatformGeometry.Build(_scene,surfaceHeight);
         var pose=_motion.Advance(new(delta,displayed,proposed,contact,surfaces,false,_reliable)
-            { Monitors = _scene?.Monitors, SupportedOffsetY = supportedOffsetY });
+            { Monitors = _scene?.Monitors, SupportedOffsetY = supportedOffsetY, SupportedLiftLimit = supportedLiftLimit });
         if(pose.Phase==PlatformPhase.Landing && previousPhase!=PlatformPhase.Landing)
             _landingClearanceHeight=clearanceHeight;
         else if(pose.Phase!=PlatformPhase.Landing) _landingClearanceHeight=null;

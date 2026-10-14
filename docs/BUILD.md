@@ -52,9 +52,12 @@ Embedded character resources and all license notices remain included.
 ## Installer and verification
 
 The historical public 0.1.2 candidate is `candidate-20260921-v012-01`.
-The current installed local 0.1.3 installer is `candidate-20261002-security-lifecycle-01`,
-using the unchanged `candidate-20261002-window-layer-01` app payload;
-see the [current host verification record](verification/2026-10-02-security-lifecycle-host.md).
+The installed local0.1.3 checkpoint is `candidate-20261014-figma-tray-13`;
+see its [host verification and clean handoff record](verification/2026-10-14-figma-tray-support.md).
+The prior head-icon/tray candidate12 and its
+[verification record](verification/2026-10-14-head-icon-tray.md) remain preserved.
+The October2 security/lifecycle candidate and its
+[verification record](verification/2026-10-02-security-lifecycle-host.md) remain historical.
 The earlier `candidate-20260921-v013-01` and its
 [verification report](verification/2026-09-21-v013-local-candidate.md) are historical.
 See [release verification](verification/2026-09-21-v012-release.md) for hashes
@@ -69,13 +72,13 @@ included by cloning this repository. The builder pins the payload SHA256 and
 refuses an existing output directory.
 
 ```powershell
-pwsh -NoProfile -File tools/Build-Installer.ps1 -PackagePath artifacts/product-shell/candidate-20260921-v013-01/runtime -ArchivePath artifacts/product-shell/candidate-20260921-v013-01/Doros-on-my-desktop-Portable-0.1.3-win-x64.zip -CompilerPath C:/your-verified-toolchain/ISCC.exe -OutputPath artifacts/installer/candidate-NEW
+pwsh -NoProfile -File tools/Build-Installer.ps1 -PackagePath artifacts/product-shell/candidate-VERIFIED/runtime -ArchivePath artifacts/product-shell/candidate-VERIFIED/Doros-on-my-desktop-Portable-0.1.3-win-x64.zip -CompilerPath C:/your-verified-toolchain/ISCC.exe -OutputPath artifacts/installer/candidate-NEW
 ```
 
-The tracked builder still pins the historical September21 candidate shown above;
-it does not silently package the newer October2 binaries. The current local installer
-used a separately hash-pinned builder retained with its local evidence. Before making
-a new distributable, validate the chosen archive and deliberately update the pin.
+Replace `candidate-VERIFIED` with the explicitly tested archive selected for this
+build. The tracked builder pins that archive's SHA256, not an arbitrary latest
+folder. Before making a new distributable, validate the chosen archive and
+deliberately update the pin; never bypass it just to make a build succeed.
 Replace the compiler placeholder
 with your verified Inno Setup 7.1.0 path. An independently rebuilt archive is
 not automatically trusted: validate it and deliberately update the hash pin.
@@ -87,6 +90,21 @@ That historical evidence is not a 0.1.2 host-upgrade or clean-machine test.
 Exit the pet before package/installer validation: it includes a strict
 single-instance application smoke test. Historical Sandbox handoffs retain
 older candidate pins and do not validate the current build.
+
+## Clean local installer handoff
+
+After installer validation, create a fresh local handoff (no rebuilding/repacking
+of the verified EXE, and no upload):
+
+```powershell
+pwsh -NoProfile -File tools/Prepare-LocalDelivery.ps1 -InstallerDirectory artifacts/installer/candidate-VERIFIED -OutputPath D:/your-project/artifacts/delivery/0.1.3-LOCAL
+```
+
+Only Setup EXE, bilingual README and SHA256SUMS go in that folder. Runtime files,
+proofs, compiler, logs and backups remain in their separate artifact directories.
+Old candidate paths stay intact because verification records refer to them.
+`artifacts/`, `bin/`, `obj/` and test results are not source-control content.
+This handoff is not a GitHub release or authorization to distribute character art.
 
 ## Code-signing readiness (2026-09-21)
 

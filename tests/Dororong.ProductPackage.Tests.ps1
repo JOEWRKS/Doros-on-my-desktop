@@ -441,6 +441,7 @@ foreach ($notice in @('README.txt', 'LICENSE.txt', 'licenses/NET-LICENSE.txt',
 }
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 Assert-FileHashEqual (Join-Path $repositoryRoot 'LICENSE') (Join-Path $packageRoot 'LICENSE.txt') 'Packaged project license differs.'
+Assert-FileHashEqual (Join-Path $repositoryRoot 'src/Dororong.App/Assets/Fonts/OFL-Pretendard.txt') (Join-Path $packageRoot 'Assets/Fonts/OFL-Pretendard.txt') 'Bundled menu font license is missing or differs.'
 Assert-FileHashEqual (Join-Path $repositoryRoot 'docs/PACKAGE-README.txt') (Join-Path $packageRoot 'README.txt') 'Packaged quick start differs.'
 
 $apphost = Get-RequiredFile $packageRoot 'Dororong.exe'

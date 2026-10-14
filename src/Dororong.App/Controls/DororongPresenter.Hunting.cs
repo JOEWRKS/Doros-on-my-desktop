@@ -29,6 +29,9 @@ public partial class DororongPresenter
     private double _huntBlendProgress;
     private double _huntRenderedBlend;
     private int _huntFrame;
+    private int _huntVisualFrame = 156;
+    private double _huntRecoveryAge = 2.6;
+    internal int HuntingVisualFrame => _huntVisualFrame;
     private HuntGazePose _huntRenderedGaze;
     private bool _huntClosed;
     private Matrix _huntHeadTransform = Matrix.Identity;
@@ -57,17 +60,17 @@ public partial class DororongPresenter
         // The brief near-neutral source bridge must keep the exact visible
         // raster on a press, rather than jumping to the fully layered source.
         if (_huntRenderedBlend<1) return new(pixels,sourceToWindow,_activeFacing);
-        var frame=_huntFrame;var gaze=_huntRenderedGaze;var closed=_huntClosed;var walkingFrame=_huntWalkingFrame;
+        var frame=_huntVisualFrame;var gaze=_huntRenderedGaze;var closed=_huntClosed;var walkingFrame=_huntWalkingFrame;var breathing=_breathingAmount;
         var renderer=new HuntRenderer();
         byte[] Render(double pull,double eye,double hair)
         {
             if(pull==0)return (byte[])pixels.Clone();
-            var bitmap=renderer.Render(frame,gaze,closed,pull,eye,hair,walkingFrame:walkingFrame);
+            var bitmap=renderer.Render(frame,gaze,closed,pull,eye,hair,walkingFrame:walkingFrame,breathing:breathing);
             var result=new byte[96*96*4];new FormatConvertedBitmap(bitmap,PixelFormats.Bgra32,null,0).CopyPixels(result,384,0);
             return result;
         }
         return new(pixels,sourceToWindow,_activeFacing,Render,new(_huntHeadTransform.M11,_huntHeadTransform.M12),
-            (pull,eye,hair,phase)=>renderer.Render(frame,gaze,closed,Math.Max(0,pull),eye,hair,phase,walkingFrame));
+            (pull,eye,hair,phase)=>renderer.Render(frame,gaze,closed,Math.Max(0,pull),eye,hair,phase,walkingFrame,breathing:breathing));
     }
 
     internal bool UpdateHunting(PetSnapshot snapshot, DirectInteractionSnapshot direct,
@@ -76,7 +79,7 @@ public partial class DororongPresenter
     private bool UpdateHuntingCore(PetSnapshot snapshot, DirectInteractionSnapshot direct,
         PointerSample pointer, TimeSpan elapsed, bool pressed, bool pounceEnabled)
     {
-        var blocked = pressed || _sittingRequested || _locomotionBlocked || _edgePerch.IsAttached ||
+        var blocked = _snackPose.Active || pressed || _sittingRequested || _locomotionBlocked || _edgePerch.IsAttached ||
             snapshot.State is not (PetState.Idle or PetState.Walk or PetState.Sleep) || snapshot.IsDirectInteractionPending ||
             direct.Target != DirectInteractionTarget.None || direct.HeadLanding is not null;
         _huntDelta = Math.Clamp(elapsed.TotalSeconds, 0, .1);
@@ -98,6 +101,10 @@ public partial class DororongPresenter
         }
         // Departure cancels preparation on this tick, not at the next sway peak.
         // In-flight/landing and the post-landing cooldown remain owned by Pounce.
+        if (!_huntNear && _huntSession.IsActive && !blocked && !Pounce.IsEngaged)
+            _huntRecoveryAge = SnackRenderer.RecoveryAge(HuntPose.At(_huntVisualFrame/60d).Amount);
+        if(blocked || _huntNear || Pounce.IsEngaged) _huntRecoveryAge=2.6;
+        else _huntRecoveryAge=Math.Min(2.6,_huntRecoveryAge+_huntDelta*.55/.24);
         if (Pounce.IsEngaged || !_huntNear) _huntSession.Reset();
         else _huntSession.Advance(_huntDelta,_huntNear,blocked);
         if (blocked) {_huntGaze.Reset();_huntBlendProgress=0;}
@@ -123,7 +130,7 @@ public partial class DororongPresenter
     {
         _huntingImage = null;
         _huntWalkingFrame = null;
-        if ((!_huntTracking && !_huntSession.IsActive && !Pounce.IsEngaged && _huntGaze.IsAtRest && _huntBlendProgress<=0) || _sittingRequested || _locomotionBlocked || _edgePerch.IsAttached ||
+        if (_snackPose.Active || (!_huntTracking && !_huntSession.IsActive && !Pounce.IsEngaged && _huntRecoveryAge>=2.6 && _huntGaze.IsAtRest && _huntBlendProgress<=0) || _sittingRequested || _locomotionBlocked || _edgePerch.IsAttached ||
             snapshot.State is not (PetState.Idle or PetState.Walk) || snapshot.IsDirectInteractionPending ||
             direct.Target != DirectInteractionTarget.None || direct.HeadLanding is not null) return;
         _postBodyClickIdleFacing = _postCheekIdleFacing = _postHeadLandingIdleFacing = null;
@@ -147,20 +154,21 @@ public partial class DororongPresenter
         else if (Pounce.Phase == PouncePhase.Landing) age = 2.05 + .55 * Math.Clamp((Pounce.Age - .34) / .28, 0, 1);
         else if (Pounce.Phase == PouncePhase.Track) age = 2.6;
         _huntFrame=(int)Math.Clamp(Math.Round(age*60),0,156);
+        _huntVisualFrame=(int)Math.Clamp(Math.Round((!_huntSession.IsActive && !Pounce.IsEngaged && _huntRecoveryAge<2.6 ? _huntRecoveryAge : age)*60),0,156);
         _huntRenderedGaze=gaze;_huntClosed=closed;_huntRenderedBlend=mix;
-        _huntHeadTransform=HuntRenderer.HeadTransform(_huntFrame,gaze);
+        _huntHeadTransform=HuntRenderer.HeadTransform(_huntVisualFrame,gaze);
         if(!_huntTracking && !_huntSession.IsActive && !Pounce.IsEngaged && snapshot.State==PetState.Walk)
             // The first resumed tick can round the180ms gait ramp to frame0.
             // Expose its first authored gait level during head recovery too.
             _huntWalkingFrame=LocomotionFrames.Walk(Math.Max(_locomotion.Walk,1d/8),_locomotion.Distance,closed);
         _huntingImage = HuntFrameBlend.Apply((BitmapSource)DororongImage.Source,
-            (_huntRenderer ??= new()).Render(_huntFrame,gaze,closed,walkingFrame:_huntWalkingFrame),mix);
+            (_huntRenderer ??= new()).Render(_huntVisualFrame,gaze,closed,walkingFrame:_huntWalkingFrame,breathing:_breathingAmount),mix);
         DororongImage.Source = _huntingImage;
         BodyScaleTransform.ScaleX = flip ? -1 : 1;
         BodyScaleTransform.ScaleY = 1;
         BodyRotateTransform.Angle = 0;
-        // Retain the ordinary state's breathing scale. Tracking only changes
-        // local head/eye pose; it must not shrink the whole pet on entry.
+        // The same local torso breath is already in the raster. Tracking must
+        // never enlarge/shrink the whole pet when it takes over presentation.
         BodyTranslateTransform.X = BodyTranslateTransform.Y = 0;
         if (Pounce.IsJump)
         {
@@ -201,6 +209,7 @@ public partial class DororongPresenter
         _huntNear = false;
         _huntTracking = false;
         _huntBlendProgress = _huntRenderedBlend = 0;
+        _huntRecoveryAge=2.6;_huntVisualFrame=156;
         _huntingLastFlip = null;
     }
 

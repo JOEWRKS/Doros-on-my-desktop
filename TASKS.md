@@ -4,6 +4,374 @@ Direction, current stage and release completion gates live in [ROADMAP](ROADMAP.
 This file remains the sole active execution/verification ledger; a finished task
 does not close a roadmap stage with open requirements.
 
+## Accepted UI and snack checkpoint — 2026-10-14
+
+- User confirmed `ㅇㅇ 이제 안 내려간다. 정리 완료하고 커밋 푸시하자`.
+  This accepts the installed Figma-menu fix and authorizes the requested main
+  checkpoint after cleanup; it does not waive other-PC/startup/rights boundaries.
+- Candidate13 remains unchanged. Latest evidence: App1185/Core255, targeted81,
+  package/installer checks,470-file installed parity and user confirmation.
+  [Exact package and cleanup record](docs/verification/2026-10-14-figma-tray-support.md).
+- Private repository and synchronized main confirmed before committing. Include
+  current feature/UI/code/tests/docs plus preserved approved project records;
+  exclude local installers, generated proofs, backups and build/test caches.
+  No new public release, visibility change or tag. Commit/push verification follows.
+
+## Figma tray support and clean installer handoff — 2026-10-14
+
+- User confirmed Doro's own tray popup now stays open and approved commit/push.
+  They then requested cleanup first, and reported a separate Figma tray-menu fall.
+  Cleanup/commit/push waits on this new regression; no commit or push has occurred.
+- Live read-only metadata identified a Chromium popup overlapping the taskbar's
+  top by12px, previously treated as a supporting/occluding ordinary window.
+  Narrow style classification and process-independent transient-menu protection
+  now preserve the taskbar while retaining ordinary-window occlusion.
+- Reproduced3 old failures, then targeted81/Core255/full App1185 passed.
+  Candidate13 packaged, installed and relaunched with470-file parity and preserved
+  data/settings. Setup/README/checksums handoff is separate from historical outputs;
+  no old files deleted or moved. [Evidence and cleanup scope](docs/verification/2026-10-14-figma-tray-support.md).
+- Next: user checks Figma menu, then the previously approved private main commit/push.
+  File/installer handoff cleanup is done. Public release remains held.
+  Subsequent acceptance and main authorization are recorded above.
+
+## Head icons and tray popup stability — 2026-10-14
+
+- User requested head brand icons, then reported that actual tray right-click
+  repeatedly opened/dismissed the menu and confirmed the app was closed.
+- Existing isolated head reused unchanged; multi-size ICO and menu head resource
+  applied to app/window/tray/header/installer brand surfaces. Functional action
+  symbols and product identity remain unchanged. [Visual scope](DESIGN.md#head-brand-icons--2026-10-14).
+- Removed the cancelled WinForms-opening detour. Left/right native releases now
+  enter one guarded WPF opening route. The actual pet owner is activated before
+  opening, not the nonactivating popup after capture. Direct command refresh,
+  single callback dispatch and pending/open disposal remain intact.
+- Independent scoped review found no production blocker; strengthened the outside
+  activation test to accept natural dismissal before injecting a fallback message.
+  Real user-session cause/reproduction remains an inference, not isolated-test proof.
+- Full App1168 and final targeted41 checks passed. Tested/published/installed app
+  hashes match; candidate12 installed with470-file parity and data/settings preserved.
+  Startup remains off; installed app relaunched. Setup retains all10 icon sizes.
+  [Evidence and remaining boundaries](docs/verification/2026-10-14-head-icon-tray.md).
+  Next: user checks real tray right-click stability and head icons.
+  No commit/push/public release in this step.
+  Subsequent user confirmation: the popup no longer disappears; accepted for
+  commit/push. Separate Figma-menu support report and ensuing hold are recorded above.
+
+## Native B2 menu integration — 2026-10-14
+
+- User accepted B2 and explicitly requested actual-menu integration. [Approval](DESIGN.md#b2-implementation-approval--2026-10-14).
+- Shared `PetContextMenu`/`PetMenuResources.xaml` for character and tray. Existing
+  NotifyIcon left/right routes now open the WPF surface through `StyledTrayMenuBridge`;
+  command callbacks and startup-state checks remain on their existing paths.
+- Duplicate/queued openings are guarded; disposal cancels queued work and closes
+  the popup. Escape and command selection explicitly close the custom menu even
+  without an owning Window's focus transfer. No pet artwork, sampling, motion,
+  support or alpha-hit-test code changed in this UI integration.
+- Initial25 targeted checks passed, including actual WPF popup creation on an
+  isolated Windows desktop, four state combinations per menu, callback counts,
+  repeated opening and open/pending disposal. Keyboard/activation messages here
+  are injected test events, not physical mouse/keyboard evidence.
+- Native96DPI render proofs: `artifacts/ui-menu-20261014/native-proof/`.
+  Compared all8 states to accepted B2. Independent UI UX Pro Max-informed review
+  found preserved composition/commands and no clipping; corrected its finding
+  that the right-click test could be masked by subsequent left-click opening.
+- Official pinned Pretendard fonts and OFL notice embedded/bundled; package test
+  checks the license hash. Final App1166/Core255 passed; package/installer checks
+  passed and candidate10 installed with470-file parity, preserved data/settings.
+  Installed app launched. [Detailed evidence and limits](docs/verification/2026-10-14-native-menu.md).
+- Actual-product user acceptance and physical input check remain: Computer Use
+  cannot target this pet window. Mixed DPI/other-PC checks remain open. Next: user
+  checks the installed menus before the requested commit/push. No public release.
+
+## NIKKE menu finish B — 2026-10-14
+
+- User requested more polished NIKKE-like finish after judging A2 raw. Reinspected
+  actual settings/confirmation reference images; retained commands, state behavior,
+  original art, compact menu composition and production boundary.
+- Refined layered shell/white inset, borders/shadows, cyan button, typography,
+  icon weight and startup switch. [Visual decisions](DESIGN.md#draft-b2--finish-refinement-2026-10-14).
+- Preserved A2 HTML and screenshots. First B inspection found watermark extending
+  beyond panel; contained it, corrected original PNG's transparent foot margin in
+  the illustrative desktop, and increased title to19px bold for hierarchy/contrast.
+- Final browser collector reran the seven affected render/state/keyboard targets:
+  19 evidence entries, no configured assertion failure or page error, in
+  `artifacts/ui-menu-20261014/captures-b2/`. Wide1280×920 and narrow390px observed.
+  Source images/screenshots show finish differences, not exact game-token recovery.
+- Independent Impeccable-informed finish review inspected final wide/narrow/focus
+  captures and reported no P0–P2 blocker within that scope. It did not certify game
+  similarity, full accessibility or native behavior; those limits remain explicit.
+- Only mockup and records changed. Native app/installed files, commit/push and
+  public distribution untouched. Exact visual approval and native DPI/focus/edge
+  validation remained open at this draft step. Later B2 acceptance and native
+  integration are recorded [above](#native-b2-menu-integration--2026-10-14).
+
+## NIKKE menu mockup A — 2026-10-14
+
+- User requested a visual draft. Produced isolated interactive HTML in
+  `artifacts/ui-menu-20261014/index.html`, not production WPF/WinForms changes.
+  [Design scope/tokens](DESIGN.md#draft-a2--2026-10-14). No install/commit/push.
+- Independent preimplementation scope review checked current command mapping;
+  pinned criteria and authority hash are in the artifact's `review-scope.md`.
+- Actual wide1280×920 and narrow390px renders, snack/startup combinations on both
+  menus, keyboard/Escape/reopen and close/exit simulation captured by the installed
+  JOEDESIGN localhost collector. Seven target observations, no browser errors or
+  failed configured assertions: `captures-v2/0-observation.json` through `6-observation.json`.
+  This is a draft browser check, not native Windows menu validation.
+- Measured in browser: menus288px, snack62px, secondary rows44/54px. Narrow has no
+  horizontal overflow; pet bottom equals taskbar top. Original assets load unchanged.
+- Impeccable C1 visual review identified stale captions after toggling and pet
+  occlusion at narrow width; corrected both, plus narrow title/description wrapping
+  and header focus contrast. Original captures retained; C1 confirmed fixes against
+  `captures-v2/0-full.png`, `1-full.png`, `4-result.png`.
+- UI UX Pro Max compact-control/focus guidance and current Web Interface Guidelines
+  informed native buttons, named switches, visible keyboard focus and decorative-icon
+  hiding. This does not certify exhaustive accessibility or native behavior.
+- Fresh independent visual critic inspected final wide/narrow/changed-state/focus
+  captures without builder verdicts. No P0–P2 blocker to showing this draft;
+  small secondary version/state text remains a P3 observation for native DPI review.
+- Remaining: exact user visual acceptance, production integration, Windows DPI/edge/
+  focus testing. Full JOEDESIGN machine conformance/host certification not completed;
+  unavailable OMD/Refero boundaries remain recorded in DESIGN. Next: user reviews A2,
+  then approved UI implementation before the already requested commit/push sequence.
+
+## Installed snack update and NIKKE UI direction — 2026-10-14
+
+- 사용자가 수락된 후보08의 실제 설치본 업데이트를 승인했다.
+  검증·백업 후 설치 경로에서 실행했다. [설치 근거](docs/verification/2026-10-14-snack-installed-update.md).
+- 기존 자동 실행 켜짐을 유지하며 임시 후보 경로를 설치 경로로 옮겼다.
+  실제 재로그인·제거 검증 완료로 보지는 않는다.
+- 사용자는 UI를 니케 느낌으로 만든 뒤 커밋·푸시하도록 순서를 지정했다.
+  직접 웹 레퍼런스를 찾으라는 후속 지시에 따라 로비·설정·팝업 원본을
+  확인하고 [DRAFT 방향](DESIGN.md)을 기록했다. UI 코드는 아직 변경하지 않았다.
+- 다음은 메뉴 대표 시안·검수·사용자 확인이다. 이번에는 커밋·푸시하지 않았다.
+
+## Happy after eating — 2026-10-14
+
+- 후속 피드백 `좀 더 천천히. 더 길게 흔-들 흔-들`에 따라 빠른 까딱 리듬을
+  느린 연속 흔들림으로 변경했다. 원래 각도·외형·직접 중단은 유지한다.
+  [느린 버전 검사·실행 근거](docs/verification/2026-10-13-snack-motion.md#slow-happy-sway--2026-10-14).
+  영향 범위 검사·패키지 검증 후 후보08을 로컬 실행했다. 사용자가
+  `ㅇㅇ 이 정도면 좋다. 이대로 가자`로 느린 식후 흔들림을 수락했다.
+  이번 수락은 해당 동작에 한정한다. 수락 기록만 갱신하며 코드·실행본은 유지한다.
+- 사용자 요청과 `ㄱㄱ` 승인에 따라 식후 폴짝 대신 감은 눈으로 좌우 고개를
+  까딱하는 반응을 구현했다. [승인 범위](docs/specs/2026-10-13-snack-play.md#happy-after-eating--approved-2026-10-14).
+- 기존 머리 보간·목 연결을 재사용하고 몸·발·원본 자산을 유지한다.
+  자동 추적·사냥은 반응 종료까지 대기하며 직접 조작은 즉시 중단한다.
+- 검사·연속 프레임·후보 실행 상태는 [이번 근거](docs/verification/2026-10-13-snack-motion.md#happy-after-eating--2026-10-14)에 둔다.
+  전체 회귀·패키지 검사를 통과했고 종료 확인 후 후보07을 로컬 실행했다.
+  사용자 시각 수락, 설치본 교체와 출시 게이트는 별개다. 커밋·푸시는 하지 않았다.
+
+## Upright tracking interpolation — 2026-10-14
+
+- 사용자가 후보05의 간식 두 문제에 `문제 없다`고 확인했다. 이어 평시 추적의
+  얼굴 기울임 픽셀 떨림을 보고하고, 다시 흐려지지 않는 머리 보간 수정을 승인했다.
+- 몸·원본을 유지한 한 번의 머리 회전 보간을 적용했다. 원인, 폐기한 실험,
+  연속 프레임 비교와 검사 근거는 [실행 기록](docs/verification/2026-10-13-snack-motion.md#upright-tracking-interpolation--2026-10-14)에 둔다.
+- 전체 회귀·패키지·로컬 후보 검증 후 후보06을 실행했다. 정확한 검사 수와
+  경로·해시·실행 근거는 위 기록에 둔다. 이후 재실행한 후보06에 사용자가
+  `ㅇㅇ 깔끔.`으로 추적 얼굴의 시각 수락을 확인했다. 설치본 교체,
+  실제 로그인·제거 검사와 기존 출시 게이트는 별개로 유지한다.
+
+## Snack entry and visible chewing — resumed 2026-10-14
+
+- 사용자 `작업 시작` 지시로 아래 두 건의 보류를 해제하고 수정을 재개했다.
+  설치본 교체·커밋·푸시·공개 배포 승인은 포함하지 않는다.
+- 앉은 상태에서 간식을 시작할 때 창 지지를 잃는 경로를 재현·수정했다.
+  원본 입의 세 번 씹기도 실제 재생 경로에서 확인하도록 검사했다.
+  원인·수정·검사·실행본 근거는 [이번 실행 기록](docs/verification/2026-10-13-snack-motion.md#snack-entry-and-visible-chewing--2026-10-14)에 둔다.
+- 당시에는 `커서 위치에서 시작`한다는 관찰 전체의 동일 재현과 사용자 수락이
+  미확인이었다. 후속 수락과 새 추적 문제는 [다음 작업](#upright-tracking-interpolation--2026-10-14)에 기록했다.
+- 전체 검사·패키지·실행 확인 후 후보05를 로컬 실행했다. 정확한 검사 수,
+  경로·해시·실행 PID는 위 실행 기록에 둔다. 설치본은 교체하지 않았다.
+
+## Snack candidate04 user findings — deferred 2026-10-14
+
+이 보류는 [후속 작업 시작](#snack-entry-and-visible-chewing--resumed-2026-10-14)으로 해제했다. 아래는 당시 기록이다.
+
+- 사용자 요청: 이번에는 기록만 한다. 내일 사용자가 작업 시작을 지시한 뒤
+  재현·원인 조사·수정을 시작한다. 자동 예약이나 백그라운드 작업은 하지 않는다.
+- 미해결 1 — 간식 주기를 처음 누르면 도로롱 위치가 마우스 커서에서 시작했다가
+  작업표시줄로 갑자기 바뀐다. 자연스러운 이동이 아니라 순간 위치 변경처럼 보인다.
+  사용자 관찰이며 정확한 재현 조건과 원인은 아직 확인하지 않았다.
+- 미해결 2 — 먹는 중 옴뇸뇸 씹는 동작이 보이지 않고 입이 움직이지 않는다.
+  사용자 관찰이며 렌더링·재생 경로 또는 움직임 크기 중 무엇이 원인인지는 미확인이다.
+- 재개 시 확인: 첫 간식 시작의 위치 연속성, 실제 실행 화면에서 보이는 기존 입의
+  씹기와 원복. 이전 자동 검사 통과를 이 두 문제의 해결·사용자 수락으로 보지 않는다.
+- 이번 변경은 TASKS/ROADMAP 기록뿐이다. 코드·자산·실행본 변경, 테스트 실행,
+  패키징·설치·커밋·푸시는 하지 않았다. F1 사용자 수락은 미완으로 유지한다.
+
+## Shared source and body-only breathing — 2026-10-14
+
+- User approved the shared-source correction. Unified neutral body endpoints,
+  native walking/head parts, upright tracking and bounded torso breathing;
+  preserved original assets and the accepted sitting bank. Scope and evidence:
+  [current correction](docs/verification/2026-10-13-snack-motion.md#shared-source-correction--2026-10-14).
+- Controlled comparison now has zero neutral body/contour differences, including
+  actual post-walk idle. Latest full App1134 and Core252 passed. Portable/hash
+  parity/native lifecycle validation passed; launched shared-source candidate04
+  after confirming no existing process. Exact package/log evidence is linked above.
+- Follow-up user findings and the current resumption boundary are recorded in
+  [the deferred review](#snack-candidate04-user-findings--deferred-2026-10-14). Existing
+  installer/login/uninstall, environment and rights boundaries remain separate.
+
+## Snack motion correction — 2026-10-13
+
+- Latest user review reports cross-state blur/body mismatch. Controlled native
+  comparisons confirmed separate initial-idle and post-walk-idle body sources,
+  tracking ink reconstruction differences, and prefiltered active walking heads.
+  Actual presenter walk->idle reproduces the neutral mismatch. Current findings
+  and a shared-source/single-sampling correction proposal are recorded at the top
+  of [motion evidence](docs/verification/2026-10-13-snack-motion.md). Diagnostic
+  tool/records only in this turn; no new app build/replacement or visual acceptance.
+- Follow-up user review rejected landing paw reach, airborne cursor corrections
+  and redrawn chewing lips. Corrected these with planted landing, captured/eased
+  flight and source-mouth deformation. Latest Core252/affected App163 passed.
+  Diagnosed whole-sprite breathing scaling with a controlled actual-presenter
+  A/B; proposed head-fixed/body-only breathing, but did not change that behavior.
+  New candidate package/parity/native smoke passed and the candidate was launched
+  after confirmed tray exit. Current follow-up evidence and acceptance status are at the
+  top of [motion evidence](docs/verification/2026-10-13-snack-motion.md).
+- User rejected the first snack candidate and requested sharp rendering, a new
+  quadruped run, hunting-inspired jump, reference-based mouth/chewing, exclusive
+  eating control and smooth hunting recovery. [Approved correction scope](docs/specs/2026-10-13-snack-play.md#user-motion-correction--2026-10-13).
+- Implemented native local compositing, source-based asymmetric run, phased
+  jump, open/accept/closed-lobe chewing plus settling, and authored hunting
+  recovery without continuing launch dwell. Existing artwork and old installed
+  package remain unchanged; no commit/push/publication.
+- Core250 and affected App321 passed. Causes, initial fixture failures, visual
+  exports, benchmark and remaining checks have one owner:
+  [motion evidence](docs/verification/2026-10-13-snack-motion.md).
+- Full latest App1117 passed; publisher/package/hash-parity/native smoke passed.
+  After the user's confirmed tray exit, launched the new isolated motion candidate.
+  Exact candidate/hash and proof files live in the evidence above. Next: user
+  visual acceptance; installer/login/uninstall checks remain separate pending work.
+
+## Snack play and login startup — 2026-10-13
+
+- User explicitly approved the menu/jewel/chase/jump/stationary-offer/closed-eye
+  eating proposal plus login startup. Bounded behavior and visual acceptance
+  live in [the feature spec](docs/specs/2026-10-13-snack-play.md), not the old
+  numeric care or Backspace-trigger proposals. F1 is independent of R3/R4 holds.
+- Added a pure `SnackSession`, exclusive PetLoop ownership, local mouth/drool
+  rendering, click-through jewel companion, both menu entry points, optional
+  quoted HKCU startup registration and exact-command uninstall cleanup.
+- Initial targeted jump integration caught the existing 12-DIP supported-hop
+  clamp. Added a bounded per-call lift limit for snack play (76); the old default
+  stays 12. The fixed targeted suite passed 12/12, including actual platform
+  landing. Initial debug suites passed Core248/App1105 (before later render
+  caching and final menu test); these are not claimed as latest-binary evidence.
+- Inspected the actual WPF chewing/drool frame strip on light/dark backgrounds:
+  `artifacts/snack-20261013/frames.png`. Eye closure uses existing art. The
+  interior mouth changes, while a raster assertion preserves eating-frame alpha
+  contours. This is renderer inspection, not desktop capture or user acceptance.
+- Measured uncached Release snack rendering: median11.96ms/p95 19.55ms on this
+  host during regression testing. Added bounded reusable base-frame caching;
+  post-change timing and final tests remain pending at this entry.
+- V2 definition bootstrap was attempted but failed surface/coverage validation.
+  The unapproved attempt is preserved as `product-definition/dororong-snack-play/state.candidate.json`,
+  not canonical state. No Semantic Closure, generated-manifest approval, or
+  completed JOEFLOW planning delivery is claimed. Current explicit implementation
+  authorization and existing project document ownership remain distinct.
+- Final verification/candidate and exact remaining boundaries:
+  [local evidence](docs/verification/2026-10-13-snack-play.md). Release Core248,
+  App1111 and latest affected-scope176 passed; actual window start/cancel/close
+  and published-portable hash/native smoke passed. The after-cache results are
+  kept separate from the earlier full suite, not added into a misleading total.
+- Prepared and launched the isolated feature candidate for user testing. No
+  registry Run entry was changed by automated tests; no installed-app replacement,
+  public release, commit or push. Next: user play/visual acceptance, then separately
+  validated installed update/login/uninstall paths. Formal V2 bootstrap remains
+  incomplete as described above, not claimed to pass by the runtime checks.
+
+## R3 environment hold — authorized 2026-10-05
+
+
+- Applied the user's explicit hold decision to [ROADMAP](ROADMAP.md): R3 status,
+  current stage and eligible next work changed together. The reason and resume
+  condition live in its R3 row, not in a second issue ledger.
+- Preserved required checks, R1/R2 completion evidence, R4 rights gate and R5/R6
+  dependencies. Hold is neither completion nor a waiver; the existing independent
+  R4 work remains eligible. Earlier R3-next statements are dated history;
+  ROADMAP owns the current status and next work.
+- JOENESS review: approval → R3 criterion/hold → this execution receipt → current
+  next work is connected; links/headings and diff checked. Only ROADMAP and this
+  ledger changed. No application tests, setup/package changes, new chat, email,
+  publication, commit or push in this task.
+
+## JOENESS 0.3.2 project connection — approved 2026-10-05
+
+- User approved the proposed connection refresh in this chat. Official fresh
+  Check → Apply → Check returned current/clean. Updated only the owned AGENTS
+  block and its setup baseline; this entry is the execution receipt.
+- Exact owner sections now distinguish product/visual approval, execution proof,
+  roadmap status and rights issues. Workers update affected task/roadmap records
+  together; approved goals/order/criteria stay separate from factual updates.
+- Traced [R2](ROADMAP.md) criteria/status against the existing
+  [host lifecycle evidence](docs/verification/2026-10-02-security-lifecycle-host.md).
+  No application checks were rerun. No release status changed, so ROADMAP stays
+  unchanged; its next work remains R3, with R4 independently open.
+- Fresh-chat instruction delivery remains unverified; no new chat was created.
+  Existing outside instructions, history and prior edits are preserved. No
+  personal-package reinstall, app/assets/deployment changes, commit or push.
+
+## Portfolio media and implementation handoff — 2026-10-03
+
+- Prepared the requested local portfolio handoff at
+  `artifacts/portfolio-handoff-20261003/HANDOFF.md`, focusing on Windows app
+  behavior/implementation rather than ownership of the original character design.
+  No message was sent back to another thread; the requester will retrieve it.
+- Reused two visually inspected actual desktop crops and three renderer stills,
+  plus the existing September30 29-second renderer video. Six media copies are
+  byte-identical to originals. No new capture, redraw, text overlay or app launch.
+  Handoff distinguishes staged renderer media from OS capture, omitted newer
+  features, local0.1.3/source parity boundaries and preserved older0.1.2.
+- `review-code.zip` contains31 selected source/test/license files from
+  HEAD1765c8706d334da6e0001a001953021ffa12dcd3, not a standalone build.
+  Fresh Git diff confirms included sources unchanged. Initial raw ZIP parity
+  failed because core.autocrlf exports uniformCRLF from mixed working endings;
+  a minimal comparison confirms identical text after normalizing both sides.
+  Corrected artifact checker verifies exact content moduloCRLF/LF, preserving
+  separate raw/normalized hashes rather than claiming raw-byte code equality.
+- Handoff checker PASS: six media hash matches and31 source-content matches;
+  manifest records provenance/classification/dimensions and SHA256. Inspected
+  October2 historical TRX counters Core241/App1099; no new app suite or runtime
+  acceptance run. Windows11/other-PC coverage and character/public-use rights
+  remain unresolved. No public asset upload, repository visibility change,
+  release, email, source/installer change, commit or push in this task.
+
+## Rights inquiry follow-up with media — 2026-10-03
+
+- User approved the revised polite follow-up and three existing media files.
+  Sent to the official inquiry address as a reply in the September21 thread,
+  with the approved real-name signature followed by the activity name.
+- Fresh Gmail read-back verifies SENT, recipient, original-thread reply context,
+  exact approved new-body prefix, and all three attachment names/types/sizes.
+  The connector also quotes the original inquiry after the new body; no duplicate
+  send was performed. Delivery, reading and publication permission are not proven.
+- Attachments: two actual desktop screenshots from
+  `artifacts/community-media-20260930/desktop-captures/opaque-cursor/`
+  (`05-perched.png`, `03-head-with-cursor.png`) and the existing29-second
+  `complete-demo/dororong-demo-no-text.mp4` under the same media root.
+  The approved text identifies the video as an app-renderer demonstration,
+  not an OS recording. No executable or account/chat screenshot attached.
+- Rights status remains unresolved; see docs/RIGHTS-REVIEW.md. Only that document
+  and this ledger were updated for this action. Earlier README edits preserved;
+  no source/app/installer changes, commit, push, visibility change or release.
+
+## README clarification and publication scope — 2026-10-02
+
+- User authorized the three README clarifications identified in review: correct
+  Korean character-menu Exit text, describe both tray buttons for main/v0.1.3
+  while distinguishing v0.1.2, and explain authorized GitHub sign-in for the
+  preserved private-release download. Only README and this ledger changed.
+- User also expressed interest in publication. Publication scope/decision is not
+  confirmed; existing R3/R4 gates remain open. Official SHIFT UP guidelines and
+  GitHub visibility consequences were rechecked; no new asset permission was
+  established. No repository visibility change, release or code-only export.
+- Documentation wording/diff and relative local links checked. No product code,
+  binaries, installed app or historical files changed; no new runtime-test claim.
+  These documentation edits have not been committed or pushed in this step.
+
 ## Security and lifecycle — private main checkpoint — 2026-10-02
 
 - User chose to commit/push the current work after checking Windows11 test

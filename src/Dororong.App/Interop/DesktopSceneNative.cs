@@ -13,6 +13,7 @@ internal sealed record NativeWindow(long Handle, uint ProcessId, RectD Bounds, b
     bool Taskbar = false, bool HorizontalTaskbar = false, string ClassName = "")
 {
     internal bool CanOcclude { get; init; } = true;
+    internal bool IsTransientMenu { get; init; }
 }
 internal sealed record NativeTaskbarMetadata(long MonitorId, uint Edge, long AutoHideHandle);
 internal sealed record NativeDesktop(IReadOnlyList<DesktopMonitor> Monitors, IReadOnlyList<NativeWindow> Windows)
@@ -212,6 +213,10 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
         excluded |= string.Equals(processFileName,"Dororong.App.exe",StringComparison.OrdinalIgnoreCase) ||
             string.Equals(processFileName,"Dororong.exe",StringComparison.OrdinalIgnoreCase);
         var gamingOverlay=IsNvidiaGamingOverlay(handle,className,processFileName);
+        var transientMenu = className == "#32768" ||
+            (!excluded && visible && !minimized && className == "Chrome_WidgetWin_1" && IsChromiumMenuStyle(className,
+                NativeMethods.GetWindowLongPtr(handle,-16).ToInt64(),
+                NativeMethods.GetWindowLongPtr(handle,NativeMethods.GwlExStyle).ToInt64()));
         var taskbar=className is "Shell_TrayWnd" or "Shell_SecondaryTrayWnd";
         var bounds=new RectD(); var cloaked=false;
         if (!excluded && visible && !minimized)
@@ -236,8 +241,21 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
         if (Api.GetWindowThreadProcessId(handle,out var finalPid)==0 || finalPid!=pid)
             throw Failure("OwnerChanged");
         return new(handle.ToInt64(),pid,bounds,visible,minimized,cloaked,excluded,
-            !gamingOverlay && className is not "#32768" and not "tooltips_class32",taskbar,taskbar && bounds.Width>bounds.Height,className)
-            { CanOcclude=!gamingOverlay };
+            !gamingOverlay && !transientMenu && className != "tooltips_class32",taskbar,taskbar && bounds.Width>bounds.Height,className)
+            { CanOcclude=!gamingOverlay, IsTransientMenu=transientMenu };
+    }
+
+    internal static bool IsChromiumMenuStyle(string className,long style,long extendedStyle)
+    {
+        // Observed Figma tray menu: Chrome_WidgetWin_1, 0x96000000/0x80088.
+        // Do not exempt normal Chromium/Electron windows just by class or process.
+        const long popup = 0x80000000L;
+        const long childOrFrame = 0x40000000L | 0x00C00000L | 0x00040000L;
+        const long layeredTopmostTool = 0x00080000L | 0x00000008L | 0x00000080L;
+        const long appWindow = 0x00040000L;
+        return className == "Chrome_WidgetWin_1" && (style & popup) != 0 &&
+            (style & childOrFrame) == 0 && (extendedStyle & layeredTopmostTool) == layeredTopmostTool &&
+            (extendedStyle & appWindow) == 0;
     }
     private static bool IsNvidiaGamingOverlay(nint handle,string className,string? processFileName)
     {
@@ -355,7 +373,7 @@ internal sealed class DesktopSceneNative(IDesktopMetadataReader reader) : IDeskt
             // HWNDs can cross an existing surface edge. Classify SysShadow
             // independently of whether its tooltip is also enumerated.
             // They are neither perches nor holes in perches. Menus retain their
-            // identity so geometry can preserve only their own shell's taskbar.
+            // identity so geometry can preserve taskbars across app-owned menus.
             var hoverOverlay = window.ClassName is "TaskListThumbnailWnd" or "TaskListOverlayWnd" or "tooltips_class32" or "SysShadow";
             var support = window.CanSupport && !hoverOverlay;
             if (window.Taskbar)
@@ -372,7 +390,7 @@ internal sealed class DesktopSceneNative(IDesktopMetadataReader reader) : IDeskt
             next[window.Handle] = identity;
             windows.Add(new(new(window.Handle,window.ProcessId,identity.Generation),bounds,windows.Count,
                 window.Visible,window.Minimized,window.Cloaked,window.Excluded,support,window.CanOcclude && !hoverOverlay,window.Taskbar,window.HorizontalTaskbar)
-                { IsTransientMenu=window.ClassName=="#32768" });
+                { IsTransientMenu=window.IsTransientMenu || window.ClassName=="#32768" });
         }
         identities = next; // Only successful absence retires an observed identity.
         return new(++revision,now,Array.AsReadOnly(metadata.Monitors.ToArray()),windows.AsReadOnly());

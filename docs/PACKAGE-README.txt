@@ -9,6 +9,8 @@ EXE만 따로 옮기면 실행되지 않습니다. .NET 런타임은 포함되�
 창·작업표시줄 가장자리에서 앞발 준비 동작이 보일 때 놓으면 매달립니다.
 매달린 앞발 클릭·드래그: 한쪽 발 휘젓기·당기기
 트레이 좌클릭·우클릭: 로그 폴더 열기 / 종료. 업데이트·제거 전 먼저 종료하세요.
+캐릭터 우클릭·트레이의 '간식 주기': 주얼을 따라 달리고 입 앞에서 먹습니다. '간식 취소'로 중단합니다.
+'Windows 로그인 시 실행': 자동 실행 켜기/끄기. 기본은 꺼짐입니다.
 제거: Windows 앱 목록에서 '도로롱이 내 컴에?!'를 선택하세요.
 로그는 %LOCALAPPDATA%\JOEWRKS\Dororong\logs에 남으며 자동 전송하지 않습니다.
 
@@ -21,6 +23,8 @@ Drag head: move / Drag cheek: stretch / Nearby pointer: tracking and pouncing
 Release near a window/taskbar edge when the front paws show readiness to hang.
 Click or pull a hanging front paw to wave or stretch that paw.
 Left- or right-click the tray icon: open logs / exit. Exit before updating or uninstalling.
+Pet/tray '간식 주기': chase the jewel, hold it near the mouth to feed. '간식 취소' cancels.
+'Windows 로그인 시 실행': toggle launch at Windows login (off by default).
 Uninstall through Windows' app list. Local logs are not uploaded automatically.
 
 Unsigned preview / 코드 서명 없는 미리보기
@@ -30,6 +34,7 @@ Not certified on every PC. / 모든 PC에서의 호환성을 보증하지 않습
 License and credits / 라이선스·출처
 Original code: MIT (LICENSE.txt). Third-party notices: licenses/.
 직접 작성한 코드: MIT. 외부 런타임: licenses/의 고지 참조.
+Menu font / 메뉴 글꼴: Pretendard, SIL OFL 1.1 (Assets/Fonts/OFL-Pretendard.txt).
 Character art, derived sprites, names and trademarks are NOT MIT-licensed.
 NIKKE-derived Dororong (Doro) fan character, adapted from user-supplied images.
 Unofficial, non-commercial fan-made derivative work; no official affiliation.

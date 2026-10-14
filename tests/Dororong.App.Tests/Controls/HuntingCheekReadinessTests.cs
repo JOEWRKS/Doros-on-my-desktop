@@ -34,7 +34,7 @@ public sealed class HuntingCheekReadinessTests
         // real hit capture -> cheek overlay -> readiness presenter boundary.
         void Set(string name,object value)=>typeof(DororongPresenter).GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(presenter,value);
         ((Image)presenter.FindName("DororongImage")).Source=bitmap;
-        Set("_huntingImage",bitmap);Set("_huntFrame",frame);Set("_huntRenderedGaze",gaze);Set("_huntHeadTransform",transform);Set("_huntClosed",closed);
+        Set("_huntingImage",bitmap);Set("_huntFrame",frame);Set("_huntVisualFrame",frame);Set("_huntRenderedGaze",gaze);Set("_huntHeadTransform",transform);Set("_huntClosed",closed);
         Set("_huntRenderedBlend",1d); // This fixture is fully tracking, not the new source handoff.
         if(gait is not null)Set("_huntWalkingFrame",gait);
         CheekProductTests.Layout(presenter);

@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Dororong.App.Controls"
         Title="도로롱이 내 컴에?!"
+        Icon="/Dororong.App;component/Assets/dororong.ico"
         Width="144" Height="144"
         WindowStyle="None"
         AllowsTransparency="True"

@@ -8,6 +8,7 @@ namespace Dororong.App.Controls;
 internal sealed class HuntRenderer
 {
     private readonly HuntEyes _eyes = new();
+    private readonly HuntHeadSampling _uprightHead = new();
     private readonly DrawingVisual _drawing = new();
     private readonly RenderTargetBitmap _joins = new(128,128,96,96,PixelFormats.Pbgra32);
     private readonly WriteableBitmap _maskedJoins = new(128,128,96,96,PixelFormats.Pbgra32,null);
@@ -42,10 +43,13 @@ internal sealed class HuntRenderer
         var o=Head(0,0);var x=Head(1,0);var y=Head(0,1);
         return new(x.X-o.X,x.Y-o.Y,y.X-o.X,y.Y-o.Y,o.X,o.Y);
     }
-    internal BitmapSource Render(int frame,HuntGazePose gaze,bool closed=false,double cheekPull=0,double eyePull=0,double hairPull=0,double? readinessPhase=null,BitmapSource? walkingFrame=null)
+    internal BitmapSource Render(int frame,HuntGazePose gaze,bool closed=false,double cheekPull=0,double eyePull=0,double hairPull=0,double? readinessPhase=null,BitmapSource? walkingFrame=null,bool crisp=false,double breathing=0)
     {
         if(frame<0||frame>156||!double.IsFinite(gaze.Roll)||!double.IsFinite(gaze.EyeX)||!double.IsFinite(gaze.EyeY))throw new ArgumentOutOfRangeException(nameof(frame));
+        RenderOptions.SetBitmapScalingMode(_drawing,BitmapScalingMode.Linear);
         var pose=HuntPose.At(frame/60d);var amount=pose.Amount;
+        if(amount==0 && gaze==default && cheekPull==0 && !readinessPhase.HasValue && walkingFrame is null)
+            return BodyBreathingFrame.Standing(closed,breathing);
         var angle=gaze.Roll<0?gaze.Roll*(1-amount)+Math.Max(gaze.Roll,-.08)*amount:gaze.Roll;
         Point Head(double x,double y,double? rotation=null)
         {
@@ -96,6 +100,8 @@ internal sealed class HuntRenderer
         }
         _maskedJoins.WritePixels(new Int32Rect(0,0,128,128),_joinPixels,512,0);
         var head=_eyes.Paint(gaze.EyeX,gaze.EyeY,closed,cheekPull,eyePull,hairPull);
+        if(amount==0)
+            return RenderUpright(head,HeadTransform(frame,gaze),closed,readinessPhase,walkingFrame,breathing);
         BitmapSource body=HuntFrames.Instance.Body(frame);
         if(readinessPhase is { } phase)
         {
@@ -112,7 +118,7 @@ internal sealed class HuntRenderer
             dc.DrawImage(body,readinessPhase.HasValue?new Rect(32,32,192,192):new Rect(0,0,256,256));
         }
         _composite.Clear();_composite.Render(_drawing);_composite.CopyPixels(_pixels,1024,0);
-        UprightRumpSource.Apply(_pixels,amount);
+        UprightRumpSource.Apply(_pixels,amount,_joinPixels);
         if(walkingFrame is not null && amount==0)
         {
             // Walking frames contain a head too. Only use their lower body,
@@ -164,10 +170,60 @@ internal sealed class HuntRenderer
         // backing, while flutter uses a stable reference underneath the head.
         if(amount>0)HuntOutline.Finish(_pixels,amount,readinessPhase.HasValue?_referencePixels:null,readinessPhase.HasValue?_headPixels:null);
         _finished.WritePixels(new Int32Rect(0,0,256,256),_pixels,1024,0);
+        // The already-antialiased head has been posed on the working surface;
+        // select its native texel rather than filtering it a second time.
+        RenderOptions.SetBitmapScalingMode(_drawing,BitmapScalingMode.NearestNeighbor);
         using(var dc=_drawing.RenderOpen())dc.DrawImage(_finished,new Rect(-16,-16,128,128));
         _native.Clear();_native.Render(_drawing);
+        RenderOptions.SetBitmapScalingMode(_drawing,BitmapScalingMode.Linear);
         // Interaction captures and AlphaHitTestImage cache by source identity.
         // Never mutate a frame they already captured or cached.
-        var frameImage=_native.CloneCurrentValue();frameImage.Freeze();return frameImage;
+        var frameImage=_native.CloneCurrentValue();frameImage.Freeze();
+        if(amount<.08)
+        {
+            // Same posed head on both sides; only ease the body/join handoff.
+            // A zero-length ownership switch used to snap at frame15 ->16.
+            var upright=RenderUpright(head,HeadTransform(frame,gaze),closed,readinessPhase,walkingFrame,breathing);
+            var entry=amount/.08;return HuntFrameBlend.Apply(upright,frameImage,entry*entry*(3-2*entry));
+        }
+        return frameImage;
+    }
+
+    private BitmapSource RenderUpright(BitmapSource head,Matrix transform,bool closed,double? readiness,BitmapSource? walking,double breathing)
+    {
+        var body=SnackRunFrames.CopyBody();
+        // Keep only hidden neck backing from the articulated joins. All visible
+        // upright body ink belongs to the same canonical source as ordinary idle.
+        var mask=HuntFrames.Instance.Head(closed?1:0).Span;
+        for(var y=0;y<96;y++)for(var x=0;x<96;x++)
+        {
+            var at=(y*96+x)*4;
+            if(mask[at+3]==0)continue;
+            var from=((y+16)*128+x+16)*4;
+            for(var c=0;c<4;c++)body[at+c]=_joinPixels[from+c];
+        }
+        if(walking is not null)
+        {
+            var gait=PremultipliedFrame.From(walking).Pixels;
+            Array.Copy(gait,73*384,body,73*384,23*384);
+        }
+        else body=BodyBreathingFrame.Warp(body,Math.Round(Math.Clamp(breathing,0,1)*32)/32d);
+        var source=BitmapSource.Create(96,96,96,96,PixelFormats.Pbgra32,null,body,384);
+        if(readiness is { } phase)
+        {
+            body=ForelegFlutterFrame.Render(PremultipliedFrame.From(source),false,phase,null,HuntPose.At(2.6));
+            source=BitmapSource.Create(96,96,96,96,PixelFormats.Pbgra32,null,body,384);
+        }
+        var resolvedHead=_uprightHead.Render(head,transform);
+        RenderOptions.SetBitmapScalingMode(_drawing,BitmapScalingMode.Linear);
+        using(var dc=_drawing.RenderOpen())
+        {
+            dc.DrawImage(source,new Rect(0,0,96,96));
+            // Rotation is sampled once from recovered original head texels.
+            // Composite at 1:1: body and final head are not filtered again.
+            dc.DrawImage(resolvedHead,new Rect(0,0,96,96));
+        }
+        _native.Clear();_native.Render(_drawing);
+        var result=_native.CloneCurrentValue();result.Freeze();return result;
     }
 }

@@ -11,7 +11,11 @@ internal static class TrayMenuProbe
         Exception? failure = null;
         var worker = new Thread(() =>
         {
-            try { CheckScenario(scenario); }
+            try
+            {
+                if (scenario.StartsWith("styled-")) StyledMenuProbe.CheckScenario(scenario);
+                else CheckScenario(scenario);
+            }
             catch (Exception error) { failure = error; }
             finally { Forms.Application.ExitThread(); }
         });

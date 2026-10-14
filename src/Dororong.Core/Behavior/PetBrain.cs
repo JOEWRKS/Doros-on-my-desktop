@@ -327,6 +327,14 @@ public sealed class PetBrain
         if (_state == PetState.Dragged) StartIdle();
     }
 
+    public void ResumeAfterPlay(FacingDirection facing)
+    {
+        ClearDirectInteraction();
+        _facing = facing;
+        _heading = new PointD(facing == FacingDirection.Right ? 1 : -1,0);
+        StartIdle();
+    }
+
     private void FollowBodyDrag(PetInput input, PointD dragOffset)
     {
         if (_distanceDrivenBodyDrag)

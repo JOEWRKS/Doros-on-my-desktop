@@ -74,6 +74,12 @@ internal sealed class ProductShell : IDisposable
                 () => RunTrayCommand(openLogs),
                 () => RunTrayCommand(() => closeMainWindow(createdWindow)));
             ArgumentNullException.ThrowIfNull(tray);
+            if(tray is TrayService petTray && createdWindow is MainWindow petWindow)
+            {
+                petTray.AddPetCommands(() => RunTrayCommand(petWindow.ToggleSnack), () => petWindow.IsSnackActive,
+                    () => RunTrayCommand(petWindow.ToggleStartup), () => petWindow.StartupEnabled);
+                petTray.EnableStyledMenu(petWindow);
+            }
             mainWindow = createdWindow;
             started = true;
             Report(DiagnosticEvent.Started);

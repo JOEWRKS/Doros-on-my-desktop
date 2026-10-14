@@ -1,0 +1,215 @@
+{
+  "schema_version": "0.2.0",
+  "project": {
+    "slug": "dororong-snack-play",
+    "definition_status": "OPEN",
+    "definition_revision": 3,
+    "bootstrap_mode": "NEW_PRODUCT",
+    "closure_contract": {
+      "level": "SEMANTIC_CLOSURE",
+      "product_binding_contract": {
+        "contract_id": "joewrks.product-coverage-binding",
+        "version": "1.0",
+        "digest": "b57459533247de52038aacb158e785c2184edcdd2fa6831f0edc3db713775f3c"
+      },
+      "ux_binding_contract": {
+        "contract_id": "joewrks.ux-coverage-binding",
+        "version": "1.0",
+        "digest": "8fc84057a4a6f0f0ce329a58d11b8e208989800147d703665cea52088de0be0d"
+      }
+    }
+  },
+  "migration": {
+    "mode": "NATIVE"
+  },
+  "evidence": [
+    {
+      "id": "EVD-001",
+      "status": "CURRENT",
+      "source_kind": "USER_CONFIRMED_INTENT",
+      "locator": "current-chat/2026-10-13/snack-play-implementation-approval",
+      "claim": "User: 'ㅇㅇ 그 방식으로 구현 ㄱㄱ. 자동 실행도 같이 넣어줘'. Approves the preceding voluntary menu snack play, near-mouth stationary feeding, chase/jump/drool/closed-eye chewing and optional login startup proposal. Rejects keyboard-trigger feeding and coercive numeric care. This is direct implementation authorization, not approval of a generated semantic manifest.",
+      "confidence": "DIRECT",
+      "authority_classes": [
+        "INTENT"
+      ],
+      "observed_version": null,
+      "content_hash": null
+    },
+    {
+      "id": "EVD-002",
+      "status": "CURRENT",
+      "source_kind": "USER_CONFIRMED_INTENT",
+      "locator": "current-chat/2026-10-13/snack-proposal-and-acceptance",
+      "claim": "User-controlled snack play: both menus, jewel at pointer, chase regardless of detection range, bounded jumps, drool, stationary near-mouth offer, one closed-eye chewing sequence, cancel/restore existing interactions; no keyboard monitoring or coercive numeric care. Add a reversible Windows login startup option accessible from the menus; preserve ordinary launch and existing single-instance behavior.",
+      "confidence": "DIRECT",
+      "authority_classes": [
+        "INTENT"
+      ],
+      "observed_version": null,
+      "content_hash": null
+    }
+  ],
+  "surface_manifest": {
+    "records": [
+      {
+        "id": "SURF-001",
+        "kind": "ASYNC_PROCESS",
+        "name": "Timer-driven voluntary snack pursuit and feeding",
+        "status": "IN_SCOPE",
+        "materiality": {
+          "outcome_divergence": "HIGH",
+          "fan_out": "MULTI_FLOW",
+          "user_visible": true,
+          "reversibility": "REVERSIBLE",
+          "risk_flags": {
+            "security": false,
+            "privacy": false,
+            "money": false,
+            "legal_or_policy": false,
+            "destructive": false,
+            "data_loss": false,
+            "external_commitment": false
+          },
+          "classification": "MATERIAL"
+        },
+        "evidence_refs": [
+          "EVD-001"
+        ],
+        "authority_refs": [
+          "GOAL-001"
+        ],
+        "unknown_refs": [],
+        "decision_refs": [],
+        "contradiction_refs": [],
+        "rationale": "Approved local play; animation completion/cancellation needs lifecycle coverage.",
+        "intent_classification": null
+      },
+      {
+        "id": "SURF-002",
+        "kind": "PERMISSION",
+        "name": "Reversible per-user Windows startup registration",
+        "status": "IN_SCOPE",
+        "materiality": {
+          "outcome_divergence": "HIGH",
+          "fan_out": "MULTI_FLOW",
+          "user_visible": true,
+          "reversibility": "REVERSIBLE",
+          "risk_flags": {
+            "security": true,
+            "privacy": false,
+            "money": false,
+            "legal_or_policy": false,
+            "destructive": false,
+            "data_loss": false,
+            "external_commitment": false
+          },
+          "classification": "MATERIAL"
+        },
+        "evidence_refs": [
+          "EVD-001"
+        ],
+        "authority_refs": [
+          "GOAL-001"
+        ],
+        "unknown_refs": [],
+        "decision_refs": [],
+        "contradiction_refs": [],
+        "rationale": "User expressly requests optional login launch, not an administrator service or global setting.",
+        "intent_classification": null
+      }
+    ],
+    "grill_profile": {
+      "AUTH": {
+        "status": "N/A",
+        "surface_refs": [],
+        "unknown_refs": [],
+        "basis_refs": [
+          "EVD-001"
+        ],
+        "rationale": "This bounded local play extension contains no accounts, identity or authentication flow."
+      },
+      "MONEY": {
+        "status": "N/A",
+        "surface_refs": [],
+        "unknown_refs": [],
+        "basis_refs": [
+          "EVD-001"
+        ],
+        "rationale": "The jewel is a free play prop, not currency, purchasing or a paid consumable."
+      },
+      "FILE_UPLOAD": {
+        "status": "N/A",
+        "surface_refs": [],
+        "unknown_refs": [],
+        "basis_refs": [
+          "EVD-001"
+        ],
+        "rationale": "No user-upload or data transmission flow is part of the accepted local interaction."
+      },
+      "ASYNC": {
+        "status": "ACTIVE",
+        "surface_refs": [
+          "SURF-001"
+        ],
+        "unknown_refs": [],
+        "basis_refs": [
+          "EVD-001"
+        ],
+        "rationale": null
+      },
+      "PERMISSION": {
+        "status": "ACTIVE",
+        "surface_refs": [
+          "SURF-002"
+        ],
+        "unknown_refs": [],
+        "basis_refs": [
+          "EVD-001"
+        ],
+        "rationale": null
+      },
+      "DESTRUCTIVE_ACTION": {
+        "status": "N/A",
+        "surface_refs": [],
+        "unknown_refs": [],
+        "basis_refs": [
+          "EVD-001"
+        ],
+        "rationale": "No user data deletion or destructive product action is introduced; disabling removes only the matching optional registration."
+      }
+    }
+  },
+  "contradictions": [],
+  "objects": {
+    "goals": [
+      {
+        "id": "GOAL-001",
+        "status": "CURRENT",
+        "statement": "Add voluntary snack play using existing character interactions without care chores; support user-controlled Windows login startup."
+      }
+    ],
+    "users": [],
+    "requirements": [],
+    "unknowns": [],
+    "decisions": [],
+    "rules": [],
+    "flows": [],
+    "screens": [],
+    "states": [],
+    "data": [],
+    "integrations": [],
+    "acceptance_criteria": [],
+    "tasks": []
+  },
+  "coverage": [],
+  "ux_coverage": [],
+  "grill_coverage": [],
+  "discovery_baseline": {
+    "status": "NOT_ESTABLISHED"
+  },
+  "approval": {
+    "status": "UNAPPROVED"
+  },
+  "approval_history": []
+}

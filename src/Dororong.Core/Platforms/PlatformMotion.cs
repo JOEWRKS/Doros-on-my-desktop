@@ -15,6 +15,7 @@ public readonly record struct PlatformMotionInput(TimeSpan Delta, PointD Display
 {
     public IReadOnlyList<DesktopMonitor>? Monitors { get; init; }
     public double SupportedOffsetY { get; init; }
+    public double SupportedLiftLimit { get; init; } = 12;
 }
 
 public sealed class PlatformMotion
@@ -172,7 +173,8 @@ public sealed class PlatformMotion
             // A click hop is an offset from the retained support baseline, not
             // free fall. Reconstructing that baseline each tick prevents drift.
             if (phase == PlatformPhase.Supported && double.IsFinite(input.SupportedOffsetY))
-                position = position with { Y = position.Y + Math.Clamp(input.SupportedOffsetY, -12, 0) };
+                position = position with { Y = position.Y + Math.Clamp(input.SupportedOffsetY,
+                    -(double.IsFinite(input.SupportedLiftLimit) ? Math.Clamp(input.SupportedLiftLimit,0,96) : 12), 0) };
             return Set(phase, position);
         }
 

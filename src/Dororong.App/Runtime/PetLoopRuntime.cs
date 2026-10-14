@@ -57,6 +57,10 @@ internal sealed class PetLoopHost
     internal Action<bool>? SetSittingRequested { get; init; }
     internal Func<PetSnapshot, DirectInteractionSnapshot, PointerSample, TimeSpan, bool, bool>? UpdateHunting { get; init; }
     internal Func<Dororong.App.Controls.PouncePose>? GetPouncePose { get; init; }
+    internal Action<SnackPose, PointerSample>? PresentSnack { get; init; }
+    internal Func<PointD>? GetSnackMouth { get; init; }
+    internal Action<PointerSample, bool>? ShowSnackCursor { get; init; }
+    internal Action? DisposeSnackCursor { get; init; }
     private readonly Func<RectD> _getWorkArea;
     private readonly Func<SizeD> _getPetSize;
     private readonly Func<SizeD> _getDragThreshold;

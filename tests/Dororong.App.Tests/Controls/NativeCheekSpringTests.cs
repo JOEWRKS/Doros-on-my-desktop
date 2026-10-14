@@ -68,7 +68,7 @@ public sealed class NativeCheekSpringTests
         var bitmap=new HuntRenderer().Render(frame,gaze);var transform=HuntRenderer.HeadTransform(frame,gaze);
         void Set(string name,object value)=>typeof(DororongPresenter).GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(p,value);
         ((Image)p.FindName("DororongImage")).Source=bitmap;
-        Set("_huntingImage",bitmap);Set("_huntFrame",frame);Set("_huntRenderedGaze",gaze);Set("_huntHeadTransform",transform);
+        Set("_huntingImage",bitmap);Set("_huntFrame",frame);Set("_huntVisualFrame",frame);Set("_huntRenderedGaze",gaze);Set("_huntHeadTransform",transform);
         CheekProductTests.Layout(p);var at=transform.Transform(new Point(18,59));
         Assert.True(p.TryCreateCheekPullCapture(new(at.X,at.Y),out var capture));
         if(mirror)capture=capture!.TurnToward(-capture.OutwardUnit.X*20);

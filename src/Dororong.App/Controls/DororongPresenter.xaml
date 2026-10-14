@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Dororong.App.Controls"
+             xmlns:product="clr-namespace:Dororong.App.Product"
              Width="144"
              Height="144"
              Background="{x:Null}">
@@ -17,10 +18,13 @@
                 MouseLeftButtonDown="OnBodyPrimaryPressed"
                 RenderTransformOrigin="0.5,0.5">
             <Canvas.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="앉아" Click="OnSitClicked" />
-                    <MenuItem Header="Exit" Click="OnExitClicked" />
-                </ContextMenu>
+                <product:PetContextMenu Opened="OnProductMenuOpened">
+                    <MenuItem x:Name="SnackMenuItem" Tag="snack" Header="간식 주기" Click="OnSnackClicked" />
+                    <MenuItem Tag="sit" Header="앉아" Click="OnSitClicked" />
+                    <Separator />
+                    <MenuItem x:Name="StartupMenuItem" Tag="startup" Header="Windows 로그인 시 실행" IsCheckable="True" Click="OnStartupClicked" />
+                    <MenuItem Tag="exit" Header="종료" Click="OnExitClicked" />
+                </product:PetContextMenu>
             </Canvas.ContextMenu>
             <Canvas.RenderTransform>
                 <TransformGroup>

@@ -14,6 +14,7 @@ public partial class MainWindow : Window
     private readonly Action<DiagnosticEvent, Exception?> _reportDiagnostic;
     private WindowActivationGuard? _activationGuard;
     private PetLoop? _loop;
+    private StartupRegistration? _startup;
 
     public MainWindow() : this((_, _) => { })
     {
@@ -30,6 +31,9 @@ public partial class MainWindow : Window
         Presenter.LostMouseCapture += OnDirectInteractionCanceled;
         Presenter.ExitRequested += OnExitRequested;
         Presenter.SitRequested += OnSitRequested;
+        Presenter.SnackRequested += OnSnackRequested;
+        Presenter.StartupToggleRequested += OnStartupToggleRequested;
+        Presenter.ProductMenuOpened += OnProductMenuOpened;
     }
 
     private void OnSourceInitialized(object? sender, EventArgs e)
@@ -103,6 +107,25 @@ public partial class MainWindow : Window
     }
 
     private void OnSitRequested(object? sender, EventArgs e) => _loop?.NotifySitRequested();
+    internal bool IsSnackActive => _loop?.IsSnackActive == true;
+    internal void ToggleSnack() => _loop?.ToggleSnack();
+    internal bool StartupEnabled => (_startup ??= new()).Enabled;
+    internal void ToggleStartup()
+    {
+        try { (_startup ??= new()).SetEnabled(!StartupEnabled); }
+        catch(Exception ex)
+        {
+            _reportDiagnostic(DiagnosticEvent.TrayCommandFailure,ex);
+            MessageBox.Show(this,ex.Message,"자동 실행 설정",MessageBoxButton.OK,MessageBoxImage.Warning);
+        }
+    }
+    private void OnSnackRequested(object? sender, EventArgs e) => ToggleSnack();
+    private void OnStartupToggleRequested(object? sender, EventArgs e) => ToggleStartup();
+    private void OnProductMenuOpened(object? sender, EventArgs e)
+    {
+        try { Presenter.UpdateProductMenu(IsSnackActive, StartupEnabled); }
+        catch(Exception ex) { _reportDiagnostic(DiagnosticEvent.TrayCommandFailure,ex); Presenter.UpdateProductMenu(IsSnackActive,false); }
+    }
 
     private void OnExitRequested(object? sender, EventArgs e)
     {
@@ -165,6 +188,9 @@ public partial class MainWindow : Window
             () => Presenter.LostMouseCapture -= OnDirectInteractionCanceled,
             () => Presenter.ExitRequested -= OnExitRequested,
             () => Presenter.SitRequested -= OnSitRequested,
+            () => Presenter.SnackRequested -= OnSnackRequested,
+            () => Presenter.StartupToggleRequested -= OnStartupToggleRequested,
+            () => Presenter.ProductMenuOpened -= OnProductMenuOpened,
             () =>
             {
                 if (loop is not null)

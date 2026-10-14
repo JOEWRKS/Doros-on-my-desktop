@@ -40,6 +40,41 @@ internal sealed class PetLoop : IDisposable
     private CheekPullCapture? _hopCapture;
     private double _lastCheekHopX, _lastCheekHopY;
     private double _cheekHopBaseY;
+    private readonly SnackSession _snack = new();
+    internal bool IsSnackActive => _snack.Active;
+
+    internal void ToggleSnack()
+    {
+        if (_lifecycle.Phase != PetLoopPhase.Running || _brain is null) return;
+        if (_snack.Active) { CancelSnack(); return; }
+        NotifyDirectInteractionCanceled();
+        _queuedDirectPress = null;
+        _brain.CancelDirectInteraction();
+        _directInteractionController.Cancel();
+        ReleaseMouseCapture();
+        _sitRequested = false; _host.SetSittingRequested?.Invoke(false);
+        // A new activity is not a new desktop location. Keep the current
+        // support and sole compensation (notably seated -> upright) so the
+        // first snack frame cannot drop through the window under the pet.
+        // An attached perch does need an explicit release into normal physics.
+        if (_host.Platforms is { PerchPhase: not EdgePerchPhase.None } platforms)
+            platforms.Clear(_host.GetWindowPosition());
+        _lastPounceOffset = _lastCheekHopX = _lastCheekHopY = 0; _hopCapture = null;
+        _snack.Begin(_snapshot.Facing);
+        _snapshotSnackLift = 0;
+        _brain.ResumeAfterPlay(_snapshot.Facing);
+        _host.PresentSnack?.Invoke(_snack.Current, _host.SamplePointer());
+    }
+
+    private void CancelSnack()
+    {
+        if (!_snack.Active) return;
+        _snack.Cancel();
+        _brain?.ResumeAfterPlay(_snapshot.Facing);
+        _host.ShowSnackCursor?.Invoke(PointerSample.Unavailable, false);
+        _host.PresentSnack?.Invoke(default, PointerSample.Unavailable);
+        _host.Platforms?.Reset(_host.GetWindowPosition());
+    }
 
     public PetLoop(Window window, DororongPresenter presenter, DesktopInput input)
         : this(
@@ -75,6 +110,7 @@ internal sealed class PetLoop : IDisposable
 
     internal void NotifySitRequested()
     {
+        CancelSnack();
         if (_lifecycle.Phase != PetLoopPhase.Running || _queuedDirectPress is not null ||
             _snapshot.IsDirectInteractionPending || _directInteractionController.Current.Target != DirectInteractionTarget.None)
             return;
@@ -127,6 +163,7 @@ internal sealed class PetLoop : IDisposable
 
     internal void NotifyDirectInteractionPressed(DirectInteractionPressEventArgs press)
     {
+        CancelSnack();
         if (_lifecycle.Phase != PetLoopPhase.Running)
         {
             return;
@@ -185,6 +222,12 @@ internal sealed class PetLoop : IDisposable
             var elapsed = _clock.Elapsed;
             var delta = elapsed - _lastElapsed;
             _lastElapsed = elapsed;
+
+            if (_snack.Active)
+            {
+                TickSnack(brain, elapsed, delta);
+                return;
+            }
 
             var displayed = _host.GetWindowPosition();
             var platforms = _host.Platforms;
@@ -458,6 +501,45 @@ internal sealed class PetLoop : IDisposable
         }
     }
 
+    private void TickSnack(PetBrain brain, TimeSpan elapsed, TimeSpan delta)
+    {
+        var displayed = _host.GetWindowPosition();
+        var pointer = _host.SamplePointer();
+        var platforms = _host.Platforms;
+        if (platforms is not null)
+        {
+            pointer = platforms.BeginFrame(elapsed, displayed, pointer, false);
+            displayed = platforms.FramePosition;
+        }
+        var mouth = displayed + (_host.GetSnackMouth?.Invoke() ?? new PointD(54,84));
+        var pose = _snack.Advance(delta, pointer, mouth, !(platforms?.SuspendsAutonomousMotion ?? false));
+        var size = _host.GetPetSize();
+        var area = platforms?.GetMovementArea(displayed, platforms.Contact, size) ?? _host.GetWorkArea();
+        var proposed = area.ClampTopLeft(displayed + new PointD(pose.DeltaX,0), size);
+        PlatformPose? support = null;
+        if (platforms is not null)
+        {
+            support = platforms.Advance(elapsed, delta, displayed, proposed, platforms.Contact, false, pose.Lift,76);
+            proposed = support.Value.Position;
+        }
+        else proposed = proposed with { Y = proposed.Y + pose.Lift - _snapshotSnackLift };
+        _snapshotSnackLift = pose.Lift;
+        brain.ApplyPlatformPosition(proposed);
+        _snapshot = new PetSnapshot(Math.Abs(pose.DeltaX) > .01 ? PetState.Walk : PetState.Idle,
+            proposed, pose.Active ? pose.Facing : _snapshot.Facing, 0, false, null);
+        _host.PresentSnack?.Invoke(pose, pointer);
+        _host.SetWindowPosition(proposed);
+        _host.SetLocomotionBlocked?.Invoke(platforms?.SuspendsAutonomousMotion ?? false);
+        _host.Render(_snapshot, DirectInteractionSnapshot.None, delta);
+        platforms?.AfterRender(support, platforms.Contact.SoleY);
+        _host.ShowSnackCursor?.Invoke(pointer, pose.Phase == SnackPhase.Chasing);
+        _host.MaintainWindowLayer?.Invoke(elapsed);
+        _primaryWasDown = _host.IsPrimaryButtonDown();
+        if (!pose.Active) { platforms?.Reset(proposed); brain.ResumeAfterPlay(_snapshot.Facing); }
+    }
+
+    private double _snapshotSnackLift;
+
     private static bool IsLocalInteractionActive(DirectInteractionSnapshot directInteraction) =>
         directInteraction.PawPull is not null ||
         directInteraction.Target is DirectInteractionTarget.LeftCheek or DirectInteractionTarget.RightCheek or DirectInteractionTarget.FiveRegionBody ||
@@ -497,6 +579,8 @@ internal sealed class PetLoop : IDisposable
         _clockStarted = false;
 
         return CleanupSequence.Run(
+            CancelSnack,
+            () => _host.DisposeSnackCursor?.Invoke(),
             () =>
             {
                 if (timerStarted)
@@ -569,6 +653,7 @@ internal sealed class PetLoop : IDisposable
         var stopwatch = new Stopwatch();
         var viewport = new PetWindowViewport(window, presenter);
         var windowLayer = new WindowLayerGuard();
+        var snackCursor = new SnackCursorWindow();
         var dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal, window.Dispatcher)
         {
             Interval = TickInterval
@@ -605,6 +690,10 @@ internal sealed class PetLoop : IDisposable
             SetSittingRequested = presenter.SetSittingRequested,
             UpdateHunting = presenter.UpdateHuntingWithPounce,
             GetPouncePose = () => presenter.Pounce,
+            PresentSnack = presenter.SetSnack,
+            GetSnackMouth = presenter.GetSnackMouth,
+            ShowSnackCursor = snackCursor.Update,
+            DisposeSnackCursor = snackCursor.Close,
             Platforms = new PetPlatformRuntime(new DesktopSceneSource(new DesktopSceneNative(source.Handle), background: true),
                 position => DesktopCoordinateMap.FromPresenter(presenter, position),
                 presenter.MeasurePlatformGeometry, presenter.ApplyPlatformPose, DesktopMetadataReader.ReadMonitorBounds,

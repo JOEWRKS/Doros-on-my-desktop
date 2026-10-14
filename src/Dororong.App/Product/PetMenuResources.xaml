@@ -1,0 +1,115 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:product="clr-namespace:Dororong.App.Product">
+    <FontFamily x:Key="PetMenuFont">pack://application:,,,/Dororong.App;component/Assets/Fonts/#Pretendard</FontFamily>
+    <LinearGradientBrush x:Key="SnackBrush" StartPoint="0,0" EndPoint="1,0.3">
+        <GradientStop Color="#45CAF4" Offset="0"/><GradientStop Color="#63D8F7" Offset="1"/>
+    </LinearGradientBrush>
+    <ControlTemplate x:Key="SnackTemplate" TargetType="MenuItem">
+        <Grid Margin="0,0,0,7" Height="62" SnapsToDevicePixels="True">
+            <Border x:Name="Face" Background="{StaticResource SnackBrush}" BorderBrush="#209BC7" BorderThickness="1,1,1,2" CornerRadius="4">
+                <Grid ClipToBounds="True">
+                    <Border Margin="3" BorderThickness="1" BorderBrush="#50FFFFFF" CornerRadius="2" IsHitTestVisible="False"/>
+                    <Path Data="M 0,30 L 30,0 60,30 30,60 Z" Fill="#12FFFFFF" Width="60" HorizontalAlignment="Right" IsHitTestVisible="False"/>
+                    <Grid Margin="11,0"><Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/><ColumnDefinition Width="20"/></Grid.ColumnDefinitions>
+                        <Image Width="36" Height="36" Source="/Dororong.App;component/Assets/snack-jewel.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <ContentPresenter Grid.Column="1" ContentSource="Header" VerticalAlignment="Center" Margin="8,0,0,0" RecognizesAccessKey="True"/>
+                        <Path x:Name="Arrow" Grid.Column="2" Data="M 2,9 L 15,9 M 10,4 L 15,9 10,14" Stroke="#123D52" StrokeThickness="1.5" Width="18" Height="18" VerticalAlignment="Center"/>
+                        <Rectangle x:Name="Stop" Grid.Column="2" Width="10" Height="10" Fill="#557F92" Visibility="Collapsed"/>
+                    </Grid>
+                </Grid>
+            </Border>
+            <Border x:Name="Focus" BorderBrush="#055BA6" BorderThickness="2" CornerRadius="4" Margin="-3" Visibility="Collapsed" IsHitTestVisible="False"/>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="Header" Value="간식 취소">
+                <Setter TargetName="Face" Property="Background"><Setter.Value><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#F5FAFC" Offset="0"/><GradientStop Color="#E3F0F6" Offset="1"/></LinearGradientBrush></Setter.Value></Setter>
+                <Setter TargetName="Face" Property="BorderBrush" Value="#99B9CA"/>
+                <Setter TargetName="Arrow" Property="Visibility" Value="Collapsed"/><Setter TargetName="Stop" Property="Visibility" Value="Visible"/>
+            </Trigger>
+            <Trigger Property="IsHighlighted" Value="True"><Setter TargetName="Focus" Property="Visibility" Value="Visible"/></Trigger>
+            <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    <Style TargetType="MenuItem">
+        <Setter Property="FontFamily" Value="{StaticResource PetMenuFont}"/><Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#354049"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Height" Value="44"/>
+        <Setter Property="Template"><Setter.Value>
+            <ControlTemplate TargetType="MenuItem">
+                <Grid SnapsToDevicePixels="True">
+                    <Border x:Name="Highlight" Background="Transparent" CornerRadius="3"/>
+                    <Grid Margin="11,0"><Grid.ColumnDefinitions><ColumnDefinition Width="18"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <Path x:Name="Icon" Data="M 12,2 L 12,11 M 7,5 A 9,9 0 1 0 17,5" Stroke="#526677" StrokeThickness="1.6" Stretch="Uniform" Width="18" Height="18" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,4,0">
+                            <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"/>
+                            <TextBlock x:Name="State" Text="꺼짐" FontSize="11" FontWeight="Normal" Foreground="#667785" Margin="0,3,0,0" Visibility="Collapsed"/>
+                        </StackPanel>
+                        <Border x:Name="Switch" Grid.Column="2" Width="42" Height="23" CornerRadius="3" Background="#8999A4" BorderBrush="#85949E" BorderThickness="1" Padding="2" VerticalAlignment="Center" Visibility="Collapsed">
+                            <Border x:Name="Thumb" Width="16" CornerRadius="2" Background="White" HorizontalAlignment="Left"/>
+                        </Border>
+                    </Grid>
+                    <Border x:Name="Focus" BorderBrush="#055BA6" BorderThickness="2" CornerRadius="3" Visibility="Collapsed" IsHitTestVisible="False"/>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="Tag" Value="sit"><Setter TargetName="Icon" Property="Data" Value="M 5,4 L 5,14 19,14 M 5,20 L 5,14 M 19,14 L 19,20 M 9,9 L 19,9 19,14"/></Trigger>
+                    <Trigger Property="Tag" Value="logs"><Setter TargetName="Icon" Property="Data" Value="M 3,7 L 3,4 9,4 12,7 21,7 21,20 3,20 Z M 3,10 L 21,10"/></Trigger>
+                    <Trigger Property="IsCheckable" Value="True">
+                        <Setter TargetName="Icon" Property="Data" Value="M 3,4 L 21,4 21,17 3,17 Z M 8,21 L 16,21 M 12,17 L 12,21 M 10,11 L 15,11 M 13,9 L 15,11 13,13"/>
+                        <Setter TargetName="State" Property="Visibility" Value="Visible"/><Setter TargetName="Switch" Property="Visibility" Value="Visible"/>
+                    </Trigger>
+                    <Trigger Property="IsChecked" Value="True">
+                        <Setter TargetName="State" Property="Text" Value="켜짐"/><Setter TargetName="Switch" Property="Background" Value="#19A9DB"/>
+                        <Setter TargetName="Switch" Property="BorderBrush" Value="#267D9E"/><Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right"/>
+                    </Trigger>
+                    <Trigger Property="IsHighlighted" Value="True"><Setter TargetName="Highlight" Property="Background" Value="#E8F2F8"/></Trigger>
+                    <Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter TargetName="Focus" Property="Visibility" Value="Visible"/></Trigger>
+                    <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value></Setter>
+        <Style.Triggers>
+            <Trigger Property="IsCheckable" Value="True"><Setter Property="Height" Value="54"/><Setter Property="FontSize" Value="12"/></Trigger>
+            <Trigger Property="Tag" Value="snack"><Setter Property="Template" Value="{StaticResource SnackTemplate}"/><Setter Property="Height" Value="69"/><Setter Property="FontSize" Value="16"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Foreground" Value="#123D52"/></Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="Separator"><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Separator"><Border Height="11" Padding="4,5"><Border Background="#D7E1E8" Height="1"/></Border></ControlTemplate></Setter.Value></Setter></Style>
+    <Style x:Key="PetMenuStyle" TargetType="product:PetContextMenu">
+        <Setter Property="FontFamily" Value="{StaticResource PetMenuFont}"/>
+        <Setter Property="OverridesDefaultStyle" Value="True"/><Setter Property="HasDropShadow" Value="False"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/><Setter Property="UseLayoutRounding" Value="True"/>
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+        <Setter Property="Template"><Setter.Value>
+            <ControlTemplate TargetType="product:PetContextMenu">
+                <Border Margin="12" Width="288" x:Name="Shell" BorderBrush="#7894AA" BorderThickness="1" CornerRadius="6" Padding="4">
+                    <Border.Effect><DropShadowEffect Color="#152E49" BlurRadius="14" ShadowDepth="5" Opacity="0.24"/></Border.Effect>
+                    <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#248ED3" Offset="0"/><GradientStop Color="#39A4DF" Offset="0.26"/><GradientStop Color="#E8EEF2" Offset="0.27"/><GradientStop Color="#F0F3F5" Offset="1"/></LinearGradientBrush></Border.Background>
+                    <StackPanel>
+                        <Grid Height="54" ClipToBounds="True">
+                            <Path Data="M 100,0 L 170,54 240,0 Z M 185,0 L 278,54 278,15 250,0 Z" Fill="#0BFFFFFF" IsHitTestVisible="False"/>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,34,3">
+                                <Image Source="/Dororong.App;component/Assets/dororong-head.png" Width="26" Height="26" Margin="0,0,7,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <TextBlock Text="도로롱이 내 컴에?!" Foreground="White" FontSize="19" FontWeight="Bold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <Button x:Name="PART_Close" AutomationProperties.Name="메뉴 닫기" ToolTip="메뉴 닫기" Focusable="False" IsTabStop="False" Width="30" Height="32" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,6,3" Background="Transparent" BorderThickness="0">
+                                <Button.Template><ControlTemplate TargetType="Button"><Border x:Name="CloseFace" Background="{TemplateBinding Background}" CornerRadius="2"><Path Data="M 0,0 L 10,10 M 10,0 L 0,10" Stroke="White" StrokeThickness="1.2" Width="11" Height="11"/></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="CloseFace" Property="Background" Value="#30FFFFFF"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Button.Template>
+                            </Button>
+                        </Grid>
+                        <Border Background="#FCFDFE" BorderBrush="#DCE4EA" BorderThickness="1,1,1,2" CornerRadius="5" Padding="9,11,9,6">
+                            <Grid>
+                                <Canvas ClipToBounds="True" IsHitTestVisible="False"><Path Data="M 140,80 L 210,150 140,220 70,150 Z" Stroke="#0CB5C7D4" StrokeThickness="7"/></Canvas>
+                                <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                            </Grid>
+                        </Border>
+                        <Grid x:Name="Version" Visibility="Collapsed" Margin="11,10,11,5">
+                            <TextBlock Text="DORO'S ON MY DESKTOP?!" FontFamily="Segoe UI" FontSize="9" Foreground="#566B7A"/>
+                            <TextBlock Text="{Binding ProductVersion, RelativeSource={RelativeSource TemplatedParent}}" FontSize="11" HorizontalAlignment="Right" Foreground="#536C7E"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+                <ControlTemplate.Triggers><Trigger Property="ShowVersion" Value="True"><Setter TargetName="Version" Property="Visibility" Value="Visible"/></Trigger></ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value></Setter>
+    </Style>
+</ResourceDictionary>

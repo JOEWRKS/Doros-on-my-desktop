@@ -29,12 +29,12 @@ public sealed class ManualSittingTests
                 DirectInteractionSnapshot.None, TimeSpan.FromMilliseconds(20));
             if (ms < 1100) continue; // Complete the 1050ms entry before inspecting full-frame banks.
             var closed = mode == 0
-                ? ReferenceEquals(image.Source,UprightRumpSource.Standing(true))
+                ? EyePixels((BitmapSource)image.Source).SequenceEqual(EyePixels(UprightRumpSource.Standing(true)))
                 : ReferenceEquals(image.Source, mode == 2 ? LocomotionFrames.Sit(1, true) : LocomotionFrames.Walk(1, 0, true));
             if (!closed)
             {
                 if (mode == 0)
-                    Assert.Same(UprightRumpSource.Standing(false),image.Source);
+                    Assert.Equal(EyePixels(UprightRumpSource.Standing(false)),EyePixels((BitmapSource)image.Source));
                 else
                     Assert.Same(mode == 2 ? LocomotionFrames.Sit(1) : LocomotionFrames.Walk(1, 0), image.Source);
             }
@@ -47,6 +47,13 @@ public sealed class ManualSittingTests
         Assert.All(durations, duration => Assert.InRange(duration, 320, 400));
         Assert.InRange(starts[1] - starts[0], 4800, 5200);
     });
+
+    internal static byte[] EyePixels(BitmapSource source)
+    {
+        var pixels=PremultipliedFrame.From(source).Pixels;var result=new List<byte>();
+        for(var y=40;y<64;y++)for(var x=14;x<50;x++)result.AddRange(pixels.AsSpan((y*96+x)*4,4).ToArray());
+        return result.ToArray();
+    }
 
     [Fact]
     public void Idle_time_alone_never_sits()

@@ -13,7 +13,8 @@ $output = Assert-InstallerOutputPath -OutputPath $OutputPath
 $payload = Get-InstallerPayload -PackagePath $PackagePath
 $archive = (Resolve-Path -LiteralPath $ArchivePath).Path
 $archiveHash = (Get-FileHash -LiteralPath $archive).Hash
-if ($archiveHash -cne 'C8C82D2301F28B0D9252AE2F07DE88294886062BF4338BF431A3FBDBFBB60313') {
+# Figma tray support candidate13, authorized local update 2026-10-14.
+if ($archiveHash -cne 'B1E11E7A9DE63BF874A7BF2CAA2FE188A067FFE7F769E27E67AE283AD0775DD0') {
     throw 'Archive hash does not match the approved 0.1.3 candidate.'
 }
 $compiler = (Resolve-Path -LiteralPath $CompilerPath).Path
@@ -85,11 +86,13 @@ $code.Add('end;')
 $payload | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $output 'payload.json') -Encoding utf8NoBOM
 $validation | Set-Content -LiteralPath (Join-Path $output 'package-validation.log') -Encoding utf8NoBOM
 if ((InventoryKey (Get-InstallerPayload -PackagePath $stage)) -cne $initialKey) { throw 'Staging hash parity failed.' }
-# Use the frozen apphost's embedded product icon, not mutable artwork sources.
-Add-Type -AssemblyName System.Drawing
-$icon = [Drawing.Icon]::ExtractAssociatedIcon((Join-Path $stage 'Dororong.exe'))
+# Use the frozen app assembly's embedded product icon, not mutable artwork sources.
+# Preserve all icon sizes; ExtractAssociatedIcon discards the other ICO frames.
+$frozenAssembly = [Reflection.Assembly]::Load([IO.File]::ReadAllBytes((Join-Path $stage 'Dororong.App.dll')))
+$icon = $frozenAssembly.GetManifestResourceStream('Dororong.App.Assets.dororong.ico')
+if ($null -eq $icon) { throw 'Frozen product icon resource is missing.' }
 $iconStream = [IO.File]::Create((Join-Path $output 'dororong.ico'))
-try { $icon.Save($iconStream) } finally { $iconStream.Dispose(); $icon.Dispose() }
+try { $icon.CopyTo($iconStream) } finally { $iconStream.Dispose(); $icon.Dispose() }
 $sourceHashes = @('installer/Dororong.iss','installer/InstallerPolicy.iss','installer/InstallerDirectories.iss','tools/Build-Installer.ps1','tools/installer/InstallerPayload.psm1','tests/Dororong.ProductPackage.Tests.ps1') | ForEach-Object {
     [pscustomobject]@{ path=$_; sha256=(Get-FileHash (Join-Path $root $_)).Hash }
 }

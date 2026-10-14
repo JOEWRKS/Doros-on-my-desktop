@@ -10,6 +10,7 @@ internal static class LocomotionFrames
     private const int EyeFrames = 65 + 8 * 32 + 65;
     internal static IReadOnlyList<BitmapSource> All { get; } = Load();
     private static readonly HashSet<BitmapSource> Frames = new(All);
+    private static readonly Dictionary<(int Level,int Phase,bool Closed),BitmapSource> WalkFrames = new();
 
     internal static bool Contains(object? frame) => frame is BitmapSource bitmap && Frames.Contains(bitmap);
 
@@ -17,6 +18,7 @@ internal static class LocomotionFrames
     {
         Validate(amount);
         var progress = Math.Clamp(amount, 0, 1);
+        if(progress==0) return UprightRumpSource.Standing(closed);
         // Shared endpoint objects also preserve frozen interaction captures.
         if (rising && progress > 0 && progress < 1)
             return All[(closed ? EyeFrames : 0) + 65 + 8 * 32 + (int)Math.Round((1-progress) * 64)];
@@ -30,7 +32,13 @@ internal static class LocomotionFrames
         var level = (int)Math.Round(Math.Clamp(amplitude, 0, 1) * 8);
         if (level == 0) return Sit(0, closed);
         var phase = (int)Math.Round(((distance % 10 + 10) % 10) / 10 * 32) % 32;
-        return All[(closed ? EyeFrames : 0) + 65 + (level - 1) * 32 + phase];
+        var key=(level,phase,closed);
+        if(!WalkFrames.TryGetValue(key,out var image))
+        {
+            image=SnackRunFrames.Render(phase*10d/32,level/8d,walking:true,closed:closed);
+            WalkFrames.Add(key,image);Frames.Add(image);
+        }
+        return image;
     }
 
     private static void Validate(double value)

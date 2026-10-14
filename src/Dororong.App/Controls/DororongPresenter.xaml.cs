@@ -517,9 +517,8 @@ public partial class DororongPresenter : UserControl
         if (locomotionAllowed)
         {
             var closed = ordinaryEyesClosed;
-            // Direct recovery owns its exact canonical endpoint until another
-            // motion begins. Once locomotion starts, keep its cleaned standing
-            // endpoint after rising; do not restore the old exterior fringe.
+            // Moving/sitting frames retain their authored trajectories. Every
+            // neutral endpoint now returns the same cleaned canonical source.
             if (_locomotionStarted)
                 DororongImage.Source = _locomotion.Sit > 0
                     ? LocomotionFrames.Sit(_locomotion.Sit,closed,_locomotion.UsesRisePose)
@@ -548,7 +547,10 @@ public partial class DororongPresenter : UserControl
         ApplyBodyClickWakeBridge(snapshot, directInteraction);
         ApplyBodyDragPresentation(directInteraction, elapsed.TotalMilliseconds);
         if (_postCheekIdleFacing is { } cheekFacing) BodyScaleTransform.ScaleX = cheekFacing == FacingDirection.Left ? -1 : 1;
+        if(UprightRumpSource.Contains(DororongImage.Source))
+            DororongImage.Source=BodyBreathingFrame.Standing(ordinaryEyesClosed,_breathingAmount);
         ApplyHunting(snapshot, directInteraction, ordinaryEyesClosed);
+        ApplySnack(snapshot);
         _activeFacing = BodyScaleTransform.ScaleX < 0
             ? FacingDirection.Left
             : FacingDirection.Right;
@@ -960,11 +962,12 @@ public partial class DororongPresenter : UserControl
         }
     }
 
+    private double _breathingAmount;
     private void ApplyBreathing(double phase)
     {
-        var amount = GetBreathingAmount(phase);
-        ImageBreathingScaleTransform.ScaleX = 1 + (0.024 * amount);
-        ImageBreathingScaleTransform.ScaleY = 1 + (0.012 * amount);
+        _breathingAmount = GetBreathingAmount(phase);
+        ImageBreathingScaleTransform.ScaleX = 1;
+        ImageBreathingScaleTransform.ScaleY = 1;
     }
 
     private static double GetBreathingAmount(double phase)
@@ -986,6 +989,7 @@ public partial class DororongPresenter : UserControl
 
     private void ResetPose()
     {
+        _breathingAmount=0;
         RestorePounceTransform();
         if (_headSamplingOverride)
         {

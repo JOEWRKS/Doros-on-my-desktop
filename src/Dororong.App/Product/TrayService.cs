@@ -15,6 +15,8 @@ internal sealed class TrayService : IDisposable
     private FormsToolStripMenuItem? exitItem;
     private EventHandler? openLogsHandler;
     private EventHandler? exitHandler;
+    private StyledTrayMenuBridge? styledMenu;
+    private Action? refreshPetCommands;
     private int disposed;
 
     internal TrayService(Action openLogs, Action exit, bool visible = true) : this(
@@ -58,10 +60,10 @@ internal sealed class TrayService : IDisposable
             ArgumentNullException.ThrowIfNull(exit);
             versionItem = new FormsToolStripMenuItem($"{ProductIdentity.DisplayName} {ProductIdentity.Version}")
             {
-                Enabled = false
+                Enabled = false, Tag = "version"
             };
-            openLogsItem = new FormsToolStripMenuItem("로그 폴더 열기");
-            exitItem = new FormsToolStripMenuItem("종료");
+            openLogsItem = new FormsToolStripMenuItem("로그 폴더 열기") { Tag = "logs" };
+            exitItem = new FormsToolStripMenuItem("종료") { Tag = "exit" };
             openLogsHandler = (_, _) => openLogs();
             exitHandler = (_, _) => exit();
             openLogsItem.Click += openLogsHandler;
@@ -98,6 +100,7 @@ internal sealed class TrayService : IDisposable
         }
 
         var cleanupException = CleanupSequence.Run(
+            () => styledMenu?.Dispose(),
             DetachOpenLogsHandler,
             DetachExitHandler,
             resources.Dispose);
@@ -107,13 +110,41 @@ internal sealed class TrayService : IDisposable
         }
     }
 
+    internal void AddPetCommands(Action snack, Func<bool> snackActive, Action startup, Func<bool> startupEnabled)
+    {
+        var snackItem=new FormsToolStripMenuItem("간식 주기") { Tag = "snack" };
+        var startupItem=new FormsToolStripMenuItem("Windows 로그인 시 실행") { Tag = "startup" };
+        snackItem.Click+=(_,_)=>snack();
+        startupItem.Click+=(_,_)=> { startup(); Refresh(); };
+        void Refresh()
+        {
+            snackItem.Text=snackActive()?"간식 취소":"간식 주기";
+            try { startupItem.Checked=startupEnabled(); } catch { startupItem.Checked=false; }
+        }
+        resources.Menu.Opening+=(_,_)=>Refresh();
+        refreshPetCommands = Refresh;
+        resources.Menu.Items.Insert(1,snackItem);
+        resources.Menu.Items.Insert(2,startupItem);
+    }
+
+    internal void EnableStyledMenu(System.Windows.Window owner)
+    {
+        ObjectDisposedException.ThrowIf(disposed != 0, this);
+        if (resources.NotifyIcon is not FormsTrayNotifyIcon native)
+            throw new InvalidOperationException("Styled menus require the native tray adapter.");
+        styledMenu ??= new StyledTrayMenuBridge(resources.Menu, owner, () => refreshPetCommands?.Invoke());
+        native.SetStyledMenu(styledMenu.Open);
+    }
+
+    internal PetContextMenu? CurrentStyledMenu => styledMenu?.Current;
+
     private static DrawingIcon LoadIcon()
     {
         const string resourceName = "Dororong.App.Assets.dororong.ico";
         using var stream = typeof(TrayService).Assembly.GetManifestResourceStream(resourceName)
             ?? throw new InvalidOperationException($"The product icon resource '{resourceName}' is unavailable.");
         using var loaded = new DrawingIcon(stream);
-        return (DrawingIcon)loaded.Clone();
+        return new DrawingIcon(loaded, System.Windows.Forms.SystemInformation.SmallIconSize);
     }
 
     private static TrayServiceResources AcquireDefaultResources(
@@ -156,6 +187,7 @@ internal interface ITrayNotifyIcon : IDisposable
 internal sealed class FormsTrayNotifyIcon : ITrayNotifyIcon
 {
     private readonly FormsNotifyIcon notifyIcon;
+    private Action? openStyledMenu;
     private int disposed;
 
     internal FormsTrayNotifyIcon(FormsNotifyIcon notifyIcon)
@@ -187,6 +219,12 @@ internal sealed class FormsTrayNotifyIcon : ITrayNotifyIcon
 
     private void OnMouseUp(object? sender, System.Windows.Forms.MouseEventArgs e)
     {
+        if (disposed != 0) return;
+        if (openStyledMenu is { } open)
+        {
+            if (e.Button is System.Windows.Forms.MouseButtons.Left or System.Windows.Forms.MouseButtons.Right) open();
+            return;
+        }
         // Right click keeps NotifyIcon's native menu route. MouseUp also covers
         // the second release of a double click without creating a second popup.
         if (disposed != 0 || e.Button != System.Windows.Forms.MouseButtons.Left ||
@@ -213,7 +251,16 @@ internal sealed class FormsTrayNotifyIcon : ITrayNotifyIcon
         }
 
         notifyIcon.MouseUp -= OnMouseUp;
+        openStyledMenu = null;
         notifyIcon.Dispose();
+    }
+
+    internal void SetStyledMenu(Action open)
+    {
+        openStyledMenu = open ?? throw new ArgumentNullException(nameof(open));
+        // Do not enter WinForms' popup/foreground state machine just to cancel it.
+        // Both native releases now have exactly one WPF opening route.
+        notifyIcon.ContextMenuStrip = null;
     }
 }
 

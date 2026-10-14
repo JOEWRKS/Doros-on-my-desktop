@@ -1,10 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <Resource Include="Assets\Fonts\*.otf" />
+    <None Update="Assets\Fonts\OFL-Pretendard.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <ProjectReference Include="..\Dororong.Core\Dororong.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\snack-jewel.png" />
+    <Resource Include="Assets\dororong-head.png" />
+    <Resource Include="Assets\dororong.ico" />
     <Resource Include="Assets\dororong-canonical.png" />
     <EmbeddedResource Include="Assets\dororong.ico" LogicalName="Dororong.App.Assets.dororong.ico" />
     <EmbeddedResource Include="Assets\layered-pull.pbgra.gz" />

@@ -5,7 +5,6 @@ using Dororong.App.Runtime;
 using Dororong.Core.Behavior;
 using Dororong.Core.Geometry;
 using Dororong.Core.Platforms;
-using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -136,7 +135,6 @@ public class HeadLandingContinuityTests
         }
         for (var i = 0; i < 10; i++) Tick();
         var image = (Image)presenter.FindName("DororongImage");
-        var canonical = Hash((BitmapSource)image.Source);
         var point = image.TranslatePoint(new(40, 30), presenter);
         var local = new PointD(point.X, point.Y);
         var origin = position + local;
@@ -156,18 +154,14 @@ public class HeadLandingContinuityTests
         for (var i = 0; i < 64; i++)
         {
             Tick();
-            frames.Add(new((i + 1) * 16, pose?.Phase, direct, Hash((BitmapSource)image.Source) == canonical,
+            // Breathing now changes local torso pixels rather than an external
+            // scale. Source-family identity replaces an arbitrary phase hash;
+            // all per-frame geometry/sole/continuity assertions remain intact.
+            frames.Add(new((i + 1) * 16, pose?.Phase, direct, UprightRumpSource.Contains(image.Source),
                 RenderOptions.GetBitmapScalingMode(image), pose?.Squash ?? 0, runtime.Contact.SoleY,
                 presenter.MeasurePlatformGeometry()!.Value.Bounds.Height,position.Y));
         }
         return frames.ToArray();
-    }
-
-    private static string Hash(BitmapSource source)
-    {
-        var bytes = new byte[source.PixelWidth * source.PixelHeight * 4];
-        source.CopyPixels(bytes, source.PixelWidth * 4, 0);
-        return Convert.ToHexString(SHA256.HashData(bytes));
     }
 
     private sealed class Scene : IDesktopSceneNative

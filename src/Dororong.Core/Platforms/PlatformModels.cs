@@ -26,8 +26,8 @@ public sealed record DesktopWindow(
     bool Taskbar,
     bool HorizontalTaskbar)
 {
-    // Menus retain ordinary occlusion; only their own shell process's taskbar
-    // treats them as transient UI rather than a removed supporting edge.
+    // Menus retain ordinary-window occlusion, but do not remove taskbar support.
+    // Tray menus can belong to a different process than Explorer.
     public bool IsTransientMenu { get; init; }
 }
 
