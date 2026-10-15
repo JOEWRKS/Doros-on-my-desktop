@@ -212,7 +212,8 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
         var processFileName=!excluded && visible && !minimized ? ReadProcessFileName(pid) : null;
         excluded |= string.Equals(processFileName,"Dororong.App.exe",StringComparison.OrdinalIgnoreCase) ||
             string.Equals(processFileName,"Dororong.exe",StringComparison.OrdinalIgnoreCase);
-        var gamingOverlay=IsNvidiaGamingOverlay(handle,className,processFileName);
+        var gamingOverlay=IsNvidiaGamingOverlay(handle,className,processFileName) ||
+            IsDiscordGamingOverlay(handle,className,processFileName);
         var transientMenu = className == "#32768" ||
             (!excluded && visible && !minimized && className == "Chrome_WidgetWin_1" && IsChromiumMenuStyle(className,
                 NativeMethods.GetWindowLongPtr(handle,-16).ToInt64(),
@@ -276,6 +277,37 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
             return false;
         }
     }
+    private static bool IsDiscordGamingOverlay(nint handle,string className,string? processFileName)
+    {
+        if (className != "Chrome_WidgetWin_1" ||
+            !string.Equals(processFileName,"Discord.exe",StringComparison.OrdinalIgnoreCase)) return false;
+        try
+        {
+            return IsDiscordOverlayStyle(className,processFileName,
+                NativeMethods.GetWindowLongPtr(handle,-16).ToInt64(),
+                NativeMethods.GetWindowLongPtr(handle,NativeMethods.GwlExStyle).ToInt64());
+        }
+        catch (Win32Exception)
+        {
+            // Unconfirmed metadata keeps normal physical-window behavior.
+            return false;
+        }
+    }
+
+    internal static bool IsDiscordOverlayStyle(string className,string? processFileName,long style,long extendedStyle)
+    {
+        // Captured game HUD: Chrome_WidgetWin_1, Discord.exe, 0x14030000/0x800A8.
+        // Never ignore Discord's normal window or an interactive/opaque panel.
+        const long layeredClickThroughTopmostTool=0x00080000L|0x00000020L|0x00000008L|0x00000080L;
+        const long childPopupOrFrame=0x40000000L|0x80000000L|0x00C00000L|0x00040000L;
+        const long appWindow=0x00040000L;
+        return className == "Chrome_WidgetWin_1" &&
+            string.Equals(processFileName,"Discord.exe",StringComparison.OrdinalIgnoreCase) &&
+            (style & childPopupOrFrame)==0 &&
+            (extendedStyle & layeredClickThroughTopmostTool)==layeredClickThroughTopmostTool &&
+            (extendedStyle & appWindow)==0;
+    }
+
     private string? ReadProcessFileName(uint pid)
     {
         try

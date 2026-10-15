@@ -52,8 +52,12 @@ Embedded character resources and all license notices remain included.
 ## Installer and verification
 
 The historical public 0.1.2 candidate is `candidate-20260921-v012-01`.
-The installed local0.1.3 candidate is `candidate-20261014-sleep-option-14`;
-see its [option verification and handoff record](verification/2026-10-14-sleep-option.md).
+The installed local0.1.3 candidate is `candidate-20261015-discord-overlay-15`;
+see its [fix, acceptance and installed-update record](verification/2026-10-15-window-mode-fall-diagnosis.md).
+Its local Setup/README/checksums are in `artifacts/delivery/0.1.3-20261015-discord-overlay/`.
+The public download still uses candidate14; it has not been replaced by this local update.
+The earlier `candidate-20261014-sleep-option-14` and its
+[option verification and handoff record](verification/2026-10-14-sleep-option.md) are preserved.
 The accepted candidate13 checkpoint and its
 [host verification record](verification/2026-10-14-figma-tray-support.md) are preserved.
 The prior head-icon/tray candidate12 and its

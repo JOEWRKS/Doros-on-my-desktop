@@ -107,14 +107,14 @@ public class NvidiaOverlayTests
         }
     }
 
-    private sealed class OffscreenWindow : IDisposable
+    internal sealed class OffscreenWindow : IDisposable
     {
         private readonly string className;
         private static readonly WindowProcedure Procedure = DefWindowProc;
         private readonly nint instance = GetModuleHandle(null);
         internal nint Handle { get; }
 
-        internal OffscreenWindow(string className, uint extendedStyle)
+        internal OffscreenWindow(string className, uint extendedStyle, uint style = 0x90000000)
         {
             this.className = className;
             var definition = new WindowClass
@@ -123,9 +123,16 @@ public class NvidiaOverlayTests
                 Instance = instance, ClassName = className
             };
             Assert.NotEqual(0, RegisterClass(ref definition));
-            Handle = CreateWindowEx(extendedStyle | 0x08000000, className, "", 0x90000000,
+            Handle = CreateWindowEx(extendedStyle | 0x08000000, className, "", style,
                 -30000, -30000, 1919, 1080, 0, 0, instance, 0);
             Assert.NotEqual(0, Handle);
+            if (style != 0x90000000)
+            {
+                // CreateWindowEx adds a caption to overlapped windows. Restore
+                // the literal captured frameless style for native reader tests.
+                NativeMethods.SetWindowLongPtr(Handle,-16,(nint)style);
+                Assert.Equal((long)style,NativeMethods.GetWindowLongPtr(Handle,-16).ToInt64());
+            }
         }
 
         public void Dispose()

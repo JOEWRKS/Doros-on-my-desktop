@@ -12,6 +12,9 @@ A Windows desktop pet based on the NIKKE-derived Dororong (Doro) fan character.
 
 Windows x64 · v0.1.3 Preview · 약 66MB / About 66MB · 관리자 권한 불필요 / No admin required
 
+2026-10-15 수정본: Discord 게임 오버레이로 인한 창 모드 전환 시 작업표시줄 아래 낙하 수정. 일반 Discord 창 동작은 유지됩니다.
+2026-10-15 correction: fixed taskbar falls during window-mode changes with the Discord game overlay; ordinary Discord windows are unchanged.
+
 설치 마지막 화면에서 실행을 선택하거나 시작 메뉴의 **도로롱이 내 컴에!**에서 실행하세요. 업데이트 전에는 트레이에서 종료하세요.
 Choose launch on the final setup page, or open **도로롱이 내 컴에!** from the Start menu. Exit through the tray before updating.
 

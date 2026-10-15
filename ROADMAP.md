@@ -5,6 +5,9 @@
 
 ## 현재 위치 · 2026-10-15
 
+- **Windows 오버레이 낙하 수정: 사용자 수락·설치 완료, main/공개 갱신 진행.** 일반 Discord 창 판정은 유지한다. [근거·게시 상태](TASKS.md#windows-overlay-fix-and-public-update--2026-10-15). 다음은 원격 main과 익명 설치 파일/체크섬 확인. R3·R4는 그대로 유지한다.
+- **Mac 별도 브랜치 관련 검수: 조건부 Dock 발판 소실 위험 확인.** [검수 근거](docs/verification/2026-10-15-mac-overlay-review.md). 실제 Mac 발생은 미검증이고 코드·ZIP은 변경하지 않았다. 다음은 테스터의 실제 창/오버레이 정보 확인이며 Mac 완료로 처리하지 않는다.
+
 - **현재 상태: v0.1.3 Preview 공개·다운로드 확인 완료 — 2026-10-15.** 사용자 승인으로 기존 공개 보류를 이번 Preview에 한해 변경했다. R3·R4는 완료나 허가로 처리하지 않으며 1단계 전체 검증은 여전히 미완료다. [게시·다운로드 근거](TASKS.md#public-preview-release--2026-10-15).
 - **현재 독립 개발: F1 현재 PC의 실제 로그인 자동 실행까지 사용자 수락 완료 / F2 비공개 main 반영 완료.** [현재 실행 근거](TASKS.md#login-startup-acceptance-and-private-main-checkpoint--2026-10-15)를 따른다. 기존 출시 게이트는 유지하며 공개 릴리스 완료는 아니다.
 - **F3 자동 눕기 옵션: 구현·검사·로컬 설치·사용자 수락·비공개 main 반영 완료.** [기능 근거](TASKS.md#automatic-sleep-option--2026-10-14), [커밋·원격 일치 근거](TASKS.md#login-startup-acceptance-and-private-main-checkpoint--2026-10-15).

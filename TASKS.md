@@ -4,6 +4,22 @@ Direction, current stage and release completion gates live in [ROADMAP](ROADMAP.
 This file remains the sole active execution/verification ledger; a finished task
 does not close a roadmap stage with open requirements.
 
+## Windows overlay fix and public update — 2026-10-15
+
+- User accepted no fall on RimWorld restore, requested the installed update,
+  then explicitly authorized Windows main commit/push and public installer update.
+- [Fix, tests, user acceptance, hashes and installed update](docs/verification/2026-10-15-window-mode-fall-diagnosis.md)
+  are the detailed evidence. Ordinary Discord windows retain physical behavior.
+  App1216/Core259, targeted31, package/native smoke and installed470-file parity passed.
+- Windows-only changes are isolated from `feature/macos-test03`; no Mac code merge.
+  Publication is in progress: preserve old candidate14 and existing tag history,
+  replace the current v0.1.3 download/checksums with accepted candidate15, then
+  verify anonymous bytes. Final remote evidence will be added after confirmation.
+- [Mac review](docs/verification/2026-10-15-mac-overlay-review.md): DesktopTests15 pass;
+  synthetic overlay-above-Dock metadata reproduces support loss. Actual Mac
+  occurrence is unverified, and Mac code/test03 ZIP are unchanged. Next is native
+  tester evidence and separately authorized bounded correction, not Mac clearance.
+
 ## Public main hardening checkpoint — 2026-10-15
 
 - User authorized committing/pushing the completed checks and asked to include
