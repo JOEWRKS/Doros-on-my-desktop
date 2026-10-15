@@ -55,7 +55,8 @@ The historical public 0.1.2 candidate is `candidate-20260921-v012-01`.
 The installed local0.1.3 candidate is `candidate-20261015-discord-overlay-15`;
 see its [fix, acceptance and installed-update record](verification/2026-10-15-window-mode-fall-diagnosis.md).
 Its local Setup/README/checksums are in `artifacts/delivery/0.1.3-20261015-discord-overlay/`.
-The public download still uses candidate14; it has not been replaced by this local update.
+The public v0.1.3 download now uses candidate15. Candidate14 remains archived in
+the release; use the versioned download link in README to avoid stale redirects.
 The earlier `candidate-20261014-sleep-option-14` and its
 [option verification and handoff record](verification/2026-10-14-sleep-option.md) are preserved.
 The accepted candidate13 checkpoint and its
@@ -111,8 +112,9 @@ proofs, compiler, logs and backups remain in their separate artifact directories
 Old candidate paths stay intact because verification records refer to them.
 `artifacts/`, `bin/`, `obj/` and test results are not source-control content.
 This handoff is not a GitHub release or authorization to distribute character art.
-The separately authorized v0.1.3 publication uses the unchanged candidate14 Setup
-with updated external README/checksums; release evidence is recorded in TASKS.
+The initial v0.1.3 publication used candidate14. The subsequent authorized overlay
+correction replaced the current download with candidate15 and retained candidate14
+as historical assets; release evidence is recorded in TASKS.
 
 ## Code-signing readiness (2026-09-21)
 

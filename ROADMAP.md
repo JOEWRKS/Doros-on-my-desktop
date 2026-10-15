@@ -5,7 +5,7 @@
 
 ## 현재 위치 · 2026-10-15
 
-- **Windows 오버레이 낙하 수정: 사용자 수락·설치 완료, main/공개 갱신 진행.** 일반 Discord 창 판정은 유지한다. [근거·게시 상태](TASKS.md#windows-overlay-fix-and-public-update--2026-10-15). 다음은 원격 main과 익명 설치 파일/체크섬 확인. R3·R4는 그대로 유지한다.
+- **Windows 오버레이 낙하 수정: 사용자 수락·설치·main 푸시·공개 갱신 완료.** 일반 Discord 창 판정은 유지한다. [근거·게시 상태](TASKS.md#windows-overlay-fix-and-public-update--2026-10-15). 갱신용 다운로드 주소로 익명 파일·체크섬 일치를 확인했고 이전 설치본은 보관했다. 이번 Windows 작업은 종료하며 R3·R4는 그대로 유지한다.
 - **Mac 별도 브랜치 관련 검수: 조건부 Dock 발판 소실 위험 확인.** [검수 근거](docs/verification/2026-10-15-mac-overlay-review.md). 실제 Mac 발생은 미검증이고 코드·ZIP은 변경하지 않았다. 다음은 테스터의 실제 창/오버레이 정보 확인이며 Mac 완료로 처리하지 않는다.
 
 - **현재 상태: v0.1.3 Preview 공개·다운로드 확인 완료 — 2026-10-15.** 사용자 승인으로 기존 공개 보류를 이번 Preview에 한해 변경했다. R3·R4는 완료나 허가로 처리하지 않으며 1단계 전체 검증은 여전히 미완료다. [게시·다운로드 근거](TASKS.md#public-preview-release--2026-10-15).

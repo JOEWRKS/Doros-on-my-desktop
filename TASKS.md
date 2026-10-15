@@ -12,13 +12,25 @@ does not close a roadmap stage with open requirements.
   are the detailed evidence. Ordinary Discord windows retain physical behavior.
   App1216/Core259, targeted31, package/native smoke and installed470-file parity passed.
 - Windows-only changes are isolated from `feature/macos-test03`; no Mac code merge.
-  Publication is in progress: preserve old candidate14 and existing tag history,
-  replace the current v0.1.3 download/checksums with accepted candidate15, then
-  verify anonymous bytes. Final remote evidence will be added after confirmation.
+  Source commit `14851e898f8b9acc46e5b373e9895a1eff8e15d3` was pushed to main;
+  main-isolated targeted31/31 also passed. Current v0.1.3 Setup/checksums now use
+  candidate15. Old candidate14 assets were renamed with `Archive-candidate14-`,
+  not deleted; original tag/prerelease state was preserved. The release links the
+  exact corrected source commit rather than silently moving the original tag.
+- Anonymous verification initially downloaded old candidate14 through the bare
+  asset URL. Versioned `?v=20261015-overlay` URLs return the correct bytes; README
+  and release instructions now use them. All three assets and public checksum
+  entries match the local handoff. Setup66,013,159 bytes, SHA256 matches the linked
+  fix report. Evidence: `artifacts/release-overlay-20261015/anonymous-verification.json`;
+  old downloads and before/after API snapshots are retained beside it.
+  Windows source/public-update work is complete. Historical bare URLs may remain
+  cached; use the versioned download link for this correction.
 - [Mac review](docs/verification/2026-10-15-mac-overlay-review.md): DesktopTests15 pass;
   synthetic overlay-above-Dock metadata reproduces support loss. Actual Mac
   occurrence is unverified, and Mac code/test03 ZIP are unchanged. Next is native
   tester evidence and separately authorized bounded correction, not Mac clearance.
+  Remote Mac branch remains `9e0b02f`, tag remains `20213a3`, and test03 ZIP hash
+  remains `8ccd577446457a95802b119a345e6e74280f3b11d9597972be67e21632f5e2d0`.
 
 ## Public main hardening checkpoint — 2026-10-15
 

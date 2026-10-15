@@ -8,7 +8,7 @@ A Windows desktop pet based on the NIKKE-derived Dororong (Doro) fan character.
 **설치 파일 하나를 받아 실행하면 됩니다. 별도 .NET 설치는 필요 없습니다.**
 **Download and run the installer below. No separate .NET installation is needed.**
 
-**[Windows 설치 파일 다운로드 · Download Windows installer](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/v0.1.3/Doros-on-my-desktop-Setup-0.1.3-win-x64.exe)**
+**[Windows 설치 파일 다운로드 · Download Windows installer](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/v0.1.3/Doros-on-my-desktop-Setup-0.1.3-win-x64.exe?v=20261015-overlay)**
 
 Windows x64 · v0.1.3 Preview · 약 66MB / About 66MB · 관리자 권한 불필요 / No admin required
 

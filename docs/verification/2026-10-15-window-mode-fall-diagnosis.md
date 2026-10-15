@@ -222,3 +222,16 @@ confirmed exiting the test candidate through the tray menu.
 Local update is complete. No commit/push, GitHub release replacement, Mac ZIP
 change or second login/reboot test was performed. Public Windows candidate14
 remains available unchanged until a separate release instruction.
+
+## Subsequent public update
+
+The user then authorized main commit/push and public replacement. Windows source
+commit `14851e898f8b9acc46e5b373e9895a1eff8e15d3` is on main, with no Mac source
+merged. Candidate15 Setup and checksums replaced the current v0.1.3 assets; old
+candidate14 files remain under `Archive-candidate14-`. The original tag and
+prerelease state remain intact, and release notes link the corrected source commit.
+The initial bare-URL download returned candidate14, so the documented installer
+and checksum links use `?v=20261015-overlay`. Anonymous downloads through those
+links match all three local handoff files and the published checksum entries.
+Detailed publication state is in TASKS, section Windows overlay fix and public
+update. This supersedes the previous no-public-update checkpoint, not its history.
