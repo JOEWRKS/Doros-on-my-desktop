@@ -1,7 +1,7 @@
 # Build, test and package
 
-The working tree prepares **unpublished v0.1.3**. The public release remains
-v0.1.2; new publication is on hold for [rights clarification](RIGHTS-REVIEW.md).
+The current release target is **v0.1.3 Preview**, authorized for publication on
+2026-10-15. [Asset rights](RIGHTS-REVIEW.md) remain unverified; publication is not permission.
 See the [other-environment checklist](ENVIRONMENT-TESTING.md) for manual acceptance.
 
 Run from the repository root on Windows x64 with a .NET 8-compatible SDK.
@@ -65,7 +65,7 @@ The earlier `candidate-20260921-v013-01` and its
 See [release verification](verification/2026-09-21-v012-release.md) for hashes
 and the exact acceptance coverage. Local `artifacts/` outputs are intentionally
 not committed. End users should download the Setup EXE from
-[GitHub Releases](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.2),
+[GitHub Releases](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.3),
 not GitHub's source-code ZIP.
 
 Installer builds require the verified payload archive and pinned Inno Setup
@@ -107,6 +107,8 @@ proofs, compiler, logs and backups remain in their separate artifact directories
 Old candidate paths stay intact because verification records refer to them.
 `artifacts/`, `bin/`, `obj/` and test results are not source-control content.
 This handoff is not a GitHub release or authorization to distribute character art.
+The separately authorized v0.1.3 publication uses the unchanged candidate14 Setup
+with updated external README/checksums; release evidence is recorded in TASKS.
 
 ## Code-signing readiness (2026-09-21)
 

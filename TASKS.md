@@ -4,6 +4,20 @@ Direction, current stage and release completion gates live in [ROADMAP](ROADMAP.
 This file remains the sole active execution/verification ledger; a finished task
 does not close a roadmap stage with open requirements.
 
+## Public preview release — 2026-10-15
+
+- After being told that rights and other-PC verification remain unresolved, user
+  explicitly requested updated instructions/download links, the latest installer
+  release and public repository visibility. This supersedes the publication hold
+  for this Preview only; it does not establish rights permission or close R3/R4.
+- Prepare v0.1.3 Preview from unchanged accepted candidate14 (Setup SHA256
+  `491EF2C3F5B1691C097CB5456CBF7C45D51E19C96140FDB86004D6A11DC94B97`).
+  Update external bilingual instructions and direct versioned download links;
+  retain unsigned/compatibility/asset-rights disclosures. Existing releases and
+  Git history remain intact. No code, assets, installed app or settings changed.
+- Publication and anonymous-download results are pending execution. Upload only
+  Setup, README and SHA256SUMS; no local backups, logs or generated proofs.
+
 ## Login startup acceptance and private main checkpoint — 2026-10-15
 
 - User confirmed `컴 켰는데 자동 실행 잘 된다. 이제 커밋 푸시하자`.

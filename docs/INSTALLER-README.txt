@@ -1,13 +1,15 @@
 도로롱이 내 컴에?! / Doro's on my desktop?!
-0.1.3 Preview · Windows x64 · 로컬 검증본 / Local test build
+0.1.3 Preview · Windows x64
+다운로드·버전 안내 / Download & release notes:
+https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.3
 
 설치 / Install
 1. 실행 중인 도로롱이 있다면 트레이 메뉴에서 종료하세요.
    Exit any running Doro through its tray menu.
 2. Doros-on-my-desktop-Setup-0.1.3-win-x64.exe를 실행하세요.
    Run the Setup EXE. No administrator rights or separate .NET installation needed.
-3. 시작 메뉴의 '도로롱이 내 컴에!'에서 실행하세요.
-   Launch '도로롱이 내 컴에!' from the Start menu.
+3. 설치 마지막 화면에서 실행을 선택하거나 시작 메뉴의 '도로롱이 내 컴에!'에서 실행하세요.
+   Choose launch on the final setup page, or open '도로롱이 내 컴에!' from the Start menu.
 
 사용 / Controls
 머리 드래그: 이동 / 볼 드래그: 늘이기 / 가까운 마우스: 추적·도약
@@ -27,8 +29,8 @@ Choose '간식 주기' to start; hold the jewel near the mouth to feed; '간식 
 Unsigned preview. Do not disable Windows security to bypass a warning.
 다른 PC·Windows 11·혼합 배율의 전체 검증은 미완료입니다.
 Full other-PC, Windows 11 and mixed-DPI validation remains incomplete.
-배포 권한 확인 중인 로컬 묶음입니다. 공개 배포 승인이나 새 릴리스가 아닙니다.
-Local handoff pending asset-rights clarification; not a public release or permission grant.
+캐릭터·이미지 배포 권한은 아직 확인되지 않았습니다. 공개는 공식 승인이나 허가를 의미하지 않습니다.
+Character/asset distribution permission remains unverified. Publication is not official approval or permission.
 직접 작성한 코드는 MIT. 캐릭터·이미지·상표는 별도 권리입니다.
 Original code is MIT; character art and trademarks are excluded. Notices are installed with the app.
 니케에서 파생된 도로롱 팬 캐릭터 기반의 비공식·비상업 팬메이드입니다.

@@ -5,25 +5,23 @@ A Windows desktop pet based on the NIKKE-derived Dororong (Doro) fan character.
 
 ## 다운로드 · Download
 
-현재 저장소는 배포 권한 확인을 위해 비공개이며, v0.1.3은 로컬 검증본입니다.
-The repository is private pending distribution permission; v0.1.3 is a locally tested candidate.
-아래 링크는 보존된 이전 v0.1.2 파일입니다. / The link below is the preserved v0.1.2 installer.
-다운로드하려면 저장소 접근 권한이 있는 GitHub 계정으로 로그인해야 합니다.
-Downloads require signing in with a GitHub account that has access to this private repository.
+**설치 파일 하나를 받아 실행하면 됩니다. 별도 .NET 설치는 필요 없습니다.**
+**Download and run the installer below. No separate .NET installation is needed.**
 
-**[Windows 설치 파일 · Windows installer](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/v0.1.2/Doros-on-my-desktop-Setup-0.1.2-win-x64.exe)**
+**[Windows 설치 파일 다운로드 · Download Windows installer](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/v0.1.3/Doros-on-my-desktop-Setup-0.1.3-win-x64.exe)**
 
-Windows x64 · v0.1.2 Preview · 런타임 포함 / Runtime included · 관리자 권한 불필요 / No admin required
+Windows x64 · v0.1.3 Preview · 약 66MB / About 66MB · 관리자 권한 불필요 / No admin required
 
-설치 후 시작 메뉴의 **도로롱이 내 컴에!**에서 실행하세요. 업데이트 전에는 트레이에서 종료하세요.
-Install, then launch **도로롱이 내 컴에!** from the Start menu. Exit through the tray before updating.
+설치 마지막 화면에서 실행을 선택하거나 시작 메뉴의 **도로롱이 내 컴에!**에서 실행하세요. 업데이트 전에는 트레이에서 종료하세요.
+Choose launch on the final setup page, or open **도로롱이 내 컴에!** from the Start menu. Exit through the tray before updating.
+
+[버전 안내·체크섬 · Release notes & checksums](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.3)
 
 **Code → Download ZIP / Source code는 설치 파일이 아닙니다. / Source-code ZIPs are not installers.**
 
 ## 기능·사용법 · Features & controls
 
-아래 조작은 현재 main / v0.1.3 기준입니다. v0.1.2의 트레이 메뉴는 우클릭만 지원합니다.
-Controls below describe main / v0.1.3. The v0.1.2 tray menu supports right-click only.
+아래 조작은 v0.1.3 기준입니다. / Controls below describe v0.1.3.
 
 | 조작 · Control | 동작 · Action |
 | --- | --- |
@@ -41,13 +39,10 @@ Walking, breathing, blinking and sleeping are automatic. Uninstall through Windo
 **자동 눕기**를 끄면 자동 수면만 멈춥니다. 기본은 켜짐. 앉기·걷기·간식은 유지되며 설정은 재실행 후에도 기억합니다.
 Turn off **자동 눕기 (Auto sleep)** to disable automatic sleep only (on by default). Sitting, walking and snacks remain available; the choice persists across restarts.
 
-**main / v0.1.3:** 트레이 좌클릭, 관절 기반 앉기·일어서기, 머리 선명도 개선, 일반 창 뒤로 밀림 복구. 이전 v0.1.2 설치 파일에는 포함되지 않습니다.
-**main / v0.1.3:** left-click tray menu, articulated sit/rise, sharper head rendering and window-layer recovery. Not included in the older v0.1.2 installer.
+**v0.1.3:** 새 메뉴·머리 아이콘, 관절 기반 앉기·일어서기, 머리 선명도와 창·작업표시줄 표시 개선.
+**v0.1.3:** refreshed menus and head icons, articulated sit/rise, sharper head rendering and improved window/taskbar behavior.
 
-## 개발 중인 간식 놀이 · Snack-play development build
-
-로컬 설치본에 적용된 개발 변경입니다. 기존 공개 릴리스에는 포함되지 않습니다.
-Local installed development build; not included in the existing public release.
+## 간식 놀이·자동 실행 · Snack play & startup
 
 - 캐릭터 우클릭 또는 트레이 → **간식 주기**. 주얼을 따라 달리고 위로 들면 점프합니다.
   Right-click the pet or open the tray → **간식 주기** to start a jewel chase.
@@ -69,7 +64,7 @@ Local installed development build; not included in the existing public release.
 - `tests`: 회귀 검사 / Regression tests
 - `tools`, `installer`, `docs`: 도구·설치·문서 / Tools, packaging & documentation
 
-[빌드·검사 안내 · Build & test](docs/BUILD.md) · [릴리스·체크섬 · Release & checksums](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.2)
+[빌드·검사 안내 · Build & test](docs/BUILD.md) · [릴리스·체크섬 · Release & checksums](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.3)
 
 로컬 사용자용 설치 묶음은 `artifacts/delivery/`, 빌드 후보·검사·백업은 `artifacts/`의 별도 폴더에 둡니다. Git에는 포함하지 않습니다.
 Local installer handoffs live in `artifacts/delivery/`; candidates, proofs and backups stay separate and outside Git.
@@ -78,8 +73,8 @@ Local installer handoffs live in `artifacts/delivery/`; candidates, proofs and b
 
 ## 주의·라이선스 · Notes & license
 
-코드 서명 없는 미리보기로 Windows 경고가 표시될 수 있습니다. 보안 기능을 끄지 마세요. 모든 PC·혼합 DPI 검증은 완료되지 않았습니다. 자동 업데이트·계정·데이터 전송은 없으며, 개발본의 자동 시작은 선택 사항입니다.
-Unsigned preview: Windows may show a warning; do not disable security checks. Clean-PC/mixed-DPI coverage is incomplete. No auto-update, accounts or data upload; the development build offers optional autostart.
+코드 서명 없는 미리보기로 Windows 경고가 표시될 수 있습니다. 보안 기능을 끄지 마세요. 다른 PC·Windows 11·혼합 DPI 검증은 완료되지 않았습니다. 자동 업데이트·계정·데이터 전송은 없으며 자동 시작은 선택 사항입니다.
+Unsigned preview: Windows may show a warning; do not disable security checks. Other-PC, Windows 11 and mixed-DPI coverage is incomplete. No auto-update, accounts or data upload; autostart is optional.
 
 직접 작성한 코드는 [MIT](LICENSE). 캐릭터·원본/파생 이미지·명칭·상표는 제외되며 각 권리자에게 귀속됩니다. 외부 의존성은 각 라이선스를 따릅니다.
 Original code is [MIT](LICENSE); character art, derived assets, names and trademarks are excluded and belong to their respective owners. Dependencies retain their own licenses.
