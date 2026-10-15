@@ -15,8 +15,24 @@ does not close a roadmap stage with open requirements.
   Update external bilingual instructions and direct versioned download links;
   retain unsigned/compatibility/asset-rights disclosures. Existing releases and
   Git history remain intact. No code, assets, installed app or settings changed.
-- Publication and anonymous-download results are pending execution. Upload only
-  Setup, README and SHA256SUMS; no local backups, logs or generated proofs.
+- Updated docs committed as `90ec4722b4f1c0153205c3419a891939723aa713`;
+  v0.1.3 tag points to that exact commit. App/asset sources are unchanged from
+  the accepted checkpoint. Limited release hygiene found no case-sensitive known
+  token/private-key signatures in reachable patch history; initial case-insensitive
+  hits were embedded image data. This was not a comprehensive security audit.
+- Published [v0.1.3 Preview](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.3)
+  (release413338168) and changed repository1349611819 to public via its admin API.
+  Exactly three assets: Setup, README and SHA256SUMS. Server digests matched local
+  files before publication. v0.1.1/v0.1.2 assets and history were not changed.
+- Anonymous requests (no authorization/cookies) confirmed public repository,
+  release page HTTP200, README's direct v0.1.3 link and exact tag target. Downloaded
+  all three assets; byte hashes and published checksums matched. Evidence:
+  `artifacts/release-20261015/anonymous-verification.json`, checked 2026-10-15
+  01:50:11 UTC. Setup is66016082 bytes. Release README SHA256:
+  `1F53BB56CDB368D72EC8FBBECE8926EFBD2A633FC739BF2114BEB29EB59E5E2E`.
+- R5/R6 Preview publication/download checks are complete. R3 and R4 remain
+  unresolved; no rights approval, broad compatibility or stable-release claim.
+  Next: rights evidence and other-environment validation when available.
 
 ## Login startup acceptance and private main checkpoint — 2026-10-15
 
