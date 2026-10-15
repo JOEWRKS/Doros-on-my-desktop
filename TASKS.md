@@ -4,6 +4,79 @@ Direction, current stage and release completion gates live in [ROADMAP](ROADMAP.
 This file remains the sole active execution/verification ledger; a finished task
 does not close a roadmap stage with open requirements.
 
+## Public main hardening checkpoint — 2026-10-15
+
+- User authorized committing/pushing the completed checks and asked to include
+  the installer. This checkpoint contains only the package-validator improvement,
+  eight-case regression test and linked execution/roadmap records.
+- No application or installer ISS source changed. Keep the already published
+  candidate14 EXE rather than replacing a verified binary for a build-time check.
+  Public GitHub release API confirms the same66016082-byte v0.1.3 installer and
+  SHA256 recorded below, plus README.txt and SHA256SUMS.txt. Installers remain
+  release assets, not Git-tracked binaries. Tag and prior release remain intact.
+- The eight focused cases and full package/native checks are recorded below;
+  this checkpoint does not expand their scope or resolve unsigned/R3/R4 limits.
+  Commit/push receipt and remote parity are reported in the accompanying handoff.
+
+## Hidden-file package parity hardening — 2026-10-15
+
+- User approved the previous audit's optional packaging improvement. Keep the
+  published installer, application, assets and installed process unchanged.
+- Root cause: installer inventory enumerates with `-Force`, but package/archive
+  parity omitted it on both sides. Add `-Force` to both validator enumerations.
+  This closes the verified comparison omission, not a proven exploited vulnerability.
+- Added `tests/Dororong.PackageParity.Tests.ps1`, exercising the actual validator
+  comparison statements extracted via PowerShell AST. Before patch: ordinary
+  control passed, hidden-package-extra incorrectly accepted (exit1). After patch:
+  all8 cases PASS (exit0): ordinary match, hidden additions on either side,
+  hidden content/path mismatch, hidden directory, matching hidden files and
+  attribute-only difference. Syntax parsing and `git diff --check` pass.
+- Full `Dororong.ProductPackage.Tests.ps1` against candidate14 passed the
+  metadata/runtime/hash/archive checks, then failed at native startup:
+  `Renamed apphost exited during startup.` Overall exit1, not a full PASS.
+  Installed Dororong PID345128 was running; the shared single-instance lease
+  plausibly explains the early exit, but this test did not capture its exit code.
+  No user process was stopped. Native startup retest remains unverified this turn.
+- Public EXE hash remains the release hash recorded below. No rebuild, install,
+  settings change, commit or push. Test fixtures were removed by bounded cleanup.
+  Next: rerun native/full validator when user chooses to close the installed app;
+  no new release is required merely to adopt this build-time validator change.
+- Follow-up after user confirmed exit: no Dororong.exe process remained before
+  rerun. The same full validator command with candidate14 runtime and portable ZIP
+  now completed exit0, PRODUCT PACKAGE PASS. Isolated native startup loaded the
+  packaged runtime; duplicate exited0; owned PID428972 closed via WM_CLOSE with
+  exit0. App/Core parity, metadata/icon/apphost binding and archive round-trip
+  passed (archive SHA256 `8B135B76436F7BBBE0ACBF644F39A04A90DAD95A6876E5680CD7DB8E3FCEF8DD`).
+  This closes the pending execution check; the earlier failed attempt remains
+  recorded above. No reinstall, public asset replacement, commit or push.
+  Next: this scoped hardening/verification task is complete; R3/R4 remain held.
+
+## Community images and installer security review — 2026-10-15
+
+- Requested situation/UI images and an audit, especially of the published installer.
+  Exported 12 transparent poses from the unchanged candidate14 DLL renderer and
+  copied two accepted native menu captures. No text overlays or artwork edits.
+  `artifacts/community-20261015/dororong-v0.1.3-images.zip` includes native-size
+  and exact 3x PNGs, contact sheet and provenance legend. These are pose renders,
+  not newly captured desktop scenes; UI captures are from 2026-10-14.
+- Codex Security Standard scan `69d630cd-ab99-4fb9-a6fa-b7fa9e75de2a` completed:
+  three installer ISS files, independent baseline/architecture/focused reviews,
+  supporting packaging/startup checks. No confirmed vulnerability in that scope.
+  Canonical report is retained in local Codex Security storage under that scan ID;
+  the handoff links the readable report. Personal filesystem paths are not published.
+  Detailed causes, rejected candidates and evidence remain in that scan, not duplicated here.
+- Defender scanned the anonymously downloaded published EXE and staged payload:
+  no threats, exit0, signature1.461.31.0, no remediation/settings changes.
+  Published EXE hash matches the release record below; all470 staged lengths/hashes
+  and all6 build-recorded source hashes match. This is not whole-app approval,
+  proof of absence of malware, or independent binary/source equivalence.
+- Optional future build hardening: hidden-file enumeration differs between payload
+  inventory and archive validator. Current runtime has470 files and zero hidden
+  files; no affected release material or attacker boundary established. Audit-only:
+  no code fix, install, release change, commit or push. Unsigned/R3/R4 limits remain.
+  Next at that time: ask before implementing that packaging improvement; existing
+  R3/R4 holds remain. Subsequent approval and work are recorded above.
+
 ## Public preview release — 2026-10-15
 
 - After being told that rights and other-PC verification remain unresolved, user

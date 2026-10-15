@@ -569,10 +569,11 @@ $roundTrip = Join-Path $candidateRoot ".roundtrip-$([Guid]::NewGuid().ToString('
 try
 {
     Expand-Archive -LiteralPath $archive -DestinationPath $roundTrip
-    $packageFiles = @(Get-ChildItem -LiteralPath $packageRoot -File -Recurse | ForEach-Object {
+    # Match installer inventory: hidden files/directories must participate in parity.
+    $packageFiles = @(Get-ChildItem -LiteralPath $packageRoot -File -Recurse -Force | ForEach-Object {
         [pscustomobject]@{ Relative = [IO.Path]::GetRelativePath($packageRoot, $_.FullName); Hash = Get-Hash $_.FullName }
     } | Sort-Object Relative)
-    $roundTripFiles = @(Get-ChildItem -LiteralPath $roundTrip -File -Recurse | ForEach-Object {
+    $roundTripFiles = @(Get-ChildItem -LiteralPath $roundTrip -File -Recurse -Force | ForEach-Object {
         [pscustomobject]@{ Relative = [IO.Path]::GetRelativePath($roundTrip, $_.FullName); Hash = Get-Hash $_.FullName }
     } | Sort-Object Relative)
     Assert-Equal $packageFiles.Count $roundTripFiles.Count 'Archive round-trip changed the package file count.'
