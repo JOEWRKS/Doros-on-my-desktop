@@ -15,7 +15,11 @@ does not close a roadmap stage with open requirements.
   No startup setting change, rebuild, repeated test run or restart was needed.
 - F3 installed-menu acceptance remains recorded below. Include its code/tests,
   concise usage docs and lifecycle evidence; exclude installers, backups and
-  generated caches. Commit/push completion is verified separately after execution.
+  generated caches.
+- Implementation checkpoint `de7ced1d6407354f7b2e04642e93ad111c1ec71e` pushed
+  to private origin/main; remote hash matched and the working tree was clean.
+  Staged whitespace and credential-signature checks passed. This documentation
+  follow-up records that result without changing the tested application.
 - Earlier real-login-pending statements are historical and superseded by this
   acceptance only. R3 other environments and R4 rights remain held; no release,
   tag or repository visibility change is authorized by this checkpoint.
