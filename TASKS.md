@@ -4,6 +4,75 @@ Direction, current stage and release completion gates live in [ROADMAP](ROADMAP.
 This file remains the sole active execution/verification ledger; a finished task
 does not close a roadmap stage with open requirements.
 
+## Login startup acceptance and private main checkpoint — 2026-10-15
+
+- User confirmed `컴 켰는데 자동 실행 잘 된다. 이제 커밋 푸시하자`.
+  This closes F1's actual-login acceptance on this PC and authorizes a private
+  main checkpoint. Boot itself was observed by the user, not by the agent.
+- Read-only corroboration: Run entry targets the installed EXE; live PID345128
+  started at 10:28:26 +09:00 from that path. Installed App/Core hashes still match
+  candidate14 recorded in [package evidence](docs/verification/2026-10-14-sleep-option.md).
+  No startup setting change, rebuild, repeated test run or restart was needed.
+- F3 installed-menu acceptance remains recorded below. Include its code/tests,
+  concise usage docs and lifecycle evidence; exclude installers, backups and
+  generated caches. Commit/push completion is verified separately after execution.
+- Earlier real-login-pending statements are historical and superseded by this
+  acceptance only. R3 other environments and R4 rights remain held; no release,
+  tag or repository visibility change is authorized by this checkpoint.
+
+## Automatic sleep option — 2026-10-14
+
+- User requested a disable-lying option; implemented as `자동 눕기` in character
+  and tray menus. Default ON preserves existing behavior. OFF blocks only the
+  autonomous Sleep gate; sit/walk/snack/direct interaction remain independent.
+- Per-user DWORD preference is loaded before the loop starts and saved/verified
+  before live state changes. Missing preference defaults ON without writing;
+  unreadable values/write failure report an error rather than fake success.
+  Preference is user data retained across uninstall, separate from the Run entry.
+- Re-enable starts a fresh inactivity delay. OFF wakes an existing Sleep in place.
+  Independent review caught the missing Idle wake bridge and a frozen-core-phase
+  edge; settled sleep now reuses existing two90ms wake steps timed by presentation
+  elapsed, armed only by the setting action. Existing other wake behavior is kept.
+- Core259 and initial full App1193 passed. After the narrow wake correction,
+  final affected23 tests passed, including native both-menu states, corner placement,
+  keyboard dismissal and wake completion while core Idle phase is frozen.
+  TRX: `sleep-option-core`, `sleep-option-full`, `sleep-option-final-wake`.
+  Initial targeted failure was a test fixture with unavailable pointer cancelling
+  snack as designed; supplied a valid pointer and the preservation test passed.
+- Inspected actual WPF character ON/tray OFF renders: original B2 roles retained,
+  labels and switches unclipped. This is not installed-user acceptance or complete
+  JOEDESIGN certification. [Visual scope](DESIGN.md#bounded-automatic-sleep-option--2026-10-14).
+- User confirmed tray exit. Candidate14 package/native smoke and installer build
+  passed; actual update verified470-file parity and preserved data/startup/shortcuts.
+  Installed preference service OFF persisted into a separate process; ON and
+  original absent value restored. Installed app relaunched; automatic sleep defaults
+  ON, Windows startup stays OFF. [Local evidence](docs/verification/2026-10-14-sleep-option.md).
+  Next: installed user checks the menu toggle; exact user acceptance is pending.
+  No commit/push, public release, logout or restart authorized by this feature.
+- Subsequent user acceptance: `ㅇㅇ 잘 된다` confirms the installed option.
+  F3 is accepted. User deferred the real startup test until turning the computer
+  on tomorrow (2026-10-15), not an immediate logout/reboot. Run entry was still
+  absent at this check; advised enabling `Windows 로그인 시 실행` before shutdown
+  and checking for the pet after login without launching it manually. No startup
+  setting changed and no scheduled task, restart or commit/push performed.
+
+## Startup and uninstall host validation — 2026-10-14
+
+- User authorized finishing startup/uninstall checks, then confirmed tray exit.
+  Verified the matching normal Stopped event before backing up the installation,
+  user data, shortcut, registration and same-version recovery installer.
+- On the current non-elevated Windows10 host, the installed startup service passed
+  real registry ON/OFF/ON. The actual uninstaller removed its exact owned startup
+  entry, installed root, registration and shortcuts while preserving user data.
+- Reinstalled unchanged candidate13:470 payload files and ownership match, start
+  shortcut restored, desktop preference and original startup OFF preserved.
+  Installed executable launched successfully; original data bytes remain intact.
+  [Execution evidence and method boundaries](docs/verification/2026-10-14-startup-lifecycle-host.md).
+- F1's new-setting uninstall check is closed. Actual Windows logout/login is still
+  untested: direct execution of the saved Run target is not a logon test. No logout,
+  reboot, code/asset/package change, commit/push or release was performed.
+  Next: coordinate a real login test after the user saves their open work.
+
 ## Accepted UI and snack checkpoint — 2026-10-14
 
 - User confirmed `ㅇㅇ 이제 안 내려간다. 정리 완료하고 커밋 푸시하자`.
@@ -23,6 +92,7 @@ does not close a roadmap stage with open requirements.
   checks passed. No application change after the recorded full-suite verification.
 - This documentation follow-up closes F2's accepted local UI checkpoint. Remaining:
   F1 real login/uninstall checks, held R3 environment coverage and R4 rights.
+  The subsequent host-validation entry above closes the uninstall portion only.
 
 ## Figma tray support and clean installer handoff — 2026-10-14
 

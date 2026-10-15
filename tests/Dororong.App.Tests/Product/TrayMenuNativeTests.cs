@@ -19,6 +19,7 @@ public sealed class TrayMenuNativeTests
     [InlineData("styled-outside")]
     [InlineData("styled-character")]
     [InlineData("styled-keyboard")]
+    [InlineData("styled-sleep-edges")]
     public void Real_tray_popup_preserves_dismissal_reuse_and_native_commands(string scenario)
     {
         var output = new DirectoryInfo(AppContext.BaseDirectory);

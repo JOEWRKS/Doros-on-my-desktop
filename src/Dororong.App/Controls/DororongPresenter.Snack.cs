@@ -47,14 +47,17 @@ public partial class DororongPresenter
 
     public event EventHandler? SnackRequested;
     public event EventHandler? StartupToggleRequested;
+    public event EventHandler? AutomaticSleepToggleRequested;
     public event EventHandler? ProductMenuOpened;
-    internal void UpdateProductMenu(bool snackActive, bool startupEnabled)
+    internal void UpdateProductMenu(bool snackActive, bool startupEnabled, bool automaticSleepEnabled = true)
     {
         SnackMenuItem.Header = snackActive ? "간식 취소" : "간식 주기";
         StartupMenuItem.IsChecked = startupEnabled;
+        AutomaticSleepMenuItem.IsChecked = automaticSleepEnabled;
     }
     private void OnSnackClicked(object sender, RoutedEventArgs e) => SnackRequested?.Invoke(this,EventArgs.Empty);
     private void OnStartupClicked(object sender, RoutedEventArgs e) => StartupToggleRequested?.Invoke(this,EventArgs.Empty);
+    private void OnAutomaticSleepClicked(object sender, RoutedEventArgs e) => AutomaticSleepToggleRequested?.Invoke(this,EventArgs.Empty);
     private void OnProductMenuOpened(object sender, RoutedEventArgs e) => ProductMenuOpened?.Invoke(this,EventArgs.Empty);
 }
 

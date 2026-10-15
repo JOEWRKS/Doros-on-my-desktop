@@ -52,8 +52,10 @@ Embedded character resources and all license notices remain included.
 ## Installer and verification
 
 The historical public 0.1.2 candidate is `candidate-20260921-v012-01`.
-The installed local0.1.3 checkpoint is `candidate-20261014-figma-tray-13`;
-see its [host verification and clean handoff record](verification/2026-10-14-figma-tray-support.md).
+The installed local0.1.3 candidate is `candidate-20261014-sleep-option-14`;
+see its [option verification and handoff record](verification/2026-10-14-sleep-option.md).
+The accepted candidate13 checkpoint and its
+[host verification record](verification/2026-10-14-figma-tray-support.md) are preserved.
 The prior head-icon/tray candidate12 and its
 [verification record](verification/2026-10-14-head-icon-tray.md) remain preserved.
 The October2 security/lifecycle candidate and its

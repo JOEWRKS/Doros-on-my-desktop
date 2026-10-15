@@ -95,6 +95,13 @@ public partial class DororongPresenter : UserControl
     private bool _sleepEntryComplete;
     private PetState? _wakeBridgeState;
     private bool _wakeBridgeComplete;
+    private bool _automaticSleepWakePending;
+    private double _automaticSleepWakeMilliseconds;
+    internal void PrepareAutomaticSleepWake()
+    {
+        _automaticSleepWakePending = _lastRenderedState == PetState.Sleep && _sleepEntryComplete;
+        _automaticSleepWakeMilliseconds = 0;
+    }
     private FrameInteractionDescriptor _activeInteractionDescriptor = FrameInteractionDescriptor.Canonical;
     private FacingDirection _activeFacing = FacingDirection.Right;
     private bool _bodyClickPresentationActive;
@@ -437,6 +444,7 @@ public partial class DororongPresenter : UserControl
 
         if (snapshot.State == PetState.Sleep && _lastRenderedState != PetState.Sleep)
         {
+            _automaticSleepWakePending = false;
             _sleepEntryComplete = false;
             _wakeBridgeState = null;
             _wakeBridgeComplete = false;
@@ -460,6 +468,7 @@ public partial class DororongPresenter : UserControl
         }
         else if (snapshot.State != PetState.Sleep && snapshot.State != _lastRenderedState)
         {
+            _automaticSleepWakePending = false;
             _wakeBridgeState = null;
             _wakeBridgeComplete = false;
         }
@@ -543,7 +552,7 @@ public partial class DororongPresenter : UserControl
         }
 
         ApplyBodyClickPresentation(snapshot, directInteraction);
-        ApplyWakeBridge(snapshot.State, p);
+        ApplyWakeBridge(snapshot.State, p, elapsed);
         ApplyBodyClickWakeBridge(snapshot, directInteraction);
         ApplyBodyDragPresentation(directInteraction, elapsed.TotalMilliseconds);
         if (_postCheekIdleFacing is { } cheekFacing) BodyScaleTransform.ScaleX = cheekFacing == FacingDirection.Left ? -1 : 1;
@@ -854,8 +863,9 @@ public partial class DororongPresenter : UserControl
             ? new PointD(FrameMaximumCoordinate - sourcePosition.X, sourcePosition.Y)
             : sourcePosition;
 
-    private static bool SupportsWakeBridge(PetState state) =>
-        state is PetState.Curious or PetState.Startled or PetState.ClickReaction;
+    private bool SupportsWakeBridge(PetState state) =>
+        state is PetState.Curious or PetState.Startled or PetState.ClickReaction ||
+        state == PetState.Idle && _automaticSleepWakePending;
 
     private void ApplySleepPose(double phase)
     {
@@ -931,15 +941,25 @@ public partial class DororongPresenter : UserControl
         ApplyBreathing((phase - 0.135 + 1) % 1);
     }
 
-    private void ApplyWakeBridge(PetState state, double phase)
+    private void ApplyWakeBridge(PetState state, double phase, TimeSpan elapsed)
     {
         if (_wakeBridgeState != state || _wakeBridgeComplete)
         {
             return;
         }
 
+        // Core Idle time may pause for tracking/sitting/support. The optional
+        // wake must still finish, without resurfacing when autonomy resumes.
+        if (state == PetState.Idle)
+        {
+            phase = _automaticSleepWakeMilliseconds;
+            if (double.IsFinite(elapsed.TotalMilliseconds))
+                _automaticSleepWakeMilliseconds = Math.Min(180,
+                    _automaticSleepWakeMilliseconds + Math.Max(0, elapsed.TotalMilliseconds));
+        }
         var (firstLimit, secondLimit) = state switch
         {
+            PetState.Idle => (90d, 180d),
             PetState.Curious => (0.05625, 0.1125),
             PetState.Startled => (0.06, 0.12),
             PetState.ClickReaction => (0.09, 0.18),
@@ -959,6 +979,7 @@ public partial class DororongPresenter : UserControl
         else
         {
             _wakeBridgeComplete = true;
+            _automaticSleepWakePending = false;
         }
     }
 

@@ -15,6 +15,8 @@ public partial class MainWindow : Window
     private WindowActivationGuard? _activationGuard;
     private PetLoop? _loop;
     private StartupRegistration? _startup;
+    private readonly BehaviorPreferences _behaviorPreferences = new();
+    internal bool AutomaticSleepEnabled { get; private set; } = true;
 
     public MainWindow() : this((_, _) => { })
     {
@@ -33,6 +35,7 @@ public partial class MainWindow : Window
         Presenter.SitRequested += OnSitRequested;
         Presenter.SnackRequested += OnSnackRequested;
         Presenter.StartupToggleRequested += OnStartupToggleRequested;
+        Presenter.AutomaticSleepToggleRequested += OnAutomaticSleepToggleRequested;
         Presenter.ProductMenuOpened += OnProductMenuOpened;
     }
 
@@ -86,6 +89,9 @@ public partial class MainWindow : Window
 
                 var loop = new PetLoop(this, Presenter, new DesktopInput());
                 _loop = loop;
+                try { AutomaticSleepEnabled = _behaviorPreferences.AutomaticSleepEnabled; }
+                catch (Exception ex) { ReportSleepPreferenceFailure(ex); }
+                loop.SetAutomaticSleepEnabled(AutomaticSleepEnabled);
                 loop.Faulted += OnLoopFaulted;
                 loop.Start();
             });
@@ -121,10 +127,32 @@ public partial class MainWindow : Window
     }
     private void OnSnackRequested(object? sender, EventArgs e) => ToggleSnack();
     private void OnStartupToggleRequested(object? sender, EventArgs e) => ToggleStartup();
+    internal void ToggleAutomaticSleep()
+    {
+        try
+        {
+            var enabled = !AutomaticSleepEnabled;
+            _behaviorPreferences.SetAutomaticSleepEnabled(enabled);
+            AutomaticSleepEnabled = enabled;
+            if (!enabled) Presenter.PrepareAutomaticSleepWake();
+            _loop?.SetAutomaticSleepEnabled(enabled);
+        }
+        catch (Exception ex) { ReportSleepPreferenceFailure(ex); }
+    }
+    private void ReportSleepPreferenceFailure(Exception ex)
+    {
+        _reportDiagnostic(DiagnosticEvent.TrayCommandFailure, ex);
+        MessageBox.Show(this, ex.Message, "자동 눕기 설정", MessageBoxButton.OK, MessageBoxImage.Warning);
+    }
+    private void OnAutomaticSleepToggleRequested(object? sender, EventArgs e)
+    {
+        ToggleAutomaticSleep();
+        OnProductMenuOpened(sender, e);
+    }
     private void OnProductMenuOpened(object? sender, EventArgs e)
     {
-        try { Presenter.UpdateProductMenu(IsSnackActive, StartupEnabled); }
-        catch(Exception ex) { _reportDiagnostic(DiagnosticEvent.TrayCommandFailure,ex); Presenter.UpdateProductMenu(IsSnackActive,false); }
+        try { Presenter.UpdateProductMenu(IsSnackActive, StartupEnabled, AutomaticSleepEnabled); }
+        catch(Exception ex) { _reportDiagnostic(DiagnosticEvent.TrayCommandFailure,ex); Presenter.UpdateProductMenu(IsSnackActive,false,AutomaticSleepEnabled); }
     }
 
     private void OnExitRequested(object? sender, EventArgs e)
@@ -190,6 +218,7 @@ public partial class MainWindow : Window
             () => Presenter.SitRequested -= OnSitRequested,
             () => Presenter.SnackRequested -= OnSnackRequested,
             () => Presenter.StartupToggleRequested -= OnStartupToggleRequested,
+            () => Presenter.AutomaticSleepToggleRequested -= OnAutomaticSleepToggleRequested,
             () => Presenter.ProductMenuOpened -= OnProductMenuOpened,
             () =>
             {

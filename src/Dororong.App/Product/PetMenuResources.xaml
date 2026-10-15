@@ -63,6 +63,7 @@
                         <Setter TargetName="State" Property="Text" Value="켜짐"/><Setter TargetName="Switch" Property="Background" Value="#19A9DB"/>
                         <Setter TargetName="Switch" Property="BorderBrush" Value="#267D9E"/><Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right"/>
                     </Trigger>
+                    <Trigger Property="Tag" Value="sleep"><Setter TargetName="Icon" Property="Data" Value="M 16,3 A 9,9 0 1 0 21,16 A 10,10 0 0 1 16,3 Z"/></Trigger>
                     <Trigger Property="IsHighlighted" Value="True"><Setter TargetName="Highlight" Property="Background" Value="#E8F2F8"/></Trigger>
                     <Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter TargetName="Focus" Property="Visibility" Value="Visible"/></Trigger>
                     <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>

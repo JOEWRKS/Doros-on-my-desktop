@@ -11,6 +11,7 @@ EXE만 따로 옮기면 실행되지 않습니다. .NET 런타임은 포함되�
 트레이 좌클릭·우클릭: 로그 폴더 열기 / 종료. 업데이트·제거 전 먼저 종료하세요.
 캐릭터 우클릭·트레이의 '간식 주기': 주얼을 따라 달리고 입 앞에서 먹습니다. '간식 취소'로 중단합니다.
 'Windows 로그인 시 실행': 자동 실행 켜기/끄기. 기본은 꺼짐입니다.
+'자동 눕기': 자동 수면 켜기/끄기. 기본은 켜짐이며 재실행 후에도 기억합니다. 앉기·걷기·간식은 유지됩니다.
 제거: Windows 앱 목록에서 '도로롱이 내 컴에?!'를 선택하세요.
 로그는 %LOCALAPPDATA%\JOEWRKS\Dororong\logs에 남으며 자동 전송하지 않습니다.
 
@@ -25,6 +26,7 @@ Click or pull a hanging front paw to wave or stretch that paw.
 Left- or right-click the tray icon: open logs / exit. Exit before updating or uninstalling.
 Pet/tray '간식 주기': chase the jewel, hold it near the mouth to feed. '간식 취소' cancels.
 'Windows 로그인 시 실행': toggle launch at Windows login (off by default).
+'자동 눕기': toggle automatic sleep (on by default, remembered across restarts). Sitting, walking and snacks are unchanged.
 Uninstall through Windows' app list. Local logs are not uploaded automatically.
 
 Unsigned preview / 코드 서명 없는 미리보기

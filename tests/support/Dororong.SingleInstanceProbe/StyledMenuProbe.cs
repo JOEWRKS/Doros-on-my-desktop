@@ -18,10 +18,11 @@ internal static class StyledMenuProbe
     {
         using var notify = new Forms.NotifyIcon();
         using var source = new Forms.ContextMenuStrip();
-        var snack = false; var startup = false; var logs = 0; var exits = 0;
+        var snack = false; var startup = false; var sleep = true; var logs = 0; var exits = 0;
         using var service = new TrayService((System.Drawing.Icon)System.Drawing.SystemIcons.Application.Clone(),
             notify, source, () => logs++, () => exits++, false);
-        service.AddPetCommands(() => snack = !snack, () => snack, () => startup = !startup, () => startup);
+        service.AddPetCommands(() => snack = !snack, () => snack, () => startup = !startup, () => startup,
+            () => sleep = !sleep, () => sleep);
         var owner = new Window { Width = 144, Height = 144, ShowActivated = false, ShowInTaskbar = false };
         owner.Show();
         Dororong.App.Interop.WindowStyleManager.ApplyNoActivateToolWindow(new WindowInteropHelper(owner).Handle);
@@ -106,6 +107,32 @@ internal static class StyledMenuProbe
             }
             finally { window.Close(); }
         }
+        else if (scenario == "styled-sleep-edges")
+        {
+            menu.IsOpen = false;
+            var area = Forms.Screen.PrimaryScreen!.Bounds;
+            var transform = PresentationSource.FromVisual(owner)!.CompositionTarget!.TransformFromDevice;
+            var presenter = new Dororong.App.Controls.DororongPresenter();
+            var character = (PetContextMenu)((FrameworkElement)presenter.FindName("BodyGroup")).ContextMenu;
+            foreach (var surface in new[] { menu, character })
+            foreach (var point in new[] { new Point(area.Left+1,area.Top+1), new Point(area.Right-1,area.Top+1),
+                new Point(area.Left+1,area.Bottom-1), new Point(area.Right-1,area.Bottom-1) })
+            {
+                var dip = transform.Transform(point);
+                surface.Placement = System.Windows.Controls.Primitives.PlacementMode.AbsolutePoint;
+                surface.HorizontalOffset = dip.X; surface.VerticalOffset = dip.Y;
+                surface.IsOpen = true; Pump();
+                var popup = (HwndSource)PresentationSource.FromVisual(surface);
+                Check(GetWindowRect(popup.Handle, out var bounds), "Popup bounds unavailable.");
+                Check(bounds.Left >= area.Left-1 && bounds.Top >= area.Top-1 &&
+                    bounds.Right <= area.Right+1 && bounds.Bottom <= area.Bottom+1, "Extended menu clips outside screen.");
+                var toggle = surface.Items.OfType<MenuItem>().Single(i => Equals(i.Tag,"sleep"));
+                Keyboard.Focus(toggle);
+                toggle.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice, popup, 0, Key.Escape)
+                    { RoutedEvent = Keyboard.PreviewKeyDownEvent });
+                Pump(); Check(!surface.IsOpen, "Sleep-row keyboard Escape did not dismiss.");
+            }
+        }
         else if (scenario == "styled-character")
         {
             menu.IsOpen = false;
@@ -113,36 +140,42 @@ internal static class StyledMenuProbe
             var body = (FrameworkElement)presenter.FindName("BodyGroup");
             var character = (PetContextMenu)body.ContextMenu;
             var count = 0;
+            var sleepCount = 0;
             presenter.SnackRequested += (_, _) => count++;
-            for (var state = 0; state < 4; state++)
+            presenter.AutomaticSleepToggleRequested += (_, _) => sleepCount++;
+            for (var state = 0; state < 8; state++)
             {
-                presenter.UpdateProductMenu((state & 1) != 0, (state & 2) != 0);
+                presenter.UpdateProductMenu((state & 1) != 0, (state & 2) != 0, (state & 4) != 0);
                 character.IsOpen = true; Pump();
                 var items = character.Items.OfType<MenuItem>().ToArray();
-                Check(items.Length == 4 && items.Any(i => Equals(i.Tag, "sit")) &&
+                Check(items.Length == 5 && items.Any(i => Equals(i.Tag, "sit")) &&
                     !items.Any(i => Equals(i.Tag, "logs")), "Character menu scope changed.");
-                Check(items[2].IsChecked == ((state & 2) != 0), "Character startup state wrong.");
+                Check(items[2].IsCheckable && items[2].IsChecked == ((state & 4) != 0), "Character sleep state wrong.");
+                Check(items[3].IsChecked == ((state & 2) != 0), "Character startup state wrong.");
                 Save(character, $"character-state-{state}.png");
                 character.IsOpen = false;
             }
             ((MenuItem)character.Items[0]).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             Check(count == 1, "Character snack command did not execute exactly once.");
+            character.Items.OfType<MenuItem>().Single(i => Equals(i.Tag,"sleep")).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            Check(sleepCount == 1, "Character sleep toggle did not execute exactly once.");
         }
         else if (scenario == "styled-state-commands")
         {
-            for (var state = 0; state < 4; state++)
+            for (var state = 0; state < 8; state++)
             {
-                snack = (state & 1) != 0; startup = (state & 2) != 0;
+                snack = (state & 1) != 0; startup = (state & 2) != 0; sleep = (state & 4) != 0;
                 menu.IsOpen = false; Left(); Pump(); menu = service.CurrentStyledMenu!;
                 var items = menu.Items.OfType<MenuItem>().ToArray();
-                Check(items.Length == 4 && !items.Any(item => Equals(item.Tag, "sit")), "Tray scope changed.");
+                Check(items.Length == 5 && !items.Any(item => Equals(item.Tag, "sit")), "Tray scope changed.");
                 Check((string)items[0].Header == (snack ? "간식 취소" : "간식 주기"), "Stale snack state.");
-                Check(items[1].IsChecked == startup, "Stale startup state.");
+                Check(items[1].IsCheckable && items[1].IsChecked == sleep, "Stale sleep state.");
+                Check(items[2].IsChecked == startup, "Stale startup state.");
                 Save(menu, $"tray-state-{state}.png");
             }
             var commands = menu.Items.OfType<MenuItem>().ToArray();
             foreach (var item in commands) item.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-            Check(!snack && !startup && logs == 1 && exits == 1, "Callbacks did not execute exactly once.");
+            Check(!snack && !startup && !sleep && logs == 1 && exits == 1, "Callbacks did not execute exactly once.");
         }
         else if (scenario != "styled-right") throw new Exception("Unknown styled scenario.");
     }
@@ -151,7 +184,7 @@ internal static class StyledMenuProbe
     {
         var root = new DirectoryInfo(AppContext.BaseDirectory);
         while (root is not null && !File.Exists(Path.Combine(root.FullName, "DororongDesktopPet.sln"))) root = root.Parent;
-        var directory = Path.Combine(root!.FullName, "artifacts/ui-menu-head-icon-20261014/native-proof");
+        var directory = Path.Combine(root!.FullName, "artifacts/ui-menu-sleep-option-20261014/native-proof");
         Directory.CreateDirectory(directory);
         var bitmap = new RenderTargetBitmap((int)Math.Ceiling(visual.ActualWidth),
             (int)Math.Ceiling(visual.ActualHeight), 96, 96, PixelFormats.Pbgra32);
@@ -183,4 +216,6 @@ internal static class StyledMenuProbe
     }
     [DllImport("user32.dll")] private static extern bool SetForegroundWindow(IntPtr handle);
     [DllImport("user32.dll")] private static extern IntPtr SendMessage(IntPtr hwnd, uint message, IntPtr wParam, IntPtr lParam);
+    [StructLayout(LayoutKind.Sequential)] private struct WindowRect { internal int Left, Top, Right, Bottom; }
+    [DllImport("user32.dll")] private static extern bool GetWindowRect(IntPtr hwnd, out WindowRect rect);
 }

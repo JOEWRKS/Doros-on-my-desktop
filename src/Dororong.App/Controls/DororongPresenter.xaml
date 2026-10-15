@@ -22,6 +22,7 @@
                     <MenuItem x:Name="SnackMenuItem" Tag="snack" Header="간식 주기" Click="OnSnackClicked" />
                     <MenuItem Tag="sit" Header="앉아" Click="OnSitClicked" />
                     <Separator />
+                    <MenuItem x:Name="AutomaticSleepMenuItem" Tag="sleep" Header="자동 눕기" IsCheckable="True" IsChecked="True" Click="OnAutomaticSleepClicked" />
                     <MenuItem x:Name="StartupMenuItem" Tag="startup" Header="Windows 로그인 시 실행" IsCheckable="True" Click="OnStartupClicked" />
                     <MenuItem Tag="exit" Header="종료" Click="OnExitClicked" />
                 </product:PetContextMenu>

@@ -75,7 +75,7 @@ internal sealed class StyledTrayMenuBridge : IDisposable
             var item = new MenuItem
             {
                 Header = sourceItem.Text, Tag = sourceItem.Tag, IsEnabled = sourceItem.Enabled,
-                IsCheckable = Equals(sourceItem.Tag, "startup"), IsChecked = sourceItem.Checked
+                IsCheckable = Equals(sourceItem.Tag, "startup") || Equals(sourceItem.Tag, "sleep"), IsChecked = sourceItem.Checked
             };
             item.Click += (_, _) =>
             {

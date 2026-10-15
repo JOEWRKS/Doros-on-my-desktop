@@ -13,8 +13,8 @@ $output = Assert-InstallerOutputPath -OutputPath $OutputPath
 $payload = Get-InstallerPayload -PackagePath $PackagePath
 $archive = (Resolve-Path -LiteralPath $ArchivePath).Path
 $archiveHash = (Get-FileHash -LiteralPath $archive).Hash
-# Figma tray support candidate13, authorized local update 2026-10-14.
-if ($archiveHash -cne 'B1E11E7A9DE63BF874A7BF2CAA2FE188A067FFE7F769E27E67AE283AD0775DD0') {
+# Automatic sleep option candidate14, validated local update 2026-10-14.
+if ($archiveHash -cne '8B135B76436F7BBBE0ACBF644F39A04A90DAD95A6876E5680CD7DB8E3FCEF8DD') {
     throw 'Archive hash does not match the approved 0.1.3 candidate.'
 }
 $compiler = (Resolve-Path -LiteralPath $CompilerPath).Path

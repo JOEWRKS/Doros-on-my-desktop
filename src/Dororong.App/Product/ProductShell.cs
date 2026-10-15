@@ -77,7 +77,8 @@ internal sealed class ProductShell : IDisposable
             if(tray is TrayService petTray && createdWindow is MainWindow petWindow)
             {
                 petTray.AddPetCommands(() => RunTrayCommand(petWindow.ToggleSnack), () => petWindow.IsSnackActive,
-                    () => RunTrayCommand(petWindow.ToggleStartup), () => petWindow.StartupEnabled);
+                    () => RunTrayCommand(petWindow.ToggleStartup), () => petWindow.StartupEnabled,
+                    () => RunTrayCommand(petWindow.ToggleAutomaticSleep), () => petWindow.AutomaticSleepEnabled);
                 petTray.EnableStyledMenu(petWindow);
             }
             mainWindow = createdWindow;

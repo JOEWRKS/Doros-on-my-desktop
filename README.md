@@ -32,11 +32,14 @@ Controls below describe main / v0.1.3. The v0.1.2 tray menu supports right-click
 | 마우스 접근·머무르기 · Move/linger nearby | 추적·짧은 도약 · Track & pounce |
 | 창·작업표시줄 가장자리에서 준비 동작 후 놓기 · Release at an edge when ready | 매달리기 · Hang |
 | 매달린 앞발 클릭·드래그 · Click/drag a hanging paw | 한쪽 발 휘젓기·당기기 · Wave & stretch |
-| 캐릭터 우클릭 · Right-click character | 간식 / 앉아 / 자동 실행 / 종료 · Snack / Sit / Startup / Exit |
-| 트레이 좌·우클릭 · Left/right-click tray | 간식 / 자동 실행 / 로그 / 종료 · Snack / Startup / Logs / Exit |
+| 캐릭터 우클릭 · Right-click character | 간식 / 앉아 / 자동 눕기 / 자동 실행 / 종료 · Snack / Sit / Auto sleep / Startup / Exit |
+| 트레이 좌·우클릭 · Left/right-click tray | 간식 / 자동 눕기 / 자동 실행 / 로그 / 종료 · Snack / Auto sleep / Startup / Logs / Exit |
 
 걷기·숨쉬기·눈 깜빡임·수면은 자동으로 재생됩니다. 제거는 Windows 앱 목록에서 가능합니다.
 Walking, breathing, blinking and sleeping are automatic. Uninstall through Windows' app list.
+
+**자동 눕기**를 끄면 자동 수면만 멈춥니다. 기본은 켜짐. 앉기·걷기·간식은 유지되며 설정은 재실행 후에도 기억합니다.
+Turn off **자동 눕기 (Auto sleep)** to disable automatic sleep only (on by default). Sitting, walking and snacks remain available; the choice persists across restarts.
 
 **main / v0.1.3:** 트레이 좌클릭, 관절 기반 앉기·일어서기, 머리 선명도 개선, 일반 창 뒤로 밀림 복구. 이전 v0.1.2 설치 파일에는 포함되지 않습니다.
 **main / v0.1.3:** left-click tray menu, articulated sit/rise, sharper head rendering and window-layer recovery. Not included in the older v0.1.2 installer.

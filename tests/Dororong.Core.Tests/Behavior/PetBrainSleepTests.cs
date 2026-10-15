@@ -7,6 +7,54 @@ namespace Dororong.Core.Tests.Behavior;
 public sealed class PetBrainSleepTests
 {
     [Fact]
+    public void Disabled_sleep_does_not_block_time_progression_and_reenable_starts_fresh_delay()
+    {
+        var brain = new PetBrain(BehaviorTuning.Default with
+        {
+            MaxDelta = TimeSpan.FromSeconds(1), IdleMin = TimeSpan.FromSeconds(1),
+            IdleMax = TimeSpan.FromSeconds(1), IdleToWalkProbability = 0,
+            SleepDelay = TimeSpan.FromSeconds(2)
+        }, new SeededRandomSource(), new(100, 100));
+        Assert.True(brain.AutomaticSleepEnabled);
+        brain.SetAutomaticSleepEnabled(false);
+        for (var i = 0; i < 600; i++)
+            Assert.Equal(PetState.Idle, brain.Update(PetTestInput.At(1)).State);
+        brain.SetAutomaticSleepEnabled(true);
+        Assert.Equal(PetState.Idle, brain.Update(PetTestInput.At(1)).State);
+        Assert.Equal(PetState.Sleep, brain.Update(PetTestInput.At(1)).State);
+    }
+
+    [Theory]
+    [InlineData(0)] [InlineData(20)]
+    public void Disabling_during_entry_or_settled_sleep_wakes_without_moving(int ticks)
+    {
+        var brain = PetTestInput.CreateSleepingBrain();
+        for (var i = 0; i < ticks; i++) brain.Update(PetTestInput.At(.1));
+        var before = brain.Current;
+        brain.SetAutomaticSleepEnabled(false);
+        Assert.Equal(PetState.Idle, brain.Current.State);
+        Assert.Equal(before.Position, brain.Current.Position);
+        Assert.Equal(before.Facing, brain.Current.Facing);
+        for (var i = 0; i < 20; i++) Assert.NotEqual(PetState.Sleep, brain.Update(PetTestInput.At(.1)).State);
+    }
+
+    [Fact]
+    public void Changing_option_preserves_active_body_press_and_walk()
+    {
+        var brain = PetTestInput.CreateBrainAt(new(100, 100));
+        brain.Update(PetTestInput.At(1));
+        Assert.Equal(PetState.Walk, brain.Current.State);
+        var before = brain.Current;
+        brain.SetAutomaticSleepEnabled(false);
+        Assert.Equal(before, brain.Current);
+        brain.Update(PetTestInput.At(.1, pointer: new(160,150), primaryDown:true, bodyPressPosition:new(160,150)));
+        before = brain.Current;
+        Assert.True(before.IsDirectInteractionPending);
+        brain.SetAutomaticSleepEnabled(true);
+        Assert.Equal(before, brain.Current);
+    }
+
+    [Fact]
     public void Sleep_timing_matches_whole_and_split_frames_when_the_threshold_precedes_the_idle_boundary()
     {
         var wholeFrame = CreateSleepTimingBrain(

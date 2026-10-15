@@ -18,6 +18,8 @@ Right-click the pet or left/right-click the tray icon to open the menu.
 '간식 취소'로 중단. 'Windows 로그인 시 실행'은 선택 사항이며 기본 꺼짐입니다.
 Choose '간식 주기' to start; hold the jewel near the mouth to feed; '간식 취소' cancels.
 'Windows 로그인 시 실행' enables optional login startup (off by default).
+'자동 눕기': 자동 수면만 끄고 켭니다. 기본 켜짐이며 재실행 후에도 설정을 기억합니다.
+'자동 눕기' toggles automatic sleep only (on by default, saved across restarts).
 제거는 Windows 앱 목록에서 / Uninstall from Windows' app list.
 
 주의 / Notes

@@ -6,6 +6,20 @@ Scope: NIKKE-inspired desktop menus, authorized2026-10-14. Existing character
 authority remains in AGENTS-linked artwork/interaction specs and TASKS acceptance.
 This file does not replace those sources or expand product features.
 
+## Bounded automatic-sleep option — 2026-10-14
+
+- User requested an option to disable lying down. Add `자동 눕기` to both menus,
+  using the existing54-DIP switch row, ON/OFF text and color roles. Default ON;
+  retain snack priority, character sitting, startup, tray logs, exit and version.
+- Reuse the current B2 composition and native keyboard/dismissal behavior; one
+  extra row, no new panel or character artwork. Moon vector distinguishes sleep
+  from the startup monitor icon. Existing settings section gains only this row.
+- Independent scope review requires matching menu/runtime state, persistence,
+  unchanged non-sleep actions and checks at screen corners with the taller menu.
+  Native proof: `artifacts/ui-menu-sleep-option-20261014/native-proof/`.
+  Local render inspection is not user acceptance or full JOEDESIGN certification.
+  Execution and remaining limits belong in [TASKS](TASKS.md#automatic-sleep-option--2026-10-14).
+
 ## Inspected references
 
 User explicitly asked the agent to find web images and use NIKKE's overall UI.

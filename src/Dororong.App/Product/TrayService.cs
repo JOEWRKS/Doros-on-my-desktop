@@ -110,21 +110,27 @@ internal sealed class TrayService : IDisposable
         }
     }
 
-    internal void AddPetCommands(Action snack, Func<bool> snackActive, Action startup, Func<bool> startupEnabled)
+    internal void AddPetCommands(Action snack, Func<bool> snackActive, Action startup, Func<bool> startupEnabled,
+        Action automaticSleep, Func<bool> automaticSleepEnabled)
     {
         var snackItem=new FormsToolStripMenuItem("간식 주기") { Tag = "snack" };
         var startupItem=new FormsToolStripMenuItem("Windows 로그인 시 실행") { Tag = "startup" };
+        var sleepItem=new FormsToolStripMenuItem("자동 눕기") { Tag = "sleep" };
         snackItem.Click+=(_,_)=>snack();
         startupItem.Click+=(_,_)=> { startup(); Refresh(); };
+        sleepItem.Click+=(_,_)=> { automaticSleep(); Refresh(); };
         void Refresh()
         {
             snackItem.Text=snackActive()?"간식 취소":"간식 주기";
             try { startupItem.Checked=startupEnabled(); } catch { startupItem.Checked=false; }
+            sleepItem.Checked=automaticSleepEnabled();
         }
         resources.Menu.Opening+=(_,_)=>Refresh();
         refreshPetCommands = Refresh;
         resources.Menu.Items.Insert(1,snackItem);
         resources.Menu.Items.Insert(2,startupItem);
+        resources.Menu.Items.Insert(2,sleepItem);
+        Refresh();
     }
 
     internal void EnableStyledMenu(System.Windows.Window owner)

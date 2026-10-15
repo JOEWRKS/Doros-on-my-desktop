@@ -20,6 +20,15 @@ public sealed class PetBrain
     private bool _clickOnlyPress;
     private bool _clickCanceledByMovement;
     private TimeSpan _inactivity;
+    public bool AutomaticSleepEnabled { get; private set; } = true;
+
+    public void SetAutomaticSleepEnabled(bool enabled)
+    {
+        if (AutomaticSleepEnabled == enabled) return;
+        AutomaticSleepEnabled = enabled;
+        ResetInactivity();
+        if (!enabled && _state == PetState.Sleep) StartIdle();
+    }
 
     public PetBrain(BehaviorTuning tuning, IRandomSource random, PointD initialPosition)
     {
@@ -375,7 +384,7 @@ public sealed class PetBrain
     }
 
     private bool CanEnterSleep() =>
-        _state == PetState.Idle && !_pressPosition.HasValue;
+        AutomaticSleepEnabled && _state == PetState.Idle && !_pressPosition.HasValue;
 
     private void ResetInactivity()
     {

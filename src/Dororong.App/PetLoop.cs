@@ -36,6 +36,7 @@ internal sealed class PetLoop : IDisposable
     private bool _cleanupComplete;
     private bool _primaryWasDown;
     private bool _sitRequested;
+    private bool _automaticSleepEnabled = true;
     private double _lastPounceOffset;
     private CheekPullCapture? _hopCapture;
     private double _lastCheekHopX, _lastCheekHopY;
@@ -108,6 +109,12 @@ internal sealed class PetLoop : IDisposable
 
     public event EventHandler<Exception>? Faulted;
 
+    internal void SetAutomaticSleepEnabled(bool enabled)
+    {
+        _automaticSleepEnabled = enabled;
+        _brain?.SetAutomaticSleepEnabled(enabled);
+    }
+
     internal void NotifySitRequested()
     {
         CancelSnack();
@@ -140,6 +147,7 @@ internal sealed class PetLoop : IDisposable
 
             _brain = _brainFactory(initialPosition)
                 ?? throw new InvalidOperationException("The behavior brain factory returned null.");
+            _brain.SetAutomaticSleepEnabled(_automaticSleepEnabled);
             _snapshot = _brain.Current;
             _host.SetWindowPosition(_snapshot.Position);
             _host.SetLocomotionBlocked?.Invoke(platforms?.SuspendsAutonomousMotion ?? false);
