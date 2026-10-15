@@ -14,7 +14,25 @@ does not close a roadmap stage with open requirements.
   new Mac test result, Developer ID subscription or notarization authorized.
 - Preflight: repository public, push permitted, branch/tag unused. Existing
   v0.1.3/v0.1.2/v0.1.1 are prereleases; there is no stable `/releases/latest`.
-  Upload and anonymous-download verification are pending at this checkpoint.
+  These preflight checks preceded the completed publication below.
+- Published source commit `20213a36a2d74cb00345264731e6fa8a006cdd82` to
+  `feature/macos-test03`; tag `macos-test03` points to that commit.
+  [Prerelease](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/macos-test03)
+  contains the exact ZIP, SHA256 and tester README. Anonymous full ZIP download
+  passes:85,449,044 bytes and SHA256
+  `8ccd577446457a95802b119a345e6e74280f3b11d9597972be67e21632f5e2d0`.
+  Detailed local result: `artifacts/macos/tester-20261015-arm64-03/github-download-verification.json`.
+- Remote main stays `d0611774c38e0564fa9844e44f7d68e32aea092e`; Windows App/Core
+  diff remains empty and Windows releases unchanged. Prerelease is not latest;
+  stable latest remains absent. No PR/merge or Mac-native acceptance occurred.
+- Staged files include no generated executable/ZIP, bin/obj/TestResults,
+  credential files or detected credential signatures. Nine pre-existing port
+  files have harmless extra EOF blank-line warnings; preserved so the tested
+  production source was not changed merely to silence whitespace diagnostics.
+- Apple guidance reconfirmed: distribution through GitHub does not bypass
+  Gatekeeper. Ad-hoc is not Developer ID or notarization; first opening can be
+  blocked. Instructions retain OS protection and ask users to stop on damaged/
+  harmful warnings. Next remains consenting tester's native first launch/checklist.
 
 ## macOS eating cache fix and test03 — 2026-10-15
 
