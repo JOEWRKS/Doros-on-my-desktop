@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
+    <IsTestProject>true</IsTestProject><IsPackable>false</IsPackable>
+    <AssemblyName>Dororong.App.Tests</AssemblyName>
+    <BaselineDir>../../artifacts/installer/candidate-20261014-sleep-option-14/payload</BaselineDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <Using Include="Xunit" />
+    <ProjectReference Include="../../src/Dororong.Portable/Dororong.Portable.csproj" />
+    <Reference Include="Dororong.App"><HintPath>$(BaselineDir)/Dororong.App.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

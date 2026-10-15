@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="Avalonia.Headless.XUnit" Version="11.3.22" />
+    <Using Include="Xunit" />
+    <ProjectReference Include="../../src/Dororong.Mac/Dororong.Mac.csproj" />
+    <ProjectReference Include="../Dororong.InstanceProbe/Dororong.InstanceProbe.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+</Project>

@@ -4,6 +4,537 @@ Direction, current stage and release completion gates live in [ROADMAP](ROADMAP.
 This file remains the sole active execution/verification ledger; a finished task
 does not close a roadmap stage with open requirements.
 
+## macOS test03 branch and prerelease — 2026-10-15
+
+- User authorized a separate GitHub branch and direct tester ZIP download.
+  Prepared `feature/macos-test03` from main `d061177`; source/derived assets,
+  tests/tools and Mac records only, plus branch-specific download instructions.
+- Publish target: `macos-test03` prerelease, not latest, with the unchanged verified
+  test03 ZIP, SHA256 and tester guide. No main merge, Windows asset replacement,
+  new Mac test result, Developer ID subscription or notarization authorized.
+- Preflight: repository public, push permitted, branch/tag unused. Existing
+  v0.1.3/v0.1.2/v0.1.1 are prereleases; there is no stable `/releases/latest`.
+  Upload and anonymous-download verification are pending at this checkpoint.
+
+## macOS eating cache fix and test03 — 2026-10-15
+
+- User authorized fixing the eating-start stall without changing motion/quality,
+  rechecking and producing a fresh shareable ZIP. Implemented bounded effect
+  decoding, preserved all original samples/interpolation and added regressions.
+- [Fix, exact-byte proof, tests, timings and test03 identity](docs/verification/2026-10-15-macos-effect-cache-fix.md)
+  are the single detailed record. This supersedes the unresolved eating-cache
+  finding below for test03 only; old ZIPs/history remain intact.
+- Windows App/Core/artwork and installed/public product unchanged. No upload,
+  commit/push or actual Mac execution. F4 remains open: MAC-02 visual/native
+  acceptance and other Mac checklist items still require the tester. Next is
+  test03 first launch/meal/exit, then native checklist; do not report Mac success
+  from the Windows simulation or ad-hoc integrity checks.
+
+## macOS pre-share artifact simulation — 2026-10-15
+
+- User requested checks/simulation before sharing. Added a diagnostic harness
+  that executes the verified test02 managed DLLs on Windows without rebuilding
+  product code. ZIP integrity and bounded functional simulations passed; a
+  repeatable synchronous eating-effect load stall was found and remains unfixed.
+- Exact target, measurements, cause, reproduction and proposed fix are recorded
+  once in [pre-share evidence](docs/verification/2026-10-15-macos-pre-share-simulation.md).
+  Do not equate functional PASS with performance clearance or actual Mac success.
+- Updated F4 status/next only; no scope or acceptance-criteria change. Product
+  sources/assets, Windows installation/release and test02 ZIP unchanged. No
+  commit/push/upload. Next: user approval for bounded effect-cache fix, then new
+  candidate and actual Mac checks; do not silently repackage during diagnosis.
+
+## macOS rendering and pet-only launch — 2026-10-15
+
+- User authorized remaining Windows-checkable outline/composition parity and
+  removing the normal-launch developer window. Windows App/Core/assets and its
+  installed/published product are unchanged (`git diff` clean for both projects).
+  No commit/push/upload or native Mac execution. This record supersedes earlier
+  coarse raster/visible-inspector limits for the new candidate only.
+- Cause/fix: Skia vector coverage and affine filtering differed from WPF, native
+ 2:1 reduction used the wrong tie rounding, and the shallow-crouch bridge started
+  from an already-composed standing frame. Reused pinned Windows neck/effect
+  coverage, matched8-bit fractional affine sampling and half-up reduction, and
+  composed the bridge from body → neck → original posed head. No redrawing or
+  global blur/sharpening; native1x and integer4x comparison follows pixel-art
+  delivery checks. Continuous head/eye timing and Windows geometry stay unchanged.
+- Derived assets: `src/Dororong.Portable/Assets/hunt-joins.bin` SHA256
+  `729B0285E32A3ABF33B22A812302D8EC220B132B3A336033E93B9249F19EEB81`;
+  `snack-effects.bin` SHA256
+  `D3E2A0FE163988066B23AA77C056BEB4CDE10CF7288AAB0B8015130C8C5E428C`.
+  Provenance/rebuild instructions live in the renderer README. Initial coarse
+  sampling failed finer-angle/jewel tests; dense coverage corrected those failures.
+  All439,757 join patches were losslessly reblocked to avoid whole-frame decoding.
+- Host: bundled no-argument launch has no MainWindow/inspector and uses explicit
+  application lifetime. Character/menu-bar exits dispose owned windows/timers and
+  native status item. OS shutdown also disposes before window close callbacks.
+  Errors retain an actionable exit/log dialog; explicit developer flags retain
+  probes. No redesign of the approved B2 product menu.
+- Checks: `refinement-final.trx` in `tests/Dororong.RenderParity.Tests/TestResults/`
+  passes1 test containing1,873 byte-exact comparisons (including30 upright
+  composites) and941 additional continuous-frame/effect/affine comparisons.
+  Existing42 hunting comparisons improved from max84/255 to2/255; strict thresholds
+  were narrowed, not relaxed. The expanded sweep's observed maximum is7/255
+  (bite2, affine swing1). This is not universal pixel identity.
+  Detailed metrics and `refinement-proof.png` live beside the test binary under
+  `bin/Release/net8.0-windows/`; light native1x/dark4x proof inspected for matching
+  silhouette, head/neck/paw ownership and no added seams. Approval remains user's.
+- Portable54 tests, Mac/headless24 tests and packaging11 tests pass; evidence
+  `refinement-portable-final.trx`, `pet-only-deterministic.trx` and packaging unit tests. Added
+  bundle-vs-debug route/no-inspector/idempotent-disposal checks. ARM64 and x64
+  self-contained runtime8.0.32 publishes succeed; only arm64 is bundled for handoff.
+  CPU-only sample:80 changing hunt frames, median7.90ms/p95 10.17ms and2.59MB
+  allocated/frame; see `refinement-performance.json`. Not a Mac performance claim.
+  A final headless rerun exposed the lab test's mixed manual/dispatcher clocks:
+  screenshot pumping injected wall time and triggered stale-snack cancellation.
+  The test now stops its real timer while manually stepping; state expectations
+  and production cancellation are unchanged. The failed run remains as evidence.
+- Current handoff: `artifacts/macos/tester-20261015-arm64-02/Doro-Mac-arm64-test02.zip`,
+ 84,998,009 bytes, SHA256
+  `db9490d67043bb28cdc6093685a93530e79378272e099684a4abe5e7c8cc7db3`.
+  Includes updated bilingual instructions,234-file manifest and the original head
+  icon. ZIP/execute-bit/resource seals and18 native code hashes pass the existing
+  bounded integrity checker. Old test01 and intermediate diagnosis files retained.
+  Ad-hoc integrity only: Developer ID, notarization and Gatekeeper remain unverified.
+- Roadmap reconciliation: MAC-02 requires source/rotation quality AND native
+  normal/Retina acceptance. Reference frames/host source are now Windows-checked;
+  next is exact test02 first launch/exit, native screenshot/motion and all remaining
+  checklist rows on the tester's Mac. No row becomes MAC_VERIFIED and F4 remains open.
+
+## macOS arm64 tester packaging — 2026-10-15
+
+- User authorized an arm64 `.app` tester package that a Mac user can extract and
+  open, not a public release/upload or signing subscription. No installed Windows
+  product, Windows App/Core source, artwork or published installer changed. No
+  commit/push/upload, Mac execution or remote tester contact performed.
+- Produced `artifacts/macos/tester-20261015-arm64-01/Doro-Mac-arm64-test01.zip`
+  (66,261,112 bytes), SHA256
+  `302022541fdf17b86d110fbba336261c7b4488fb6e0ff5c69d2f03cced514643`.
+  Its234 files include `.app`, Korean/English tester instructions and file hashes.
+  Beside it are ZIP checksum, verification.json and tooling logs. Only this final
+  ZIP is the handoff; failed attempt folders remain local historical evidence.
+- Packaging pipeline: fresh-directory publish/staging, self-contained arm64
+  runtime8.0.32 explicitly pinned (prior default publish contained8.0.19), existing
+  approved head ICO PNGs wrapped byte-for-byte in ICNS, correct bundle metadata,
+  executable Unix ZIP modes, PDB/private/unexpected-file rejection, licenses and
+  rights caveat. This candidate requires macOS13+ for the full startup path;
+  tester's OS is still unknown and wider support has not been decided. A valid
+  bundle opens the existing desktop diagnostic host without CLI arguments. The
+  visible diagnostic window/exit fallback is documented, not hidden as final UI.
+- Integrity-only ad-hoc signing used rcodesign0.29.0 from the author's release;
+  its archive matched the publisher SHA256. No Developer ID certificate, timestamp
+  service, Apple account, notarization, quarantine removal or OS policy change.
+  Pin/source details and reproducible commands are in
+  [packaging instructions](tools/mac-build/README.md).
+- Issues found during packaging: rcodesign's verify command rejects empty ad-hoc
+  CMS and itself warns it is unreliable; it was NOT treated as a passing check.
+  Default bundle rules omitted managed DLL/JSON under MacOS. Added explicit
+  resource hashes/rules and re-signed the main executable against final metadata
+  and CodeResources. Windows scoped absolute arguments initially omitted external
+  seals; relative arguments fixed this, with mandatory-slot regression coverage.
+  A bounded independent parser checks every native page/special-slot hash,
+  universal slice, nested-code hash and managed/resource seal. It is not an Apple
+  signature, Gatekeeper, malware or runtime validation substitute.
+- Windows-side checks:11 packaging unit tests and21 Mac/headless regression tests
+  pass. Evidence: `tools/mac-build/test_package_tester.py` and
+  `tests/Dororong.Mac.Tests/TestResults/arm64-package-host.trx`; final ZIP report
+  verifies all234 files/CRC/byte parity/path safety, executable modes and18 native
+  files' code hashes. Code/metadata mutations and missing seals fail regression
+  checks. Final ZIP SHA256 independently matched via PowerShell Get-FileHash;
+  two successive package runs produced the same ZIP hash. No Mac .NET8.0.32 runtime
+  execution was performed. Existing native/parity checks remain open.
+- Tester workflow: extract → move `.app` to Applications → double-click. Includes
+  .NET; no SDK, Rosetta or terminal step. First launch may be blocked because there
+  is no Developer ID/notarization. README links
+  [Apple's per-app guidance](https://support.apple.com/ko-kr/102445) only for a
+  tester who trusts the source; damaged/malicious warnings mean stop/report, not
+  disable protections. Permission behavior, downloaded ZIP extraction, Apple's
+  native signature validation, Gatekeeper launch, menu/login, update/removal and
+  data preservation must still be tested on the real Mac.
+- Roadmap reconciliation: MAC-24 needs runnable packaging AND native lifecycle
+  acceptance. Bundle/integrity preparation is now locally checked; that does not
+  mark MAC-24/25 or F4 complete. Next: tester provides OS version and checks the
+  exact ZIP's first launch/exit/duplicate then native interactions/login. Intel
+  build path remains; this package only targets the confirmed arm64 tester.
+
+## macOS tester architecture clarification — 2026-10-15
+
+- User identified the intended test machine family as Apple Silicon (M1 or
+  newer). Exact model and macOS version remain unknown; no actual test occurred.
+  Prepare arm64 for this tester. Keep the Intel build path and existing feature
+  acceptance scope; this answer does not exclude Intel or establish Mac support.
+- Documentation-only update to this ledger and ROADMAP. No code/build/install,
+  commit, push or distribution. This supersedes the unknown-chip note below,
+  not the unknown-OS or native-verification boundary.
+
+## macOS native menu startup instance — 2026-10-15
+
+- User authorized menu-bar connection, optional login startup and single-instance
+  parity. Changed only Mac/Portable, test/helper, developer bundle scaffold and
+  connected records. Windows App/Core/assets and installed/public builds remain
+  unchanged. No commit, push, install, registration or release performed.
+- Added an AppKit NSStatusItem with the existing head icon and left/right mouse-up
+  actions. Typed Objective-C signatures, rooted callback/target and explicit
+  disposal keep native ownership bounded. It opens the existing B2 component in
+  a single status-menu window; character popup remains separate. Screen-point
+  placement clamps to the clicked monitor, including negative origins; size
+  changes reclamp error output. Deactivation closes it and suppresses immediate
+  reopening from the same icon click. Only an explicit menu action activates it.
+  These are implemented paths, not proof of native focus/flicker behavior.
+- Added SMAppService.mainAppService registration/unregistration and OS status
+  readback. No automatic opt-in or saved pretend startup boolean. Enabled,
+  NotRegistered, RequiresApproval and NotFound are distinct. Pending approval
+  opens Login Items settings; failed writes re-read actual state and show a
+  recoverable error. Unavailable state updates focus, keyboard targets, tooltip
+  and accessibility name as well as visible text. Requires macOS13+ and a valid
+  matching .app bundle; this does not yet define the whole product's minimum OS.
+  Primary API basis: [Apple SMAppService](https://developer.apple.com/documentation/ServiceManagement/SMAppService?changes=la&language=objc)
+  and [registration](https://developer.apple.com/documentation/servicemanagement/smappservice/register%28%29?changes=_4).
+- Added a per-user, install-path-independent named mutex before the desktop UI
+  starts. Duplicate exits without a second pet; owning-thread finally releases
+  on normal termination and abandoned-owner acquisition supports crash recovery.
+  A separate test-only process exercises duplicate, normal exit and killed-owner
+  restart. Native Mac mutex behavior remains to be tested.
+- Added developer Info.plist and `tools/mac-build/assemble-probe.sh`: macOS-only,
+  fresh output directory, no overwrite, no security-setting changes. Bundle
+  no-argument launch enters the desktop preview for Finder/login; raw executable
+  still needs its explicit preview switch. Foundation is loaded before the
+  pre-Avalonia bundle check. This is a diagnostic scaffold, not an installer;
+  app icon, signing/notarization and distribution lifecycle remain open.
+- Windows-side validation: **75 tests pass** (Portable54 + Mac/headless21).
+  Evidence: `tests/Dororong.Portable.Tests/TestResults/lifecycle-regression.trx`
+  and `tests/Dororong.Mac.Tests/TestResults/lifecycle-complete.trx`. Includes
+  process ownership recovery, fake-service opt-in/out/denial/pending readback,
+  unavailable recovery, keyboard/menu lifetime and growing-error repositioning.
+  Initial resize test sampled the headless default768px before rendering; after
+  measuring rendered frames, the focused test and full suite pass. Intermediate
+  failing TRX is retained; this is not an observed Mac runtime failure.
+- JOEDESIGN preserved approved B2; UI UX Pro Max checks covered focus/state/error
+  handling. A fresh independent scoped critic found stale accessibility/keyboard
+  metadata on failure and missing resize clamp. Both were fixed and bounded
+  confirmation found no remaining finding from that review. Main and critic
+  inspected `tests/Dororong.Mac.Tests/bin/Release/net8.0/login-error-*.png`:
+  error text wraps without clipping, pending approval is explicitly labeled.
+  Local review is not full conformance certification or user/Mac acceptance.
+- Both self-contained publishes succeeded at
+  `artifacts/macos/lifecycle-20261015-final/{osx-arm64,osx-x64}`. Developer shell
+  syntax and plist XML were checked on Windows, not assembled/launched on Mac.
+  Native status actions/focus/VoiceOver, login permission denial/approval,
+  relocation, logout/login, duplicate/crash behavior and Retina remain UNVERIFIED.
+- Roadmap reconciliation: MAC-19 completion requires actual opt-in/out across
+  login; current adapter + fake-service tests supply partial evidence only.
+  Next: tester-ready .app packaging and native checklist with chip/OS still
+  unknown. No row is MAC_VERIFIED and no new chat/context-transfer check occurred.
+
+## macOS click wake landing and menu — 2026-10-15
+
+- User authorized continuing body click, wake, extreme landing and menu/settings
+  parity. Only Portable/Mac, their tests and connected records changed. Windows
+  App/Core/assets, installed product and public installer remain unchanged.
+  No commit, push, install, release or actual Mac execution in this work.
+- Added the Windows 500ms body-click squash/hop sampler, sticky4px cancellation,
+  head-pending sole pinning,45ms tuck +45ms crouch wake images and matching live
+  wake hit descriptors. Click ownership suppresses hunting/autonomy and cancels
+  on snack/menu/new interaction. Extreme landing freezes the native source and
+  placement, spreads only the lower legs into160px before the existing shared
+  squash/sole transform, then releases back to normal. Head input interrupts it.
+- Added per-user `~/Library/Application Support/JOEWRKS/Dororong/settings.json`:
+  default sleep ON, read before desktop start, atomic temp-write/flush/replace,
+  readback before applying runtime state, unknown-key preservation and refusal
+  to overwrite malformed settings. OFF wakes through the existing rest bridge.
+  Logs contain operation/type/time only, not titles, pointer locations, typed
+  content or exception messages; folder open uses a fixed executable + argument.
+- Menu work used JOEDESIGN to preserve accepted B2 rather than redesign it.
+  [Pinned local review scope](docs/verification/2026-10-15-mac-menu-baseline.json),
+  independent pre-implementation scope review and fresh Impeccable C1 critic
+  preceded expansion. Representative headless captures exposed Fluent checked/
+  disabled/focus leakage, missing settings icons and cancel affordance; repaired
+  those and restored title/facets/inset motif. Independent bounded confirmation
+  found these visual issues resolved. Main's JOEDESIGN R/UIUX experience review
+  checked source tokens, order, disabled disclosure, focus and state/error output;
+  web-guideline applicable checks used native button/toggle equivalents. These
+  are local reviews, not authenticated host certification or Mac/user acceptance.
+- Shared B2 component now drives the character's right-click light-dismiss
+  popup; tray variant is available only from the explicitly labeled diagnostic
+  button. Repeated open keeps one popup; Escape/outside/commands close it; keys
+  wrap enabled actions and Enter/Space activate. Settings errors stay visible
+  without applying a failed change. Existing embedded Pretendard/head/jewel are
+  reused with the font license. No pet transform is applied by menu code.
+- **Native menu-bar boundary remains open:** installed Avalonia11.3.22
+  `Avalonia.Controls.xml`, `E:Avalonia.Controls.TrayIcon.Clicked`, explicitly says
+  the event is not raised on OSX. No fake Clicked handler was connected. Matching
+  B2 primary/secondary opening needs a macOS status-item bridge and real focus/
+  dismissal checks. Login registration remains unimplemented and is displayed
+  disabled with a reason, not as a working persisted boolean. Single-instance,
+  app packaging and native accessibility remain open too.
+- Windows-side validation: **63 tests pass** (Portable54, headless Mac8,
+  pinned-Windows render comparison1). Evidence:
+  `tests/Dororong.Portable.Tests/TestResults/click-descriptor-final.trx`,
+  `tests/Dororong.Mac.Tests/TestResults/menu-final.trx`,
+  `tests/Dororong.RenderParity.Tests/TestResults/click-landing-reference.trx`.
+  Added501 exact click-sampler comparisons and101 exact extreme-spread arrays
+  against the unchanged candidate14 DLL, plus full fall/recovery/interruption,
+  wake, pending sole, persistent/corrupt settings, keyboard and popup tests.
+  These extend prior pixel evidence; they do not erase known WPF/Skia composite
+  differences. Outside-click is a headless event check, not an OS acceptance test.
+- Actual captures: `tests/Dororong.Mac.Tests/bin/Release/net8.0/menu-*.png`
+  (character/tray, snack/cancel, sleep ON/OFF and visible error). Main inspected
+  error wrapping/readability and normal state output; fresh critic inspected the
+  representative normal/cancel views and independently confirmed8-pass TRX.
+  macOS VoiceOver/high-contrast/mixed-scale corners remain UNVERIFIED.
+- Both self-contained cross publishes succeeded:
+  `artifacts/macos/click-menu-20261015-final/{osx-arm64,osx-x64}`. These are raw
+  developer probes, not signed/notarized `.app` installers or runnable Mac proof.
+  Earlier output remains historical. No new chat/automatic context transfer tested.
+- Roadmap reconciliation: MAC-06 requires persistent default/wake behavior; this
+  implementation + corruption/restart tests establishes Windows-side partial
+  evidence, not MAC_VERIFIED. Next: native menu-bar bridge, login registration,
+  single-instance/lifecycle; then real Mac checks with chip/OS still unknown.
+
+## macOS direct input cheek paw — 2026-10-15
+
+- User authorized remaining grab hit-testing/swing margin, cheek pulling and
+  perched-paw interactions with Windows parity. Updated only Portable/Mac,
+  their tests and connected records. Windows App/Core, artwork, installed pet and
+  public installer are unchanged. No commit/push, install, release or Mac execution.
+- Replaced rectangular head selection with the existing selected-cheek polygon,
+  upper-head exclusion, body click-only ownership and interpolated sleep/wake
+  descriptors. Posed hunting head input uses its inverse affine transform; source
+  placement includes facing, pounce and landing transforms. Perched input uses
+  its100px registration, live entry scale and the same inverse paw deformation.
+  The opposite-side legacy cheek remains non-carrying; full body-click/wake and
+  extreme-landing visual interaction parity still need follow-up.
+- Windows PetWindowViewport had96-point gutters that the144px Mac host lacked.
+  Added the same336px transparent host, keeping logical144px coordinates and
+  placement unchanged. Swing renders into the gutter, alpha input ignores empty
+  padding, and head contact measurement subtracts the render origin. No shrink
+  or cursor-position correction was introduced to fit the sprite.
+- Ported the accepted cheek outline/feature/follow math and captured head-space
+  hunting deformation. Current pose freezes during pulling; position does not
+  follow the cursor. Pull bounds are-10..20, spring440ms, backward hop starts65ms
+  after release and ends280ms later. Horizontal displacement is consumed once,
+  remains after landing, and attached cheeks do not hop/unhook. Seated direction
+  reflection and zero-pull pose preservation are checked.
+- Ported paw root/apron sampling, opposite-paw occlusion and inverse hit test.
+  Only the pressed paw changes:4-point drag threshold,18-point offset limit,
+  <=350ms tap produces600ms wave, dragged release220ms. Owner loss cancels local
+  input; long-frame/pointer loss and snack entry cancel captures safely.
+- Tests: Portable48/48, Mac headless/native-boundary3/3 and independent Windows
+  reference1/1 PASS (52 cases, no skips). TRX files are `mac-direct-portable.trx`,
+  `mac-direct-host.trx`, `mac-direct-parity.trx` under each test project's
+  `TestResults/`. Reference coverage now1843 byte-identical frames, including
+  48 paw poses and8 deformed working-grid heads added here. Also checked24 cheek
+  raster arrays,501 spring times at5 strengths,100 follow ticks,480 paw state
+  ticks,9216 head/cheek grid points and106560 deformed paw hit points.
+- Compared15 captured-hunting cheek composites separately: max channel delta45,
+  largest mean0.13680013020833334/255; not byte-identical whole screenshots.
+  Existing42 articulated hunting cases and earlier raster tolerances remain.
+  `tests/Dororong.RenderParity.Tests/bin/Release/net8.0-windows/direct-parity.json`
+  and `direct-parity.png` contain measurements and Windows/Portable pairs. Sheet
+  inspected: no new open shoulder seam, opposite-paw movement or shape change.
+  This is Windows-host raster inspection, not Retina/native Mac acceptance.
+- Both self-contained.NET8.0.31 cross-publishes succeeded at
+  `artifacts/macos/direct-20261015-final2/{osx-arm64,osx-x64}`. Mac DLL SHA256:
+  arm64 `3746BEB5160BBA8F69EEAF3C737AF11404A399251AC7D76BD9BFD7A4FB4750B7`;
+  x64 `655D86868E4E411118AB6C0C78BE733C37EE36BA1DA96FCB11E7B6F24AADD83E`.
+  Shared Portable DLL `25A87B9E13E20DFB929246A31E89012FEDD95981CCB2B9D3AA554D9D8BFFDE9A`.
+  Raw developer outputs only, not signed/notarized.app installers.
+- Remaining/next: close body-click/wake/extreme-landing interaction gaps, then
+  approved menu/settings/startup integration. Native capture delivery, Retina,
+  Spaces and all Mac checklist acceptance remain unverified until a tester has
+  an actual Mac. F4 remains open; this record supersedes the prior hit-map/gutter/
+  cheek/paw absence, not previous evidence or the product acceptance boundary.
+
+## macOS hunting rest head drag — 2026-10-15
+
+- User authorized continuing hunting, rest and head grabbing with Windows motion
+  parity. Added these paths to the existing desktop preview; Windows App/Core,
+  installed application and public installer remain unchanged. No commit/push,
+  installer update, upload or actual Mac execution was performed.
+- Ported the existing hunting preparation/session,1.5s dwell,340ms flight,
+ 280ms landing and3s post-jump tracking. Near-zone exit cancels preparation on
+  that tick; visual recovery continues. Snack, head capture, sitting, menu and
+  unsupported platforms block hunting. Interrupted airborne offsets enter physics
+  rather than teleporting to the support. Shared Core remains the position owner.
+- Connected idle torso breathing, shared5s blink clock, approved1050ms sit/650ms
+  rise,90s Core inactivity sleep, source sleep-entry stages and the180ms optional
+  wake bridge. Preview sleep now defaults ON (supersedes the previous preview's
+  temporary disable); toggle is session-only, not a persistence claim.
+- Head-only upper-head input uses the Windows4-point deadzone/80-point extension,
+  original grab offset, velocity-filtered damped swing and180ms pose recovery.
+  Reused surrounding hair/body lag math and anatomical release registration.
+  Captured position stays independent of extension. Ready-paw flutter and shared
+  perch acquisition remain available. Platform physics owns released falling.
+  Other direct interactions and the full captured-pose hit map remain open.
+- Exported113 accepted head-pull frames and continuous landmarks, with a pinned
+  baseline hash. Fractional sampling and the final pose-to-canonical bridge reuse
+  the original math. [Provenance and command](src/Dororong.Portable/Rendering/README.md#hunting-rest-and-head-drag).
+- Verification: Portable37/37, headless host/native boundary3/3, independent frozen
+  Windows-reference1/1 PASS, zero skips. Evidence: each project's TestResults/
+  `mac-interactions-portable.trx`, `mac-interactions-host.trx`,
+  `mac-interactions-parity.trx`. Reference total1,787 byte-identical frames includes
+ 225 full/fractional head-pull,57 release and55 sleep samples in addition to the
+  previous1,450.600 ticks each compare preparation, pounce and head-swing values;
+  six surrounding-head fields match exactly. New integration checks cover immediate
+  departure, cooldown/snack precedence, sleep/wake, sit pinning, partial/full carry,
+  release without horizontal cursor jump, unavailable input and both-facing bounds.
+- Initial reference assertions exposed two test-harness issues: record ToString
+  includes newly public computed properties, so compare pose values directly;
+  sleep reference must use the same phase-to-local-progress floating-point
+  calculation, not an algebraically equivalent nominal decimal. Both corrected.
+  Visual inspection caught an oversized384px head draw, then a half-native-pixel
+  reduction mismatch. Draw into its96px source rectangle and match the observed
+  WPF2:1 footprint average. These were implementation defects, not accepted changes.
+- Remaining raster difference:42 articulated hunting comparisons (seven frames,
+  open/closed eyes, three gaze rolls) have at most1,433 differing pixels/9,216,
+  maximum channel delta84 and whole-frame mean delta0.178413/255. Most differences
+  are low-amplitude backend rounding; this is NOT byte-identical final rendering.
+  Guard max96/mean0.5 prevents gross drift, not visual acceptance. Previous upright/
+  snack bounds remain unchanged. Inspected `interaction-parity.png` and
+  `head-drag-sequence.png` in reference/portable Release test output folders;
+  detailed hunting metrics are `interaction-parity.json` beside the comparison.
+- Cross-publish succeeds at `artifacts/macos/interactions-20261015-final/` for
+  osx-arm64/osx-x64, self-contained NETCore8.0.31, correct Mach-O CPUs and native
+  Skia; no WindowsDesktop runtime. Host DLL hashes: arm64
+  `B4552309918AB8F4D2B9AD89A2901A790180422AD5AF45C8BA48ABEC292AEC9A`, x64
+  `4B258DA7911319772C868B5358FF45C0C0B98D573570FFF59547E6069BC9F1B9`;
+  Portable `8A59AF3DBCE13BE381A78997D9FFC40635A20B2C7ABDD4C1AC05FEBF1C56E7B6`.
+  Raw developer outputs only, not signed/notarized app bundles or public packages.
+- ROADMAP/checklist updated together. MAC-08's cancellation/dwell/cooldown criteria
+  now have source-state and integrated test evidence; native rendering/behavior
+  and user acceptance remain unverified. MAC-09 still needs full pose hit-map and
+  Windows outer-viewport matching; the144px preview currently bounds swing.
+  Next: resolve those integration edges, then cheek/paw/body-click interactions,
+  final menus, persistence/startup. Actual Mac permissions, Retina, Spaces/Dock,
+  CPU/OS support and lifecycle gates are unchanged and remain open.
+
+## macOS desktop integration — 2026-10-15
+
+- User authorized global mouse, movement and window/Dock integration with Windows
+  parity. Added a macOS-only `--desktop-preview`, not a finished product or release.
+  Native geometry/input boundary and instructions: [host README](src/Dororong.Mac/README.md#native-desktop-integration-preview-macos-only).
+- Quartz/AppKit adapter reads pointer/button/display/window metadata; moves only
+  owned overlays. Global display points map to Cocoa without Retina multiplication.
+  No keyboard hook, screenshot/title collection, accessibility action or network
+  operation. Permissions and native ABI remain actual-Mac checks, not assumed passes.
+- Reused unchanged Core PetBrain/PlatformMotion/EdgePerch/SnackSession for surface
+  walking, ballistic snack movement, falling and attachment. Ported the Windows
+  readiness-advertisement runtime so release uses the advertised target. Preserved
+  grab anchor, source perch pixels and flutter/expression timing. Scene acquisition
+  is bounded single-flight,80ms/500ms; transient menus do not remove Dock support.
+  Failed reads and missing/reused owners are distinct; floors provide recovery.
+- Verification on Windows: Portable30/30, headless host/native-boundary3/3 and
+  independent Windows-reference1/1 PASS, zero skips. Evidence under each project's
+  TestResults: `mac-desktop-portable.trx`, `mac-desktop-host.trx`,
+  `mac-desktop-parity.trx`. New cases cover move/close, Dock menus/hide, unavailable
+  scenes, bounded background capture, identity reuse, occlusion, monitor removal,
+  Quartz/Cocoa conversion, snack-entry location and100 exact Core fall samples.
+  Reference now checks1,450 exact frames including repaired perch/open-closed and
+ 16 flutter phases,350 perch-expression ticks, two facing-specific foot contacts,
+  plus the previous240 gaze/locomotion ticks and77 composites. Existing bounded
+  Skia edge differences remain; this is not universal screenshot equality.
+- Cross-published self-contained .NET8.0.31 to
+  `artifacts/macos/desktop-20261015-final/{osx-arm64,osx-x64}`. Mach-O CPU0100000C/
+ 01000007 verified, native Skia present, NETCore only (no WindowsDesktop runtime).
+  Host DLL SHA256 arm64 `4B0AB9C7262022AEADDEE6CAE0E2053B34C93B8FDBC11689E2590E32832AB33A`,
+  x64 `4FBBC1665C6B0E1C1279A2D0F552E94609CAA69B1F8B2D2C32F1C7777084899B`;
+  shared Portable `CACB308ABAF21DC937A7332019B20D95EFC82A43F5EB009C4BF35CCE46065F0E`.
+  These are raw developer outputs, not signed/app-bundled tester installers.
+- Remaining: actual Mac input/window-layer/Spaces/Dock metadata/permissions/Retina
+  tests; full hunting/idle/sleep, head dangle/cheek/paw, extreme-landing limb spread,
+  final menu/settings/startup and packaging. Diagnostic carrying does not claim
+  head-dangle parity. Large frame gaps cancel actions, but actual lock/resume is
+  not verified. Preview sleep is disabled until its renderer/controller is ported.
+- ROADMAP and checklist updated together. MAC-11 criterion (advertised release,
+  moving/closed owner) now has synthetic scene evidence but remains partial until
+  native Mac acceptance; next is full interaction arbitration and native tester
+  validation when hardware is available. No Windows App/Core/installer changes,
+  install, commit, push, upload or tester contact. Previous records stay historical.
+
+## macOS walk tracking snack renderers — 2026-10-15
+
+- User authorized continuing walk/tracking/snack first, with current Windows
+  motion parity. Kept the accepted candidate14 as an independent frozen oracle;
+  no old walk-bank substitution, redraw or Windows product change.
+- Added portable current diagonal gait/gallop, local torso breath, eye field,
+  bounded cubic head rotation, gaze easing, original-mouth chewing, jump frame
+  selection and slow happy sway. Reused Core SnackSession without changing its
+  launch trajectory, entry/exit, eating ownership or phase durations. Ported
+  locomotion timing also replaces the early transparent probe's placeholder timing.
+- Native jump frames are generated from the accepted Windows renderer, with a
+  fixed header/baseline hash; generator, provenance and reproduction instructions:
+  [renderer notes](src/Dororong.Portable/Rendering/README.md). Export initially
+  failed because the standalone tool had not registered the WPF pack URI scheme.
+  Registered Application; failed partial output retained under artifacts/macos,
+  and exporter now renders to memory before creating its new output file.
+- Added `--motion-preview`: bounded local-pointer lab for walk, track, snack
+  chase/jump/eat/chew/happy/recovery. Entry preserves position and waits for pointer
+  arrival from the toolbar; exit/lost input cancels. It is not the final product
+  menu, global cursor controller, native desktop movement or Dock integration.
+- Verification: Portable15/15, Avalonia headless host2/2, reference suite1/1 pass,
+  no skips. TRX: `mac-motion-portable.trx`, `mac-motion-host.trx`,
+  `mac-render-parity.trx` in their respective TestResults folders. Independent
+  reference comparison covers1,432 byte-identical frames (walk/run/jump/breath/
+  chew/head sampling),240 exact gaze/locomotion state ticks and77 composites.
+  Core remains unchanged; prior259/259 foundation evidence is not rerun or
+  presented as a new result. Inspected `motion-parity.png` and lab eating capture.
+- Open raster difference: Skia neck joins and snack vector effects differ from
+  WPF at up to36 of9,216 pixels in the sampled composites; maximum channel delta74,
+  maximum whole-frame mean absolute channel delta0.02485/255. These are not fully
+  byte-identical screenshots. Tests bound edge differences and preserve unaffected
+  lower-body pixels. First jump-overlay guard incorrectly treated downward-moved
+  drool as a foot change; corrected it to the transformed drool bounds only.
+  The numerical budget is a regression guard, not user/Mac visual acceptance.
+  Detailed metrics and comparison PNG: `tests/Dororong.RenderParity.Tests/bin/Release/net8.0-windows/`.
+- Final self-contained .NET8.0.31 cross-publish succeeds for arm64 and x64:
+  `artifacts/macos/motion-20261015-final/`. Both include native Skia and only
+  NETCore, not WindowsDesktop. Mach-O CPU0100000C/01000007 verified. Managed host
+  SHA256 arm64 `BA06416D4998DE10669D69E3CEFA0EF83AFBFDDFAADD6AF3353E3CB0C8026BB3`,
+  x64 `7B8F21979C4938AF43134E81B81146D62504B0DAA00611B888C8D820FC3CAEEE`;
+  shared Portable DLL `A52DD03591C5F0F74445956A579D056BEFEECC7666CEE1F49598B189719E560E`.
+  This proves cross-build only, not Mac execution, Retina quality or a signed app.
+- Checklist/ROADMAP updated together. MAC-04's current gait/timing criterion has
+  frame/state evidence, but desktop movement and actual Mac acceptance remain
+  open. Next: native cursor/coordinates and walk/tracking/snack desktop arbitration,
+  then window/Dock adapters; preserve pending vector/Mac validation. Other action
+  ports, app packaging and all remaining MAC-01–25 gates stay open. No install,
+  commit, push, public upload, tester contact or change to existing Windows source.
+
+## macOS parity foundation — 2026-10-15
+
+- User authorized Windows-side development with Mac-user testing, a full current
+  feature checklist and implementation start. All25 feature rows remain required:
+  [scope/checklist](docs/specs/2026-10-15-macos-parity.md). Tester chip/OS is not
+  known (explicit user reply); maintain arm64/x64 build paths without claiming
+  support for an untested OS version. No feature-reduction approval inferred.
+- Inspected product-definition skill/workflow and existing incomplete snack
+  bootstrap. It is not valid V2 authority. Kept existing approved human ownership
+  rather than fabricating a manifest, approval or Semantic Closure for this port.
+- Added separate `Dororong.Portable` and `Dororong.Mac` projects. Fixed-size LOCO
+  reader preserves all772 frame bytes and rejects bad dimensions/truncation/trailing
+  data. Canonical cleanup matches the existing bounded low-alpha treatment.
+  Avalonia11.3.22 probe renders neutral/sit/rise with native-size source pixels;
+  it is intentionally marked non-release and requires `--preview`. Diagnostic
+  menu/OS drag are not the final product menu/head-dangle interaction.
+- Verification: Portable8/8 and Mac headless renderer1/1 tests pass, no skips;
+  Core259/259 passes. TRX files: `mac-portable-foundation.trx`,
+  `mac-renderer-probe.trx`, `mac-foundation-core-regression.trx` under respective
+  test output folders. Inspected generated standing/sitting PNGs; no new artwork
+  was created. Headless Windows/Skia renders are not Mac display acceptance.
+- Final `dotnet publish` for osx-arm64 and osx-x64 succeeds using self-contained
+  .NET8.0.31. Local raw outputs: `artifacts/macos/probe-20261015-final/`.
+  Mach-O headers FEEDFACF/CPU0100000C and FEEDFACF/CPU01000007 confirm architecture.
+  Apphost SHA256 arm64 `07348FB2EFC4E2CC45412DD223EB8BA95AB54F0971E422A707529D43F44ACE4A`,
+  x64 `6BE4B116D88BC75483BDE4C7EB1C4BF7EF69096B9D178759CE951689529F7C6B`.
+  Runtime configs include NETCore only, not WindowsDesktop. NuGet transitive
+  vulnerable-package query reported none from current sources; not a security audit.
+- Remaining: production renderer/orchestration ports, native window/Dock/input,
+  menu/startup/persistence, permissions, actual Mac test, app bundle/signing and
+  release gates. These outputs are not a tester-ready or feature-complete app.
+  Next: port current walk/tracking/snack pixel algorithms and compare frames;
+  do not substitute old walk-bank frames. Native integration follows the checklist.
+  Windows product source/assets/install/release unchanged; no commit/push/upload.
+
 ## Public main hardening checkpoint — 2026-10-15
 
 - User authorized committing/pushing the completed checks and asked to include

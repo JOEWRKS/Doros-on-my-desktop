@@ -1,5 +1,11 @@
 # 도로롱이 내 컴에?! · Doro's on my desktop?!
 
+> **Mac 테스트 브랜치 / Mac test branch** — Apple Silicon(M1+), macOS13+.
+> [test03 ZIP 다운로드](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/macos-test03/Doro-Mac-arm64-test03.zip) · [설치·검사 안내](docs/releases/macos-test03.md).
+> 실제 Mac 실행 미검증, Developer ID·Apple 공증 없음. 첫 실행이 차단될 수 있습니다.
+> Native Mac execution is unverified. No Developer ID/notarization; Gatekeeper may block launch.
+> 아래 Windows 제품과 별도의 테스트판입니다. / Separate from the Windows product below.
+
 니케의 도로롱(Doro) 팬 캐릭터를 바탕으로 만든 Windows 데스크톱 펫.
 A Windows desktop pet based on the NIKKE-derived Dororong (Doro) fan character.
 

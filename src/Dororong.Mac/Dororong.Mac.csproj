@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Version>0.1.3</Version>
+    <AssemblyTitle>Dororong macOS parity probe — not a release</AssemblyTitle>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Packaging/Info.plist" Link="Info.plist" CopyToOutputDirectory="PreserveNewest" />
+    <AvaloniaResource Include="../Dororong.App/Assets/Fonts/*.otf" Link="Assets/Fonts/%(Filename)%(Extension)" />
+    <None Include="../Dororong.App/Assets/Fonts/OFL-Pretendard.txt" Link="OFL-Pretendard.txt" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="../Dororong.App/Assets/dororong-head.png" LogicalName="Dororong.head" />
+    <InternalsVisibleTo Include="Dororong.Mac.Tests" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.22" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.22" />
+    <ProjectReference Include="../Dororong.Portable/Dororong.Portable.csproj" />
+    <EmbeddedResource Include="../Dororong.App/Assets/locomotion.pbgra.gz" LogicalName="Dororong.locomotion" />
+    <EmbeddedResource Include="../Dororong.App/Assets/dororong-canonical.png" LogicalName="Dororong.canonical" />
+    <EmbeddedResource Include="../Dororong.App/Assets/snack-jewel.png" LogicalName="Dororong.jewel" />
+  </ItemGroup>
+</Project>

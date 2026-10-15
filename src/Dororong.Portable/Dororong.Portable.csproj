@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="2.88.9" />
+    <InternalsVisibleTo Include="Dororong.App.Tests" />
+    <InternalsVisibleTo Include="Dororong.Portable.Tests" />
+    <ProjectReference Include="../Dororong.Core/Dororong.Core.csproj" />
+    <EmbeddedResource Include="../Dororong.App/Assets/dororong-canonical.png" LogicalName="dororong-canonical.png" />
+    <EmbeddedResource Include="../Dororong.App/Assets/dororong-closed-eyes.png" LogicalName="dororong-closed-eyes.png" />
+    <EmbeddedResource Include="../Dororong.App/Assets/snack-jewel.png" LogicalName="snack-jewel.png" />
+    <EmbeddedResource Include="../Dororong.App/Assets/hunting.pbgra.gz" LogicalName="Dororong.App.Assets.hunting.pbgra.gz" />
+    <EmbeddedResource Include="Assets/jump-native.pbgra.gz" LogicalName="jump-native.pbgra.gz" />
+    <EmbeddedResource Include="Assets/hunt-joins.bin" LogicalName="hunt-joins.bin" />
+    <EmbeddedResource Include="Assets/snack-effects.bin" LogicalName="snack-effects.bin" />
+    <EmbeddedResource Include="Assets/perch-native.pbgra.gz" LogicalName="perch-native.pbgra.gz" />
+    <EmbeddedResource Include="Assets/head-pull-native.pbgra.gz" LogicalName="head-pull-native.pbgra.gz" />
+    <EmbeddedResource Include="../Dororong.App/Assets/locomotion.pbgra.gz" LogicalName="locomotion.pbgra.gz" />
+    <EmbeddedResource Include="../Dororong.App/Assets/dororong-sleep*.png" LogicalName="%(Filename)%(Extension)" />
+    <EmbeddedResource Include="../Dororong.App/Assets/dororong-blink-squint.png" LogicalName="dororong-blink-squint.png" />
+  </ItemGroup>
+</Project>

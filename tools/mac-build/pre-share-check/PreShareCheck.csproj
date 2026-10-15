@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <Target Name="RequireArtifact" BeforeTargets="ResolveReferences" Condition="!Exists('$(MacArtifactDir)/Dororong.Portable.dll')">
+    <Error Text="Set MacArtifactDir to the verified test bundle Contents/MacOS directory." />
+  </Target>
+  <ItemGroup>
+    <!-- Execute the distributed managed binaries, never rebuild product code. -->
+    <Reference Include="Dororong.Portable"><HintPath>$(MacArtifactDir)/Dororong.Portable.dll</HintPath></Reference>
+    <Reference Include="Dororong.Core"><HintPath>$(MacArtifactDir)/Dororong.Core.dll</HintPath></Reference>
+    <PackageReference Include="SkiaSharp" Version="2.88.9" />
+  </ItemGroup>
+</Project>

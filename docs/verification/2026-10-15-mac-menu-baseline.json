@@ -1,0 +1,12 @@
+{
+  "schema": "joeness.review-baseline.v1",
+  "scope": "Bounded Avalonia B2 menu component and behavior settings port; not native Mac acceptance",
+  "authority": ["DESIGN.md", "src/Dororong.App/Product/PetMenuResources.xaml", "src/Dororong.App/Product/PetContextMenu.cs"],
+  "sourceObservation": "artifacts/ui-menu-sleep-option-20261014/native-proof/tray-state-0.png",
+  "inventoryReview": "/root/mac_menu_scope_review: independent pre-implementation inventory, 2026-10-15",
+  "targets": ["src/Dororong.Mac/Product/PetMenuPanel.cs", "src/Dororong.Portable/Desktop/BehaviorSettings.cs"],
+  "protected": ["Windows code and assets", "pet render/input transforms", "approved product scope", "no fake startup registration"],
+  "required": ["288 shell;54 header;62 snack;44 actions;54 settings", "Pretendard/head/jewel existing assets", "character and tray order", "keyboard/focus/dismissal", "persistent sleep with failure preservation"],
+  "excludedFromPass": ["native macOS menu-bar lifecycle", "VoiceOver", "mixed DPI and multiple screens", "login registration", "user visual acceptance"],
+  "reviewStatus": "Pinned before component implementation; local R/C1 and fresh critic pending"
+}
