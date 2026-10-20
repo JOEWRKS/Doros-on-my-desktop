@@ -16,6 +16,7 @@
     <PackageReference Include="Avalonia.Desktop" Version="11.3.22" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.22" />
     <ProjectReference Include="../Dororong.Portable/Dororong.Portable.csproj" />
+    <ProjectReference Include="../Dororong.Raster/Dororong.Raster.csproj" />
     <EmbeddedResource Include="../Dororong.App/Assets/locomotion.pbgra.gz" LogicalName="Dororong.locomotion" />
     <EmbeddedResource Include="../Dororong.App/Assets/dororong-canonical.png" LogicalName="Dororong.canonical" />
     <EmbeddedResource Include="../Dororong.App/Assets/snack-jewel.png" LogicalName="Dororong.jewel" />

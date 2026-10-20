@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Dororong.Core/Dororong.Core.csproj" />
+    <PackageReference Include="SkiaSharp" Version="2.88.9" />
+    <InternalsVisibleTo Include="Dororong.Raster.Tests" />
+    <!-- Compile the accepted CPU sampler itself, not a second approximation.
+         Windows does not reference this assembly or its narrow adapters. -->
+    <Compile Include="../Dororong.App/Controls/HighResolutionGrabRaster*.cs" Link="Shared/%(Filename)%(Extension)" />
+    <Compile Include="../Dororong.App/Controls/HighResolutionBodyInk.cs" Link="Shared/HighResolutionBodyInk.cs" />
+    <Compile Include="../Dororong.App/Controls/HighResolutionClosedInk.cs" Link="Shared/HighResolutionClosedInk.cs" />
+    <Compile Include="../Dororong.App/Controls/HighResolutionFacePose.cs" Link="Shared/HighResolutionFacePose.cs" />
+    <Compile Include="../Dororong.App/Controls/HighResolutionLocomotion.cs" Link="Shared/HighResolutionLocomotion.cs" />
+    <Compile Include="../Dororong.App/Controls/HighResolutionHuntNeck.cs" Link="Shared/HighResolutionHuntNeck.cs" />
+    <Compile Include="../Dororong.App/Controls/HighResolutionSnackEffects.cs" Link="Shared/HighResolutionSnackEffects.cs" />
+    <Compile Include="../Dororong.App/Controls/RasterAlphaBounds.cs" Link="Shared/RasterAlphaBounds.cs" />
+    <Compile Include="../Dororong.App/Controls/RasterRowScheduler.cs" Link="Shared/RasterRowScheduler.cs" />
+    <Compile Include="../Dororong.App/Controls/HuntMotion.cs" Link="Shared/HuntMotion.cs" />
+    <Compile Include="../Dororong.App/Controls/CheekPullRenderer.cs" Link="Shared/CheekPullRenderer.cs" />
+    <EmbeddedResource Include="../Dororong.App/Assets/high-resolution-*.bank" LogicalName="Dororong.App.Assets.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="../Dororong.App/Assets/snack-jewel.png" LogicalName="snack-jewel.png" />
+  </ItemGroup>
+</Project>

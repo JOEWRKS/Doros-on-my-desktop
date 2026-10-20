@@ -4,14 +4,26 @@ Direction, current stage and release completion gates live in [ROADMAP](ROADMAP.
 This file remains the sole active execution/verification ledger; a finished task
 does not close a roadmap stage with open requirements.
 
-## Accepted r104 source push and full Apple Silicon port — in progress — 2026-10-21
+## Accepted r104 source pushed; Apple Silicon renderer foundation only — 2026-10-21
 
 사용자 최종본 푸시·맥북 버전 요청 및 Apple Silicon/r104 전체 이식 선택 확인.
 Windows Release DLL은 수락 r104 SHA256과 일치, Core 285개·App 1,534개 및 맥 패키저
 11개 검사 통과. 기존 맥 test04는 구 렌더러라
 r104 완성본으로 배포하지 않는다. [범위·순서·검증](docs/verification/2026-10-21-r104-source-and-mac-port.md).
-기존 작업 브랜치의 최종 소스 푸시 후 맥 전용 이식 진행; 설치본·실행 중 펫·
-수락 외형/속도 유지, 메모리 반복 검사 재개 없음. 맥 실제 실행은 미검증이다.
+최종 Windows 소스 `3813312379fd7122f72a031f692237560b637ec3`를
+`origin/feature/macos-test03`에 푸시하고 원격 SHA 일치 확인.
+설치본·실행 중 펫·수락 외형/속도 유지, 메모리 반복 검사 재개 없음.
+
+맥 이식은 아직 미완료다. 별도 `Dororong.Raster`에 수락 CPU sampler/원화 bank를
+직접 연결하고, 크기별 비트맵 재생성을 피하는 Avalonia `R104Surface`를 추가했다.
+새 렌더 검사12개·Portable기존60개·Mac헤드리스27개 통과(Windows에서 수행).
+5크기65표본 중 기본45개 바이트 동일, 벡터 효과20개 차이 남음.
+입 선을 추가하던 포팅 어댑터의 비표시 구간 닫힘 문제는 수정/회귀 검사했지만
+남은 차이를 통과로 처리하지 않았다. osx-arm64 개발 빌드 성공/핵심 네이티브
+라이브러리 ARM64 포함 확인. 정상 Mac DesktopSession은 아직 구 제어기이며
+r104 표시부·입력·슬라이더 연결/패키징/실제 Mac 실행이 남았다.
+사용자 OS 버전은 모름/테스트용이라고 응답, macOS13+ 검증 대상 조건만 유지.
+이 미완료 빌드를 완성품으로 전달하지 않는다.
 
 ## r104 remaining graphics creation path — finite trace completed; reproduced mechanism established — 2026-10-20
 
