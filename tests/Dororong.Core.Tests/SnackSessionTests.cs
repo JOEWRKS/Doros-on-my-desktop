@@ -6,6 +6,15 @@ namespace Dororong.Core.Tests;
 public class SnackSessionTests
 {
     private static readonly TimeSpan Tick = TimeSpan.FromMilliseconds(16);
+    [Theory]
+    [InlineData(20,50,185)]
+    [InlineData(100,10,92.5)]
+    public void Chase_distance_documents_existing_elapsed_cap(int milliseconds,int ticks,double expected)
+    {
+        var s=new SnackSession();s.Begin(FacingDirection.Right);var distance=0d;
+        for(var i=0;i<ticks;i++)distance+=s.Advance(TimeSpan.FromMilliseconds(milliseconds),new(true,new(10000,50)),new(50,50),true).DeltaX;
+        Assert.InRange(distance,expected-.001,expected+.001);
+    }
     [Fact] public void Chases_without_proximity_limit_and_caps_speed()
     {
         var session = new SnackSession(); session.Begin(FacingDirection.Left);

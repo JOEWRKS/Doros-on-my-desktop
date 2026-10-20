@@ -15,6 +15,12 @@ internal sealed class PetPlatformRuntime
     private readonly PlatformMotion _motion = new();
     private DesktopMonitor[] _physicalMonitors = [];
     private DesktopScene? _scene;
+    private DesktopScene? _monitorScene, _mappedPhysicalScene, _mappedLogicalScene;
+    private DesktopCoordinateMap? _mappedSceneMap;
+    private DesktopScene? _perchSurfaceScene, _heightSurfaceScene;
+    private PerchSurface[] _perchSurfaces=[];
+    private IReadOnlyList<PlatformSurface> _heightSurfaces=[];
+    private double _surfaceHeight=double.NaN;
     private DesktopCoordinateMap? _previousMap;
     private RectD _visibleBounds;
     private DesktopMonitor? _monitor;
@@ -45,6 +51,9 @@ internal sealed class PetPlatformRuntime
     internal FootContact Contact { get; private set; }
     internal PointD FramePosition => _framePosition ?? _lastPosition ?? new();
     internal EdgePerchPhase PerchPhase => _perch?.Current.Phase ?? EdgePerchPhase.None;
+    internal object DiagnosticState=>new{health=_sceneHealth.ToString(),monitor=_monitor?.Bounds,Contact,
+        motion=_motion.Current.Phase.ToString(),_motion.Current.Squash,_motion.Current.LegSpread,_motion.Current.IsExtremeLanding,
+        perch=PerchPhase.ToString(),surfaces=BuildPerchSurfaces().Select(s=>new{s.Surface.Kind,s.Surface.Left,s.Surface.Right,s.Surface.Top,s.Surface.Bottom}).ToArray()};
 
     internal PointerSample BeginFrame(TimeSpan elapsed, PointD displayed, PointerSample pointer, bool direct,
         bool presentationAtRest = true, bool releasedHeadRecovery = false)
@@ -70,7 +79,7 @@ internal sealed class PetPlatformRuntime
         _needsPresentationRebase |= direct || !presentationAtRest;
         if (!direct && (presentationAtRest || releasedHeadRecovery) && _needsPresentationRebase && _hasGeometry)
         {
-            // Released partial heads retire their pinned translation incrementally
+            // Released heads retire their pinned translation incrementally
             // while the shape recovers. Deferring the entire offset until idle
             // relocates the HWND by 7-15px during a low landing, risking a frame
             // with placement and image compensation out of sync. Others retain their
@@ -94,8 +103,9 @@ internal sealed class PetPlatformRuntime
 
         var read=_source.Read(elapsed);
         _sceneHealth=read.Health;
-        if(read.Scene is { } physical && physical.Monitors.Count>0)
-            _physicalMonitors=physical.Monitors.ToArray();
+        if(read.Scene is { } physical && physical.Monitors.Count>0 && !ReferenceEquals(physical.Monitors,_monitorScene?.Monitors)){
+            _physicalMonitors=physical.Monitors.ToArray();_monitorScene=physical;
+        }
         if(read.Health==SceneReadHealth.Expired)
         {
             // Window acquisition can fail independently of monitor enumeration.
@@ -110,11 +120,23 @@ internal sealed class PetPlatformRuntime
             }
             catch { /* A retained monitor floor is preferable to an unbounded fall. */ }
             _scene=map.ToLogicalScene(new(0,elapsed,_physicalMonitors,[]));
+            _mappedPhysicalScene=_mappedLogicalScene=null;_mappedSceneMap=null;
             _reliable=_physicalMonitors.Length>0;
         }
         else
         {
-            _scene=read.Scene is { } scene ? map.ToLogicalScene(scene) : null;
+            // DesktopSceneSource publishes immutable snapshots. Re-map only a
+            // new snapshot or a genuinely changed coordinate map, not each
+            // animation tick. Never key this by revision alone (HWND/topology
+            // updates and test/native sources may reuse a revision number).
+            if(read.Scene is { } scene){
+                if(!ReferenceEquals(scene,_mappedPhysicalScene)||_mappedSceneMap!=map){
+                    _mappedLogicalScene=_mappedSceneMap==map
+                        ?map.ToLogicalScene(scene,_mappedPhysicalScene,_mappedLogicalScene):map.ToLogicalScene(scene);
+                    _mappedPhysicalScene=scene;_mappedSceneMap=map;
+                }
+                _scene=_mappedLogicalScene;
+            }else _scene=null;
             _reliable=read.Health is SceneReadHealth.Fresh or SceneReadHealth.Cached;
         }
         if(_scene is {Monitors.Count:>0})
@@ -129,6 +151,11 @@ internal sealed class PetPlatformRuntime
     internal bool TryBeginPerch(PointD displayed, FacingDirection facing, bool carryReleased, bool pointerReliable)
     {
         if(_perch is null || _scene is null || _sceneHealth is not (SceneReadHealth.Fresh or SceneReadHealth.Cached)) return false;
+        // Match EdgePerchRuntime.TryBegin's rejection and one-frame cue expiry
+        // before constructing any surfaces. Idle/walking cannot acquire a perch.
+        if(!carryReleased||!pointerReliable||_perch.Current.Phase!=EdgePerchPhase.None){
+            _perch.ClearReadiness();return false;
+        }
         var surfaces=BuildPerchSurfaces();
         var readbackTolerance = _previousMap is { } map
             ? new SizeD(1.000001 / map.ScaleX, 1.000001 / map.ScaleY) : default;
@@ -204,10 +231,10 @@ internal sealed class PetPlatformRuntime
         var clearanceHeight=contact.SoleY-contact.VisibleTop;
         var surfaceHeight=previousPhase==PlatformPhase.Landing && _landingClearanceHeight is { } landingHeight
             ? Math.Min(clearanceHeight,landingHeight) : clearanceHeight;
-        var surfaces=_scene is null ? Array.Empty<PlatformSurface>() :
-            PlatformGeometry.Build(_scene,surfaceHeight);
+        var surfaces=BuildHeightSurfaces(surfaceHeight);
         var pose=_motion.Advance(new(delta,displayed,proposed,contact,surfaces,false,_reliable)
-            { Monitors = _scene?.Monitors, SupportedOffsetY = supportedOffsetY, SupportedLiftLimit = supportedLiftLimit });
+            { Monitors = _scene?.Monitors, SupportedOffsetY = supportedOffsetY, SupportedLiftLimit = supportedLiftLimit,
+                AnticipateExtremeLanding = true });
         if(pose.Phase==PlatformPhase.Landing && previousPhase!=PlatformPhase.Landing)
             _landingClearanceHeight=clearanceHeight;
         else if(pose.Phase!=PlatformPhase.Landing) _landingClearanceHeight=null;
@@ -247,6 +274,14 @@ internal sealed class PetPlatformRuntime
         Contact=c; _visibleBounds=b; _hasGeometry=true;
     }
     internal void Reset(PointD displayed) {_motion.Reset(displayed);_lastPosition=displayed;_landingClearanceHeight=null;}
+    internal PointD ResizeAtRest(PointD displayed, SizeD size)
+    {
+        Measure();
+        var bounded = GetMovementArea(displayed, Contact, size).ClampTopLeft(displayed, size);
+        Reset(bounded);
+        _framePosition = bounded;
+        return bounded;
+    }
     internal void Clear(PointD displayed)
     {
         _perch?.ClearReadiness();
@@ -267,9 +302,20 @@ internal sealed class PetPlatformRuntime
     private PerchSurface[] BuildPerchSurfaces()
     {
         if(_scene is null)return [];
+        if(SameGeometry(_perchSurfaceScene,_scene)){_perchSurfaceScene=_scene;return _perchSurfaces;}
         var z=_scene.Windows.GroupBy(w=>w.Key).ToDictionary(g=>g.Key,g=>g.Min(w=>w.ZOrder));
-        return PlatformGeometry.Build(_scene,0).Select(s=>new PerchSurface(s,z.GetValueOrDefault(s.Key,int.MaxValue))).ToArray();
+        _perchSurfaces=PlatformGeometry.Build(_scene,0).Select(s=>new PerchSurface(s,z.GetValueOrDefault(s.Key,int.MaxValue))).ToArray();
+        _perchSurfaceScene=_scene;return _perchSurfaces;
     }
+    private IReadOnlyList<PlatformSurface> BuildHeightSurfaces(double height)
+    {
+        if(_scene is null)return Array.Empty<PlatformSurface>();
+        if(SameGeometry(_heightSurfaceScene,_scene)&&_surfaceHeight==height){_heightSurfaceScene=_scene;return _heightSurfaces;}
+        _heightSurfaces=PlatformGeometry.Build(_scene,height);
+        _heightSurfaceScene=_scene;_surfaceHeight=height;return _heightSurfaces;
+    }
+    private static bool SameGeometry(DesktopScene? a,DesktopScene b)=>a is not null&&
+        ReferenceEquals(a.Windows,b.Windows)&&ReferenceEquals(a.Monitors,b.Monitors);
     private static bool Finite(PointD p)=>double.IsFinite(p.X)&&double.IsFinite(p.Y);
     private static bool WithinPixel(PointD a,PointD b,DesktopCoordinateMap map)=>
         Math.Abs(a.X-b.X)*map.ScaleX<=1.000001 && Math.Abs(a.Y-b.Y)*map.ScaleY<=1.000001;

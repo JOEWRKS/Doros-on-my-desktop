@@ -55,7 +55,7 @@ internal sealed class DesktopSession : IDisposable
         if(diagnostics)
         {
         inspection=new Window{Title="Dororong — macOS desktop integration preview (not a release)",Width=480,Height=300};
-        var controls=new StackPanel();controls.Children.Add(new TextBlock{Text="개발 검사판 · 실제 Mac 수락 전 / 드래그로 창·Dock에 놓기",Margin=new Thickness(12),TextWrapping=TextWrapping.Wrap});
+        var controls=new StackPanel();controls.Children.Add(new TextBlock{Text="개발 검사판 · 실제 Mac 수락 전 / 화면 바닥 걷기·창에 걸치기",Margin=new Thickness(12),TextWrapping=TextWrapping.Wrap});
         void Button(string text,Action action){var button=new Button{Content=text,Margin=new Thickness(12,2)};button.Click+=(_,_)=>action();controls.Children.Add(button);}
         Button("간식 주기 / 취소",ToggleSnack);Button("앉기 / 일어서기",()=>controller?.ToggleSit());Button("자동 눕기 켜기 / 끄기",()=>SetSleep(!(controller?.AutomaticSleep??true)));Button("메뉴 막대 메뉴 열기",()=>ShowMenu(true));Button("발판에서 내려오기",()=>controller?.Drop());Button("검사 종료",quit);
         controls.Children.Add(status);inspection.Content=controls;
@@ -93,14 +93,12 @@ internal sealed class DesktopSession : IDisposable
         {
             settings=new BehaviorSettings(Path.Combine(dataDirectory,"settings.json"));
             var sleepEnabled=settings.AutomaticSleepEnabled;
-            monitors=native.Monitors();var read=scenes.Read(clock.Elapsed,native.Capture,monitors);
+            monitors=native.Monitors();scenes.Read(clock.Elapsed,native.Capture,monitors);
             var main=monitors[0];var frame=DesktopFrames.Place(MotionRenderer.Standing(),false);
             var contact=DesktopFrames.Measure(frame).Contact;
             var x=main.Bounds.X+main.Bounds.Width/2-72;var top=main.Bounds.Bottom;
-            var dock=PlatformGeometry.Build(read.Scene,contact.SoleY-contact.VisibleTop)
-                .Where(s=>s.Kind==PlatformKind.Taskbar&&x+contact.Left>=s.Left&&x+contact.Right<=s.Right)
-                .OrderByDescending(s=>s.Top).ToArray();
-            if(dock.Length>0)top=dock[0].Top;
+            // Start at the physical screen bottom, not Dock's variable top.
+            // ConfigureWindow keeps the pet in front of Dock independently.
             controller=new(new(x,top-contact.SoleY),new RandomSource());
             controller.SetAutomaticSleep(sleepEnabled);
             petWindow.Show();jewelWindow.Show();jewelWindow.Hide();

@@ -12,6 +12,9 @@ public sealed class PetContextMenu : ContextMenu
         nameof(ShowVersion), typeof(bool), typeof(PetContextMenu), new PropertyMetadata(false));
     public bool ShowVersion { get => (bool)GetValue(ShowVersionProperty); set => SetValue(ShowVersionProperty, value); }
     public string ProductVersion => "v" + ProductIdentity.Version;
+    // The menu must use the same full-resolution source as the snack cursor
+    // and eating effects, not retain another URI decoder/cache chain.
+    public static System.Windows.Media.ImageSource SnackIcon => Controls.SnackImage.Source;
 
     public PetContextMenu()
     {

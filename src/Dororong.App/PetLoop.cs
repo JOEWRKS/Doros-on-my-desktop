@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Threading;
 using Dororong.App.Controls;
 using Dororong.App.Interaction;
 using Dororong.App.Interop;
@@ -14,7 +13,6 @@ namespace Dororong.App;
 
 internal sealed class PetLoop : IDisposable
 {
-    private static readonly TimeSpan TickInterval = TimeSpan.FromMilliseconds(16);
     private const double InitialMargin = 32;
 
     private readonly PetLoopClock _clock;
@@ -43,6 +41,12 @@ internal sealed class PetLoop : IDisposable
     private double _cheekHopBaseY;
     private readonly SnackSession _snack = new();
     internal bool IsSnackActive => _snack.Active;
+    private bool _lastPerchReady;
+    internal event Action<double, double>? TickMeasured;
+    private long _previousTickStart;
+    internal double WindowMoveMilliseconds=>_host.WindowMoveMilliseconds;
+    internal object DiagnosticState=>new{position=_snapshot.Position,state=_snapshot.State.ToString(),
+        direct=_directInteractionController.Current.Phase.ToString(),ready=_lastPerchReady,platform=_host.Platforms?.DiagnosticState};
 
     internal void ToggleSnack()
     {
@@ -109,6 +113,28 @@ internal sealed class PetLoop : IDisposable
 
     public event EventHandler<Exception>? Faulted;
 
+    internal bool CanResize => _lifecycle.Phase == PetLoopPhase.Running && _brain is not null &&
+        _queuedDirectPress is null && !_snapshot.IsDirectInteractionPending &&
+        _directInteractionController.Current.Target == DirectInteractionTarget.None &&
+        !(_host.Platforms?.SuspendsAutonomousMotion ?? false) && !_snack.Active;
+
+    internal bool TryResize(Action resize)
+    {
+        if (!CanResize) return false;
+        var before = _host.MeasureSizeAnchor?.Invoke();
+        resize();
+        _host.SetWindowPosition(_snapshot.Position); // Resize native viewport before measuring.
+        _host.Render(_snapshot, _directInteractionController.Current, TimeSpan.Zero);
+        var after = _host.MeasureSizeAnchor?.Invoke();
+        var position = _snapshot.Position;
+        if (before is { } a && after is { } b) position += a - b;
+        if (_host.Platforms is { } platforms) position = platforms.ResizeAtRest(position, _host.GetPetSize());
+        _host.RebaseSizePresentation?.Invoke(position - _snapshot.Position);
+        _snapshot = _brain!.ApplyPlatformPosition(position);
+        _host.SetWindowPosition(position);
+        return true;
+    }
+
     internal void SetAutomaticSleepEnabled(bool enabled)
     {
         _automaticSleepEnabled = enabled;
@@ -151,6 +177,7 @@ internal sealed class PetLoop : IDisposable
             _snapshot = _brain.Current;
             _host.SetWindowPosition(_snapshot.Position);
             _host.SetLocomotionBlocked?.Invoke(platforms?.SuspendsAutonomousMotion ?? false);
+            if(platforms is not null)_host.BeginPlatformFrame?.Invoke();
             _host.Render(_snapshot, _directInteractionController.Current);
             _host.Platforms?.AfterRender(null, null);
 
@@ -223,6 +250,9 @@ internal sealed class PetLoop : IDisposable
             return;
         }
 
+        var tickStart = Stopwatch.GetTimestamp();
+        var tickInterval = _previousTickStart == 0 ? 0 : Stopwatch.GetElapsedTime(_previousTickStart, tickStart).TotalMilliseconds;
+        _previousTickStart = tickStart;
         try
         {
             var brain = _brain
@@ -240,6 +270,16 @@ internal sealed class PetLoop : IDisposable
             var displayed = _host.GetWindowPosition();
             var platforms = _host.Platforms;
             var primaryButtonDown = _host.IsPrimaryButtonDown();
+            // A new physical press can interrupt released head recovery. Keep
+            // the last displayed pose available for the presenter's capture,
+            // but retire the old controller and support owner before BeginFrame.
+            // Otherwise the press is discarded and the pet keeps falling.
+            if(_queuedDirectPress is not null&&primaryButtonDown&&
+                _directInteractionController.Current.Phase==DirectInteractionPhase.BodyDragSettle){
+                _directInteractionController.Cancel();brain.CancelDirectInteraction();
+                _snapshot=brain.ApplyPlatformPosition(displayed);ReleaseMouseCapture();
+                platforms?.Reset(displayed);
+            }
             // A released local paw must not swallow a new head/cheek/paw press.
             var interruptedPaw = _queuedDirectPress is not null &&
                 _directInteractionController.Current.Phase == DirectInteractionPhase.PawRelease
@@ -277,7 +317,7 @@ internal sealed class PetLoop : IDisposable
                 pointer = platforms.BeginFrame(elapsed, displayed, pointer, directAtEntry,
                     stationaryCheek || _directInteractionController.Current.Target == DirectInteractionTarget.None,
                     _directInteractionController.Current is
-                        { Phase: DirectInteractionPhase.BodyDragSettle, IsPartialDragSettle: true });
+                        { Phase: DirectInteractionPhase.BodyDragSettle });
                 if (!directAtEntry)
                 {
                     displayed=platforms.FramePosition;
@@ -469,11 +509,13 @@ internal sealed class PetLoop : IDisposable
                     pointer.IsAvailable, advertise: true) == true
             };
             // Strip only the final render snapshot: legacy BeginHeadLanding
+            _lastPerchReady=directCurrent.IsPerchReady;
             // above may return the controller snapshot again. HWND owns the hop.
             if(cheekHop is not null && directCurrent.CheekPull is { } renderedCheek)
                 directCurrent=directCurrent with { CheekPull=renderedCheek with { RecoilOffset=0,RecoilLift=0 } };
             _host.SetWindowPosition(current.Position);
             _host.SetLocomotionBlocked?.Invoke(platforms?.SuspendsAutonomousMotion ?? false);
+            if(platforms is not null)_host.BeginPlatformFrame?.Invoke();
             _host.Render(current, directCurrent, delta);
             platforms?.AfterRender(platformPose, targetSole);
             _host.MaintainWindowLayer?.Invoke(elapsed);
@@ -486,6 +528,10 @@ internal sealed class PetLoop : IDisposable
         catch (Exception exception)
         {
             HandleFault(exception);
+        }
+        finally
+        {
+            TickMeasured?.Invoke(tickInterval, Stopwatch.GetElapsedTime(tickStart).TotalMilliseconds);
         }
     }
 
@@ -520,7 +566,8 @@ internal sealed class PetLoop : IDisposable
             displayed = platforms.FramePosition;
         }
         var mouth = displayed + (_host.GetSnackMouth?.Invoke() ?? new PointD(54,84));
-        var pose = _snack.Advance(delta, pointer, mouth, !(platforms?.SuspendsAutonomousMotion ?? false));
+        var pose = _snack.Advance(delta, pointer, mouth, !(platforms?.SuspendsAutonomousMotion ?? false),
+            _host.GetSnackChaseScale?.Invoke() ?? 1);
         var size = _host.GetPetSize();
         var area = platforms?.GetMovementArea(displayed, platforms.Contact, size) ?? _host.GetWorkArea();
         var proposed = area.ClampTopLeft(displayed + new PointD(pose.DeltaX,0), size);
@@ -538,6 +585,7 @@ internal sealed class PetLoop : IDisposable
         _host.PresentSnack?.Invoke(pose, pointer);
         _host.SetWindowPosition(proposed);
         _host.SetLocomotionBlocked?.Invoke(platforms?.SuspendsAutonomousMotion ?? false);
+        if(platforms is not null)_host.BeginPlatformFrame?.Invoke();
         _host.Render(_snapshot, DirectInteractionSnapshot.None, delta);
         platforms?.AfterRender(support, platforms.Contact.SoleY);
         _host.ShowSnackCursor?.Invoke(pointer, pose.Phase == SnackPhase.Chasing);
@@ -662,20 +710,17 @@ internal sealed class PetLoop : IDisposable
         var viewport = new PetWindowViewport(window, presenter);
         var windowLayer = new WindowLayerGuard();
         var snackCursor = new SnackCursorWindow();
-        var dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal, window.Dispatcher)
-        {
-            Interval = TickInterval
-        };
+        var frameTimer = new CompositionFrameTimer();
 
         var clock = new PetLoopClock(
             () => stopwatch.Elapsed,
             stopwatch.Start,
             stopwatch.Stop);
         var timer = new PetLoopTimer(
-            handler => dispatcherTimer.Tick += handler,
-            handler => dispatcherTimer.Tick -= handler,
-            dispatcherTimer.Start,
-            dispatcherTimer.Stop);
+            handler => frameTimer.Tick += handler,
+            handler => frameTimer.Tick -= handler,
+            frameTimer.Start,
+            frameTimer.Stop);
         var host = new PetLoopHost(
             GetWorkArea,
             viewport.GetPetSize,
@@ -691,15 +736,20 @@ internal sealed class PetLoop : IDisposable
             presenter.ReleaseMouseCapture,
             presenter.RenderDesktop)
         {
+            MeasureSizeAnchor = () => presenter.MeasurePlatformContact() is { } foot
+                ? new PointD((foot.Left + foot.Right) / 2, foot.SoleY) : null,
+            RebaseSizePresentation = presenter.RebaseSizePresentation,
             MaintainPerchLayer = () => PerchTaskbarLayerGuard.EnsureAboveOverlappingTaskbar(source.Handle),
             MaintainWindowLayer = elapsed => windowLayer.Maintain(source.Handle, elapsed),
             HoldLocomotionWalk = presenter.HoldLocomotionWalk,
             SetLocomotionBlocked = presenter.SetLocomotionBlocked,
             SetSittingRequested = presenter.SetSittingRequested,
+            BeginPlatformFrame = presenter.BeginHighResolutionPlatformFrame,
             UpdateHunting = presenter.UpdateHuntingWithPounce,
             GetPouncePose = () => presenter.Pounce,
             PresentSnack = presenter.SetSnack,
             GetSnackMouth = presenter.GetSnackMouth,
+            GetSnackChaseScale = () => presenter.HighResolutionGrabEnabled ? presenter.HighResolutionScale : 1,
             ShowSnackCursor = snackCursor.Update,
             DisposeSnackCursor = snackCursor.Close,
             Platforms = new PetPlatformRuntime(new DesktopSceneSource(new DesktopSceneNative(source.Handle), background: true),

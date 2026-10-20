@@ -52,6 +52,23 @@ Run("cold_effect_load", () =>
     Measure("next_meal_bite", new(SnackPhase.Eating, FacingDirection.Right, 0, 0, .001, 0));
     report["effect_timings"] = samples;
 });
+Run("screen_floor_dock_and_overlay_transitions", () =>
+{
+    var monitors=new DesktopMonitor[]{new(1,new(0,0,1000,800))};
+    var sole=DesktopFrames.Measure(DesktopFrames.Place(MotionRenderer.Standing(),false)).Contact.SoleY;
+    var pet=new DesktopPetController(new(250,800-sole),new SeededRandom());var y=pet.Position.Y;
+    var mapper=new MacSceneMapper();
+    for(var i=0;i<180;i++)
+    {
+        var rows=new List<MacWindowRow>();
+        if(i<120)rows.Add(new(3,77,new(0,i<60?0:600,1000,i<60?800:200),i<60?0:25,1,true,false));
+        if(i<150)rows.Add(new(2,60,i<120?new(150,700,500,80):new(150,798,500,2),20,1,true,true));
+        var scene=mapper.Build(TimeSpan.FromSeconds(i/60d),monitors,rows,99,20,101);
+        Check(!PlatformGeometry.Build(scene,70).Any(s=>s.Kind==PlatformKind.Taskbar),"Dock became a support");
+        pet.Advance(TimeSpan.FromSeconds(1d/60),PointerSample.Unavailable,false,new(scene,SceneHealth.Fresh));
+        Check(Math.Abs(pet.Position.Y-y)<.000001,"Screen-floor pet moved vertically during Dock/overlay changes");
+    }
+});
 Run("complete_meals_at_30_60_120_fps", () =>
 {
     foreach (var fps in new[] { 30, 60, 120 })

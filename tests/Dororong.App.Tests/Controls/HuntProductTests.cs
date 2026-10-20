@@ -9,7 +9,7 @@ public sealed class HuntProductTests
 {
     [Fact]
     public void Approved_hunting_layers_are_embedded() => Assert.Contains(
-        "Dororong.App.Assets.hunting.pbgra.gz", typeof(DororongPresenter).Assembly.GetManifestResourceNames());
+        "Dororong.App.Assets.hunting.indexed", typeof(DororongPresenter).Assembly.GetManifestResourceNames());
 
     [Fact]
     public void Shared_drawing_resources_work_across_presenter_threads()

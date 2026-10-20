@@ -27,6 +27,16 @@ Source builds use the internal apphost `Dororong.App.exe`; packaged builds use
 `Dororong.exe`. Exit an existing pet through its tray before launching a source
 build. Absence from the taskbar does not mean the pet has stopped.
 
+Windows motion banks `hunting.indexed` and `locomotion.indexed` are committed
+lossless derivatives. Only when their approved original banks change, regenerate
+them with `python tools/Build-IndexedMotionBanks.py` and run
+`IndexedMotionBankTests` (all 933 blocks must match). Normal builds need no Python.
+Mac still uses the original banks. Do not edit frame geometry to optimize loading.
+
+The 2026-10-16 startup/lazy-loading candidate16 is locally installed and its native
+startup/installer checks passed; it is not publicly released. Results and next steps
+are in the [verification record](verification/2026-10-16-windows-startup-lazy.md).
+
 ## Portable package
 
 The explicit self-contained App test above is a publishing prerequisite.
@@ -37,6 +47,7 @@ Choose a new, unused candidate directory.
 ```powershell
 pwsh -NoProfile -File tools/Publish-Product.ps1 -OutputPath artifacts/product-shell/candidate-NEW
 pwsh -NoProfile -File tests/Dororong.ProductPackage.Tests.ps1 -PackagePath artifacts/product-shell/candidate-NEW/runtime -ArchivePath artifacts/product-shell/candidate-NEW/Doros-on-my-desktop-Portable-0.1.3-win-x64.zip
+pwsh -NoProfile -File tests/Dororong.LoginStartupPackage.Tests.ps1 -ExecutablePath artifacts/product-shell/candidate-NEW/runtime/Dororong.exe -EvidencePath artifacts/product-shell/candidate-NEW/login-native.json
 ```
 
 The complete runtime folder is required; distributing only the EXE will not work.
@@ -52,8 +63,16 @@ Embedded character resources and all license notices remain included.
 ## Installer and verification
 
 The historical public 0.1.2 candidate is `candidate-20260921-v012-01`.
-The installed local0.1.3 candidate is `candidate-20261014-sleep-option-14`;
-see its [option verification and handoff record](verification/2026-10-14-sleep-option.md).
+The installed local0.1.3 candidate is `candidate-20261016-startup-lazy-16`;
+its Setup lives under `artifacts/installer/candidate-20261016-startup-lazy-16/`.
+See its [startup and installed-update record](verification/2026-10-16-windows-startup-lazy.md).
+The previous candidate15 and its
+[fix/acceptance record](verification/2026-10-15-window-mode-fall-diagnosis.md) remain preserved.
+Candidate15's public Setup/README/checksums are in `artifacts/delivery/0.1.3-20261015-discord-overlay/`.
+The public v0.1.3 download now uses candidate15. Candidate14 is archived in the
+release; the main README's versioned download URL avoids stale redirects.
+The earlier `candidate-20261014-sleep-option-14` and its
+[option verification and handoff record](verification/2026-10-14-sleep-option.md) are preserved.
 The accepted candidate13 checkpoint and its
 [host verification record](verification/2026-10-14-figma-tray-support.md) are preserved.
 The prior head-icon/tray candidate12 and its

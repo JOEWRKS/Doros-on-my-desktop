@@ -16,6 +16,10 @@ internal sealed class CheekPullCapture
     internal Matrix SourceToWindow { get; }
     internal FacingDirection Facing { get; }
     internal PointD OutwardUnit => _outwardUnit;
+    internal HighResolutionCheekCapture? HighResolution { get; }
+
+    internal CheekPullCapture(HighResolutionCheekCapture capture,Matrix sourceToWindow,FacingDirection facing)
+        : this(new byte[96*96*4],sourceToWindow,facing) => HighResolution=capture;
 
     internal CheekPullCapture(byte[] pixels, Matrix sourceToWindow, FacingDirection facing,
         Func<double,double,double,byte[]>? render=null,PointD? headAxis=null,
@@ -46,10 +50,13 @@ internal sealed class CheekPullCapture
         return new(_pixels, reflected, reflected.M11 < 0 ? FacingDirection.Left : FacingDirection.Right,_render,_headAxis,_renderReadiness);
     }
     internal byte[] Render(double pullDips, double eyePull = 20, double hairPull = 20)
-        => _render?.Invoke(pullDips,eyePull,hairPull) ?? OutlineCheekRenderer.Render(_pixels, pullDips, eyePull, hairPull);
+        => HighResolution is not null ? throw new InvalidOperationException("High-resolution captures require original-source rendering.") :
+            _render?.Invoke(pullDips,eyePull,hairPull) ?? OutlineCheekRenderer.Render(_pixels, pullDips, eyePull, hairPull);
     internal BitmapSource? RenderReadiness(double pull,double eye,double hair,double phase)
         => _renderReadiness?.Invoke(pull,eye,hair,phase);
 }
+
+internal sealed record HighResolutionCheekCapture(HighResolutionFacePose Face,Matrix World,double Progress);
 
 internal sealed record CheekPullSnapshot(CheekPullCapture Capture, double PullDips)
 {

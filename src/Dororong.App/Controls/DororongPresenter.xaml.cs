@@ -152,29 +152,46 @@ public partial class DororongPresenter : UserControl
 
     internal (FootContact Contact, RectD Bounds)? MeasurePlatformGeometry()
     {
-        var image = _extremeLanding.VisibleImage ?? _bodyPullPresentation?.VisibleImage ?? _cheekPullPresentation?.VisibleImage ?? DororongImage;
+        var image = HighResolutionImage ?? _extremeLanding.VisibleImage ?? _bodyPullPresentation?.VisibleImage ?? _cheekPullPresentation?.VisibleImage ?? DororongImage;
         if (image.Visibility != Visibility.Visible || image.Source is not BitmapSource source ||
             image.ActualWidth <= 0 || image.ActualHeight <= 0) return null;
-        var scale = Math.Min(image.ActualWidth / source.PixelWidth, image.ActualHeight / source.PixelHeight);
+        return MeasureImageGeometry(image,source);
+    }
+    private (FootContact Contact, RectD Bounds)? MeasureImageGeometry(Image image,BitmapSource source)
+        => MeasureImageGeometry(image,source.PixelWidth,source.PixelHeight,t=>
+            ReferenceEquals(image,HighResolutionImage)&&ReferenceEquals(source,image.Source)&&_hrDisplayedPixels is {} pixels
+                ? _platformContact.MeasureRetainedPixels(pixels,source.PixelWidth,source.PixelHeight,t)
+                : _platformContact.Measure(source,t));
+
+    private (FootContact Contact, RectD Bounds)? MeasureImageGeometry(Image image,int width,int height,Func<GeneralTransform,FootContact> measure)
+    {
+        var scale = Math.Min(image.ActualWidth / width, image.ActualHeight / height);
         var transform = new GeneralTransformGroup();
         transform.Children.Add(new ScaleTransform(scale, scale));
-        transform.Children.Add(new TranslateTransform((image.ActualWidth - source.PixelWidth * scale) / 2,
-            (image.ActualHeight - source.PixelHeight * scale) / 2));
+        transform.Children.Add(new TranslateTransform((image.ActualWidth - width * scale) / 2,
+            (image.ActualHeight - height * scale) / 2));
         transform.Children.Add(ReferenceEquals(image, _cheekPullPresentation?.VisibleImage)
             ? _cheekPullPresentation!.PhysicsTransform(this)
             : image.TransformToAncestor(this));
-        var contact = _platformContact.Measure(source, transform);
+        if(ReferenceEquals(image,HighResolutionImage)&&_hrRecoil!=default)
+            transform.Children.Add(new TranslateTransform(-_hrRecoil.X,-_hrRecoil.Y));
+        var contact = measure(transform);
         return double.IsFinite(contact.SoleY) ? (contact, _platformContact.VisibleBounds) : null;
     }
 
-    internal PerchContact? MeasureEdgePerchContact(FacingDirection facing) => _edgePerch.Measure(facing, this);
+    internal PerchContact? MeasureEdgePerchContact(FacingDirection facing) => HighResolutionGrabEnabled
+        ? new PerchContact((facing==FacingDirection.Left?70:44)*HighResolutionScale,(facing==FacingDirection.Left?100:74)*HighResolutionScale,94*HighResolutionScale,43*HighResolutionScale)
+        : _edgePerch.Measure(facing, this);
     internal AlphaHitTestImage EdgePerchImage => _edgePerch.Image;
 
-    internal void ApplyEdgePerch(EdgePerchPhase phase, FacingDirection facing, TimeSpan delta, bool immediateRestore) =>
-        _edgePerch.Apply(phase, facing, delta, immediateRestore);
+    internal void ApplyEdgePerch(EdgePerchPhase phase, FacingDirection facing, TimeSpan delta, bool immediateRestore) {
+        if(HighResolutionGrabEnabled)ApplyHighResolutionPerch(phase,facing,delta,immediateRestore);
+        else _edgePerch.Apply(phase, facing, delta, immediateRestore);
+    }
 
     internal AlphaHitTestImage ResolvePrimaryPressedImage(object? eventSource)
     {
+        if (HighResolutionImage is { } highResolution) return highResolution;
         var perch = _edgePerch.VisibleImage;
         var extreme = _extremeLanding.VisibleImage;
         return eventSource is AlphaHitTestImage eventImage &&
@@ -183,8 +200,11 @@ public partial class DororongPresenter : UserControl
                 : perch ?? extreme ?? DororongImage;
     }
 
+    internal PlatformPose? LastRequestedPlatformPose { get; private set; }
     internal void ApplyPlatformPose(PlatformPose? pose, double? targetSoleY = null)
     {
+        LastRequestedPlatformPose = pose;
+        if (ApplyHighResolutionPlatform(pose, targetSoleY)) return;
         _platformContact.Restore();
         _extremeLanding.RestoreFrame();
         if (!_directOwnsPresentation && pose is { IsExtremeLanding: true } extreme && targetSoleY is not null)
@@ -274,6 +294,7 @@ public partial class DororongPresenter : UserControl
 
     internal void Render(PetSnapshot snapshot, DirectInteractionSnapshot directInteraction, TimeSpan elapsed)
     {
+        if (RenderHighResolutionGrab(snapshot, directInteraction, elapsed)) return;
         _perchReadiness.Restore();
         RenderPose(snapshot, directInteraction, elapsed);
         var image = _bodyPullPresentation?.VisibleImage ?? _cheekPullPresentation?.VisibleImage ?? DororongImage;
@@ -1055,6 +1076,7 @@ public partial class DororongPresenter : UserControl
 
     internal DirectInteractionPressEventArgs? CreateDirectPress(AlphaHitTestImage pressedImage, Point imagePosition)
     {
+        if (ReferenceEquals(pressedImage, HighResolutionImage)) return CreateHighResolutionPress(imagePosition);
         var perch = _edgePerch.VisibleImage;
         var extreme = _extremeLanding.VisibleImage;
         if (!pressedImage.TryGetOpaqueSourcePoint(imagePosition, out var sourcePosition))
@@ -1088,6 +1110,18 @@ public partial class DororongPresenter : UserControl
 
         var windowPosition = pressedImage.TranslatePoint(imagePosition,this);
         var facing=perchHit ? _edgePerch.Facing : _activeFacing;
+        if(HighResolutionGrabEnabled&&target==DirectInteractionTarget.Body){
+            // Alpha classification uses integer pixels, but the anchor must
+            // retain the continuous point within that pixel.
+            var bitmap=(BitmapSource)pressedImage.Source;
+            var imageScale=Math.Min(pressedImage.ActualWidth/bitmap.PixelWidth,pressedImage.ActualHeight/bitmap.PixelHeight);
+            var precise=new PointD((imagePosition.X-(pressedImage.ActualWidth-bitmap.PixelWidth*imageScale)/2)/imageScale,
+                (imagePosition.Y-(pressedImage.ActualHeight-bitmap.PixelHeight*imageScale)/2)/imageScale);
+            var canonical=perchHit?new PointD(precise.X-8,precise.Y+6):
+                splat?new PointD(precise.X-32,precise.Y-32):HuntHeadPoint(precise);
+            _hrGrab=canonical;_hrPin=new(windowPosition.X,windowPosition.Y);_hrFacing=facing;_hrFacingCaptured=true;
+            _hrEntryProgress=0;_hrCaptureForward=GrabTransform(0,1,HighResolutionScale);_hrCapturePending=true;_hrBlendCapture=false;
+        }
         CheekPullCapture? cheekCapture = null;
         if (target == DirectInteractionTarget.RightCheek && !TryCreateCheekPullCapture(sourcePosition, out cheekCapture)) return null;
         return new DirectInteractionPressEventArgs(

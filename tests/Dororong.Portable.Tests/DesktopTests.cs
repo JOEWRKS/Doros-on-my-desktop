@@ -38,12 +38,13 @@ public sealed class DesktopTests
     private sealed class FixedRandom:IRandomSource{public double NextUnit()=>.99;}
     private static DesktopPetController Pet(PointD p)=>new(p,new FixedRandom());
     [Fact]
-    public void MetadataExcludesOwnWindowsAndTransientMenusNeverRemoveDock()
+    public void MetadataExcludesOwnWindowsAndDockNeverProvidesSupport()
     {
         var mapper=new MacSceneMapper();var scene=mapper.Build(TimeSpan.Zero,monitors,
             [new(9,99,new(0,0,1000,800),0,1,true,false),new(3,77,new(100,600,700,200),101,1,true,false),Dock()],99,20,101);
         Assert.DoesNotContain(scene.Windows,w=>w.Key.ProcessId==99);
-        Assert.Single(PlatformGeometry.Build(scene,70).Where(s=>s.Kind==PlatformKind.Taskbar));
+        Assert.DoesNotContain(PlatformGeometry.Build(scene,70),s=>s.Kind==PlatformKind.Taskbar);
+        Assert.Equal(800,Assert.Single(PlatformGeometry.Build(scene,70).Where(s=>s.Kind==PlatformKind.Floor)).Top);
         Assert.DoesNotContain(PlatformGeometry.Build(scene,70),s=>s.Key.Handle==3);
     }
     [Theory]
@@ -104,18 +105,45 @@ public sealed class DesktopTests
         scene=mapper.Build(step*2,monitors,[],99,20,101);
         pet.Advance(step,pointer,false,Read(scene));Assert.Equal(EdgePerchPhase.None,pet.Perch);Assert.Equal(PlatformPhase.Falling,pet.Platform.Phase);
     }
-    [Fact]
-    public void DockMenuRetainsPerchButAutoHideReleasesIt()
+    [Theory]
+    [InlineData(0)] // ordinary foreground app still occludes ordinary ledges
+    [InlineData(25)] // elevated overlay/status panel
+    [InlineData(101)] // popup menu
+    public void ScreenFloorSurvivesOverlayRestoreAndDockChanges(int layer)
     {
-        var mapper=new MacSceneMapper();var scene=mapper.Build(TimeSpan.Zero,monitors,[Dock()],99,20,101);
+        var mapper=new MacSceneMapper();
+        var sole=DesktopFrames.Measure(DesktopFrames.Place(MotionRenderer.Standing(),false)).Contact.SoleY;
+        var pet=Pet(new(250,800-sole));var initialY=pet.Position.Y;
+        for(var i=0;i<120;i++)
+        {
+            MacWindowRow[] rows=(i/20) switch
+            {
+                0=>[Dock()],
+                1=>[new(3,77,new(0,0,1000,800),layer,1,true,false),Dock()],
+                2=>[new(3,77,new(100,600,700,200),layer,1,true,false),Dock()],
+                3=>[Dock() with{Bounds=new(150,798,500,2)}],
+                4=>[Dock() with{Bounds=new(0,100,60,600)}],
+                _=>[]
+            };
+            var scene=mapper.Build(step*i,monitors,rows,99,20,101);
+            pet.Advance(step,PointerSample.Unavailable,false,Read(scene));
+            Assert.Equal(initialY,pet.Position.Y,7);
+            Assert.Equal(EdgePerchPhase.None,pet.Perch);
+            Assert.DoesNotContain(PlatformGeometry.Build(scene,70),s=>s.Kind==PlatformKind.Taskbar);
+        }
+    }
+    [Fact]
+    public void DockCannotOfferHangingCueButStillOccludesOrdinaryWindow()
+    {
+        var scene=new MacSceneMapper().Build(TimeSpan.Zero,monitors,
+            [Dock(),Window(bounds:new(100,720,600,60))],99,20,101);
+        Assert.False(scene.Windows[0].CanSupport);Assert.True(scene.Windows[0].CanOcclude);
+        var pieces=PlatformGeometry.Build(scene,0).Where(s=>s.Key.Handle==1).ToArray();
+        Assert.Equal(2,pieces.Length);Assert.Equal(150,pieces[0].Right);Assert.Equal(650,pieces[1].Left);
         var pet=Pet(new(250,616));var pointer=new PointerSample(true,pet.Position+new PointD(72,40));pet.BeginDrag(pointer.Position);
-        pet.Advance(step,pointer,true,Read(scene));Assert.True(pet.Ready);pet.Advance(step,pointer,false,Read(scene));
-        for(var i=0;i<12;i++)pet.Advance(step,pointer,false,Read(scene));
-        var before=pet.Position;
-        scene=mapper.Build(step,monitors,[new(3,77,new(100,600,700,200),101,1,true,false),Dock()],99,20,101);
-        pet.Advance(step,pointer,false,Read(scene));Assert.Equal(EdgePerchPhase.Attached,pet.Perch);Assert.Equal(before,pet.Position);
-        scene=mapper.Build(step*2,monitors,[Dock() with{Bounds=new(150,798,500,2)}],99,20,101);
-        pet.Advance(step,pointer,false,Read(scene));Assert.Equal(EdgePerchPhase.None,pet.Perch);
+        var dockOnly=new MacSceneMapper().Build(TimeSpan.Zero,monitors,[Dock()],99,20,101);
+        pet.Advance(step,pointer,true,Read(dockOnly));Assert.False(pet.Ready);
+        pet.Advance(step,pointer,false,Read(dockOnly));Assert.Equal(EdgePerchPhase.None,pet.Perch);
     }
     [Fact]
     public void SceneFailureCannotAcquireDespiteLastFrameReadiness()

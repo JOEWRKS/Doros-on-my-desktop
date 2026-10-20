@@ -69,7 +69,61 @@ public sealed class PetWindowViewportTests
                 Assert.Equal(p.X+60,window.Left+local.X);Assert.Equal(p.Y+50,window.Top+local.Y);
             }
             Assert.Null(root.InputHitTest(new Point(10,10)));
+            presenter.SetArtSize(125); Set(new(300,200));
+            Assert.Equal(new SizeD(180,180),viewport.GetPetSize());
+            Assert.Equal(408,window.Width);Assert.Equal(408,window.Height);
+            Assert.Equal(372,root.Width);Assert.Equal(372,root.Height);
+            root.Measure(new Size(window.Width,window.Height));root.Arrange(new Rect(0,0,window.Width,window.Height));root.UpdateLayout();
+            var resized=presenter.TranslatePoint(new Point(60,50),root);
+            Assert.Equal(360,window.Left+resized.X);Assert.Equal(250,window.Top+resized.Y);
         }
         finally {window.Close();}
+    });
+
+    [Fact]
+    public void High_resolution_resize_keeps_native_capacity_but_original_logical_viewport() => CheekProductTests.Sta(() =>
+    {
+        var presenter=new DororongPresenter();presenter.SetArtSize(150);
+        var root=new Grid();root.Children.Add(presenter);
+        var window=new Window {Content=root};
+        try {
+            var viewport=new PetWindowViewport(window,presenter);
+            foreach(var percent in new[]{150,100,101,125,149,150,100}) {
+                presenter.SetArtSize(percent);viewport.SetPosition(new(-250,200));
+                root.Measure(new Size(408,408));root.Arrange(new Rect(0,0,408,408));root.UpdateLayout();
+                Assert.Equal(408,window.Width);Assert.Equal(408,window.Height);
+                Assert.Equal(144*percent/100d+192,root.ActualWidth,6);
+                Assert.Equal(root.ActualWidth,root.ActualHeight);
+                var at=presenter.TranslatePoint(new Point(60,50),root);
+                Assert.Equal(-190,window.Left+at.X,6);Assert.Equal(250,window.Top+at.Y,6);
+                Assert.Null(root.InputHitTest(new Point(10,10)));
+                Assert.Null(root.InputHitTest(new Point(root.ActualWidth+1,root.ActualHeight+1)));
+            }
+        } finally {window.Close();}
+    });
+
+    [Fact]
+    public void Fixed_backing_preserves_native_pixel_rounding_at_every_slider_value() => CheekProductTests.Sta(() =>
+    {
+        var p=new DororongPresenter();p.SetArtSize(150);
+        var root=new Grid();root.Children.Add(p);
+        var oldP=new DororongPresenter {HorizontalAlignment=HorizontalAlignment.Center,VerticalAlignment=VerticalAlignment.Center};
+        var oldRoot=new Grid();oldRoot.Children.Add(oldP);
+        Window Host(Grid content)=>new(){Content=content,WindowStyle=WindowStyle.None,AllowsTransparency=true,
+            Opacity=0,ShowActivated=false,ShowInTaskbar=false};
+        var window=Host(root);var old=Host(oldRoot);
+        try {
+            var viewport=new PetWindowViewport(window,p);window.Show();old.Show();
+            for(var size=100;size<=150;size++) {
+                p.SetArtSize(size);oldP.SetArtSize(size);
+                old.Width=old.Height=oldP.Width+192;old.Left=204;old.Top=104;old.UpdateLayout();
+                viewport.SetPosition(new(300,200));window.UpdateLayout();
+                Assert.Equal(oldRoot.ActualWidth,root.ActualWidth,6);
+                Assert.Equal(oldRoot.ActualHeight,root.ActualHeight,6);
+                var before=oldP.TranslatePoint(new Point(0,0),old);
+                var after=p.TranslatePoint(new Point(0,0),window);
+                Assert.Equal(before.X,after.X,6);Assert.Equal(before.Y,after.Y,6);
+            }
+        } finally {window.Close();old.Close();}
     });
 }

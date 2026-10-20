@@ -28,6 +28,7 @@ public partial class DororongPresenter
 
     internal PointD GetSnackMouth()
     {
+        if(HighResolutionImage is not null){var actual=HighResolutionFaceToPresenter(new Point(29,60));return new(actual.X,actual.Y);}
         var p = _snackHead.Transform(new Point(29,60));
         p = DororongImage.TransformToAncestor(this).Transform(p);
         return new(p.X,p.Y);
@@ -66,12 +67,7 @@ public partial class DororongPresenter
 internal sealed class SnackRenderer
 {
     private readonly HuntRenderer hunt = new();
-    private static readonly BitmapSource Jewel = LoadJewel();
-    private static BitmapSource LoadJewel()
-    {
-        var source=new BitmapImage(new Uri("pack://application:,,,/Dororong.App;component/Assets/snack-jewel.png"));
-        source.Freeze();return source;
-    }
+    private static BitmapSource Jewel => SnackImage.Source;
     private readonly Dictionary<(int,int),BitmapSource> runs = new();
     private readonly Dictionary<int,BitmapSource> jumps = new();
     internal Matrix HeadTransform { get; private set; } = Matrix.Identity;

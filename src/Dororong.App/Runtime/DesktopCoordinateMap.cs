@@ -26,13 +26,15 @@ internal readonly record struct DesktopCoordinateMap(PointD PhysicalOrigin, Poin
         var y=presenter.PointToScreen(new Point(0,1));
         return FromScreenSamples(new(origin.X,origin.Y),new(x.X,x.Y),new(y.X,y.Y),viewportLogicalOrigin);
     }
-    internal DesktopScene ToLogicalScene(DesktopScene scene)
+    internal DesktopScene ToLogicalScene(DesktopScene scene,DesktopScene? previousPhysical=null,DesktopScene? previousLogical=null)
     {
         var map=this;
         return scene with
         {
-            Monitors=Array.AsReadOnly(scene.Monitors.Select(m=>m with {Bounds=map.ToLogicalRectangle(m.Bounds)}).ToArray()),
-            Windows=Array.AsReadOnly(scene.Windows.Select(w=>w with {Bounds=map.ToLogicalRectangle(w.Bounds)}).ToArray())
+            Monitors=previousLogical is not null&&ReferenceEquals(scene.Monitors,previousPhysical?.Monitors)?previousLogical.Monitors:
+                Array.AsReadOnly(scene.Monitors.Select(m=>m with {Bounds=map.ToLogicalRectangle(m.Bounds)}).ToArray()),
+            Windows=previousLogical is not null&&ReferenceEquals(scene.Windows,previousPhysical?.Windows)?previousLogical.Windows:
+                Array.AsReadOnly(scene.Windows.Select(w=>w with {Bounds=map.ToLogicalRectangle(w.Bounds)}).ToArray())
         };
     }
     internal FootContact ToLogicalContact(FootContact contact)

@@ -32,6 +32,11 @@ var
   RootOwned: Boolean;
 begin
   Result := False;
+  Check(OwnedStartupCommand('"C:\Pet\Dororong.exe"', 'C:\Pet\Dororong.exe'), 'legacy startup owned');
+  Check(OwnedStartupCommand('"C:\Pet\Dororong.exe" --login-startup', 'C:\Pet\Dororong.exe'), 'delayed startup owned');
+  Check(not OwnedStartupCommand('"C:\Other\Dororong.exe" --login-startup', 'C:\Pet\Dororong.exe'), 'foreign startup preserved');
+  Check(not OwnedStartupCommand('"C:\Pet\Dororong.exe" --other', 'C:\Pet\Dororong.exe'), 'unknown startup arguments preserved');
+  Check(not OwnedStartupCommand('', 'C:\Pet\Dororong.exe'), 'absent startup not owned');
   Check(VersionAllowed('0.1.10', '0.1.2'), 'numeric higher');
   Check(VersionAllowed('0.1.0', '0.1.0.0'), 'equal padding');
   Check(not VersionAllowed('0.1.2', '0.1.10'), 'downgrade');

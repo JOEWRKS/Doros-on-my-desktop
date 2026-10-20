@@ -32,6 +32,8 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
     private readonly Func<uint, string> readProcessImagePath;
     // Discovery hints only: never retain bounds, visibility or a previous z-order.
     private Dictionary<long,uint> knownTaskbars = new();
+    private readonly HashSet<nint> captureHandles=new(), orderedVisited=new();
+    private Dictionary<long,NativeWindow> previousWindows=new(), windowScratch=new();
     // Keep the original constructor first for the existing reflection-based metadata probe.
     public DesktopMetadataReader(nint petHandle) : this(petHandle, ReadProcessImagePath) { }
     internal DesktopMetadataReader(nint petHandle, Func<uint, string> readProcessImagePath)
@@ -70,7 +72,7 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
         try
         {
             var monitors = ReadMonitors();
-            var handles = new HashSet<nint>();
+            var handles = captureHandles;handles.Clear();
             if (!Api.EnumWindows((handle,_) => { handles.Add(handle); return handles.Count < 4096; },0))
                 throw Failure("WindowEnumeration");
             // Explicit bounded z-order traversal; EnumWindows alone is not used as an ordering contract.
@@ -122,7 +124,9 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
     internal List<NativeWindow> ReadOrderedWindows(HashSet<nint> handles, IEnumerable<nint> orderedHandles,
         IReadOnlyCollection<nint>? discoveredTaskbars = null)
     {
-        var windows = new List<NativeWindow>(); var visited = new HashSet<nint>();
+        // EnumWindows already supplied a bounded count. Allocate its snapshot
+        // once instead of growing/copying the backing array at every size tier.
+        var windows = new List<NativeWindow>(Math.Min(handles.Count,4096)); var visited = orderedVisited;visited.Clear();
         foreach (var handle in orderedHandles)
         {
             if (!visited.Add(handle) || visited.Count > 4096) throw Failure("ZOrderTraversal");
@@ -143,7 +147,9 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
         var inactiveTaskbars=new List<NativeWindow>();
         foreach (var (value,pid) in candidates)
         {
-            if (windows.Any(w=>w.Handle==value)) continue;
+            var alreadyCaptured=false;
+            foreach(var captured in windows)if(captured.Handle==value){alreadyCaptured=true;break;}
+            if (alreadyCaptured) continue;
             var handle=(nint)value;
             var taskbar=ReadWindow(handle);
             if (taskbar is null || !taskbar.Taskbar || taskbar.ProcessId!=pid) continue;
@@ -161,6 +167,11 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
         var nextTaskbars=windows.Where(w=>w.Taskbar).ToDictionary(w=>w.Handle,w=>w.ProcessId);
         if (nextTaskbars.Count>128) throw Failure("TaskbarLimit");
         knownTaskbars=nextTaskbars;
+        // Retain only the last successful enumeration, never departed HWNDs.
+        // All native fields are still queried on every pass before reuse.
+        windowScratch.Clear();foreach(var window in windows)windowScratch[window.Handle]=window;
+        (previousWindows,windowScratch)=(windowScratch,previousWindows);
+        windowScratch.Clear();
         return windows;
     }
 
@@ -194,7 +205,7 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
 
     private static bool IsTaskbarHandle(nint handle)
     {
-        var name=new StringBuilder(256);
+        var name=GetClassNameBuffer();
         return Api.GetClassName(handle,name,name.Capacity)>0 &&
             name.ToString() is "Shell_TrayWnd" or "Shell_SecondaryTrayWnd";
     }
@@ -204,15 +215,17 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
         if (!Api.IsWindow(handle)) return null;
         var thread=Api.GetWindowThreadProcessId(handle,out var pid);
         if (thread==0 || pid==0) return DestroyedOrThrow(handle,"OwnerPid");
-        var name=new StringBuilder(256);
+        var name=GetClassNameBuffer();
         if (Api.GetClassName(handle,name,name.Capacity)==0) return DestroyedOrThrow(handle,"Class");
-        var className=name.ToString();
+        previousWindows.TryGetValue(handle.ToInt64(),out var old);
+        var className=old is not null&&name.Equals(old.ClassName.AsSpan())?old.ClassName:name.ToString();
         var excluded=handle==petHandle || className is "Progman" or "WorkerW" or "Shell_DesktopWnd";
         var visible=Api.IsWindowVisible(handle); var minimized=Api.IsIconic(handle);
         var processFileName=!excluded && visible && !minimized ? ReadProcessFileName(pid) : null;
         excluded |= string.Equals(processFileName,"Dororong.App.exe",StringComparison.OrdinalIgnoreCase) ||
             string.Equals(processFileName,"Dororong.exe",StringComparison.OrdinalIgnoreCase);
-        var gamingOverlay=IsNvidiaGamingOverlay(handle,className,processFileName);
+        var gamingOverlay=IsNvidiaGamingOverlay(handle,className,processFileName) ||
+            IsDiscordGamingOverlay(handle,className,processFileName);
         var transientMenu = className == "#32768" ||
             (!excluded && visible && !minimized && className == "Chrome_WidgetWin_1" && IsChromiumMenuStyle(className,
                 NativeMethods.GetWindowLongPtr(handle,-16).ToInt64(),
@@ -240,8 +253,13 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
         if (!Api.IsWindow(handle)) return null;
         if (Api.GetWindowThreadProcessId(handle,out var finalPid)==0 || finalPid!=pid)
             throw Failure("OwnerChanged");
-        return new(handle.ToInt64(),pid,bounds,visible,minimized,cloaked,excluded,
-            !gamingOverlay && !transientMenu && className != "tooltips_class32",taskbar,taskbar && bounds.Width>bounds.Height,className)
+        var support=!gamingOverlay&&!transientMenu&&className!="tooltips_class32";
+        var horizontal=taskbar&&bounds.Width>bounds.Height;
+        if(old is not null&&old.ProcessId==pid&&old.Bounds==bounds&&old.Visible==visible&&old.Minimized==minimized&&
+            old.Cloaked==cloaked&&old.Excluded==excluded&&old.CanSupport==support&&old.Taskbar==taskbar&&
+            old.HorizontalTaskbar==horizontal&&old.ClassName==className&&old.CanOcclude==!gamingOverlay&&old.IsTransientMenu==transientMenu)
+            return old;
+        return new(handle.ToInt64(),pid,bounds,visible,minimized,cloaked,excluded,support,taskbar,horizontal,className)
             { CanOcclude=!gamingOverlay, IsTransientMenu=transientMenu };
     }
 
@@ -276,6 +294,37 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
             return false;
         }
     }
+    private static bool IsDiscordGamingOverlay(nint handle,string className,string? processFileName)
+    {
+        if (className != "Chrome_WidgetWin_1" ||
+            !string.Equals(processFileName,"Discord.exe",StringComparison.OrdinalIgnoreCase)) return false;
+        try
+        {
+            return IsDiscordOverlayStyle(className,processFileName,
+                NativeMethods.GetWindowLongPtr(handle,-16).ToInt64(),
+                NativeMethods.GetWindowLongPtr(handle,NativeMethods.GwlExStyle).ToInt64());
+        }
+        catch (Win32Exception)
+        {
+            // Unconfirmed metadata keeps normal physical-window behavior.
+            return false;
+        }
+    }
+
+    internal static bool IsDiscordOverlayStyle(string className,string? processFileName,long style,long extendedStyle)
+    {
+        // Captured game HUD: Chrome_WidgetWin_1, Discord.exe, 0x14030000/0x800A8.
+        // Never ignore Discord's normal window or an interactive/opaque panel.
+        const long layeredClickThroughTopmostTool=0x00080000L|0x00000020L|0x00000008L|0x00000080L;
+        const long childPopupOrFrame=0x40000000L|0x80000000L|0x00C00000L|0x00040000L;
+        const long appWindow=0x00040000L;
+        return className == "Chrome_WidgetWin_1" &&
+            string.Equals(processFileName,"Discord.exe",StringComparison.OrdinalIgnoreCase) &&
+            (style & childPopupOrFrame)==0 &&
+            (extendedStyle & layeredClickThroughTopmostTool)==layeredClickThroughTopmostTool &&
+            (extendedStyle & appWindow)==0;
+    }
+
     private string? ReadProcessFileName(uint pid)
     {
         try
@@ -293,13 +342,23 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
             throw new DesktopMetadataException("ProcessIdentity",error.NativeErrorCode);
         }
     }
+    // Scene capture revisits visible HWNDs every80ms. Keep only the native
+    // output buffer per worker, never the returned identity: PID reuse and
+    // changed process metadata must still be observed on every capture.
+    [ThreadStatic] private static StringBuilder? processPathBuffer;
+    [ThreadStatic] private static StringBuilder? classNameBuffer;
+    internal static StringBuilder GetClassNameBuffer(){
+        var buffer=classNameBuffer??=new StringBuilder(256);
+        buffer.Clear();return buffer;
+    }
     private static string ReadProcessImagePath(uint pid)
     {
         var process=Api.OpenProcess(0x1000,false,pid);
         if (process==0) throw new Win32Exception(Marshal.GetLastWin32Error());
         try
         {
-            var path=new StringBuilder(32768); uint size=(uint)path.Capacity;
+            var path=processPathBuffer??=new StringBuilder(32768);
+            path.Clear();uint size=(uint)path.Capacity;
             if (!Api.QueryFullProcessImageName(process,0,path,ref size)) throw new Win32Exception(Marshal.GetLastWin32Error());
             return path.ToString();
         }
@@ -354,15 +413,20 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
 internal sealed class DesktopSceneNative(IDesktopMetadataReader reader) : IDesktopSceneNative
 {
     private Dictionary<long, (uint Pid, long Generation, TimeSpan? VisibleSince)> identities = new();
+    private Dictionary<long, (uint Pid, long Generation, TimeSpan? VisibleSince)> identityScratch = new();
     private long generation;
     private long revision;
+    private IReadOnlyList<DesktopWindow> previousWindows=Array.Empty<DesktopWindow>();
     internal DesktopSceneNative(nint petHandle) : this(new DesktopMetadataReader(petHandle)) { }
     public DesktopScene? Capture(TimeSpan now)
     {
         var metadata = reader.Read();
         if (metadata is null) return null;
-        var next = new Dictionary<long, (uint Pid, long Generation, TimeSpan? VisibleSince)>();
-        var windows = new List<DesktopWindow>();
+        // This metadata source has one capture in flight. Neither dictionary
+        // is published to readers; swap only after successful enumeration so
+        // failures/absence/HWND reuse preserve the existing identity policy.
+        var next = identityScratch;next.Clear();
+        var windows = new List<DesktopWindow>(metadata.Windows.Count);
         foreach (var window in metadata.Windows)
         {
             if (window.Handle == 0) continue;
@@ -378,8 +442,7 @@ internal sealed class DesktopSceneNative(IDesktopMetadataReader reader) : IDeskt
             var support = window.CanSupport && !hoverOverlay;
             if (window.Taskbar)
             {
-                var clips = metadata.Monitors.Select(m => Intersect(bounds,m.Bounds)).Where(r => r.Width > 0 && r.Height > 0);
-                bounds = clips.OrderByDescending(r => r.Width*r.Height).FirstOrDefault();
+                bounds = TaskbarBounds(bounds,metadata.Monitors);
                 var thickness = window.HorizontalTaskbar ? bounds.Height : bounds.Width;
                 if (!window.Visible || window.Minimized || window.Cloaked || thickness <= 2)
                     identity.VisibleSince = null;
@@ -388,12 +451,28 @@ internal sealed class DesktopSceneNative(IDesktopMetadataReader reader) : IDeskt
                 support &= window.HorizontalTaskbar && identity.VisibleSince is { } since && now-since >= TimeSpan.FromMilliseconds(80);
             }
             next[window.Handle] = identity;
-            windows.Add(new(new(window.Handle,window.ProcessId,identity.Generation),bounds,windows.Count,
-                window.Visible,window.Minimized,window.Cloaked,window.Excluded,support,window.CanOcclude && !hoverOverlay,window.Taskbar,window.HorizontalTaskbar)
-                { IsTransientMenu=window.IsTransientMenu || window.ClassName=="#32768" });
+            var key=new SurfaceKey(window.Handle,window.ProcessId,identity.Generation);
+            var occlude=window.CanOcclude&&!hoverOverlay;
+            var menu=window.IsTransientMenu||window.ClassName=="#32768";
+            var old=windows.Count<previousWindows.Count?previousWindows[windows.Count]:null;
+            if(old is not null&&old.Key==key&&old.Bounds==bounds&&old.ZOrder==windows.Count&&old.Visible==window.Visible&&
+                old.Minimized==window.Minimized&&old.Cloaked==window.Cloaked&&old.Excluded==window.Excluded&&
+                old.CanSupport==support&&old.CanOcclude==occlude&&old.Taskbar==window.Taskbar&&
+                old.HorizontalTaskbar==window.HorizontalTaskbar&&old.IsTransientMenu==menu)windows.Add(old);
+            else windows.Add(new(key,bounds,windows.Count,window.Visible,window.Minimized,window.Cloaked,window.Excluded,
+                support,occlude,window.Taskbar,window.HorizontalTaskbar){IsTransientMenu=menu});
         }
-        identities = next; // Only successful absence retires an observed identity.
+        identityScratch=identities;identities=next; // Only successful absence retires an observed identity.
+        previousWindows=windows;
         return new(++revision,now,Array.AsReadOnly(metadata.Monitors.ToArray()),windows.AsReadOnly());
+    }
+    private static RectD TaskbarBounds(RectD bounds,IReadOnlyList<DesktopMonitor> monitors){
+        // Keep captured LINQ locals out of the per-window loop (ordinary
+        // windows also allocated its closure). Preserve first-largest ties.
+        var best=default(RectD);var area=0d;
+        foreach(var monitor in monitors){var clip=Intersect(bounds,monitor.Bounds);
+            if(clip.Width>0&&clip.Height>0&&clip.Width*clip.Height>area){best=clip;area=clip.Width*clip.Height;}}
+        return best;
     }
     private static RectD Intersect(RectD a, RectD b) => new(Math.Max(a.X,b.X),Math.Max(a.Y,b.Y),
         Math.Max(0,Math.Min(a.Right,b.Right)-Math.Max(a.X,b.X)),Math.Max(0,Math.Min(a.Bottom,b.Bottom)-Math.Max(a.Y,b.Y)));

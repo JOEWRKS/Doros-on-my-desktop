@@ -14,6 +14,15 @@ public sealed class AlphaHitTestImage : Image
     private int _pixelHeight;
     private int _stride;
 
+    // The live high-resolution surface is mutable. Install the corresponding
+    // alpha bytes on every update; object identity alone is not a frame id.
+    internal void SetLivePixels(BitmapSource source,byte[] pixels)
+    {
+        if(pixels.Length<source.PixelWidth*source.PixelHeight*4)throw new ArgumentException("Pixel size mismatch.",nameof(pixels));
+        Source=source;_cachedSource=source;_pixels=pixels;
+        _pixelWidth=source.PixelWidth;_pixelHeight=source.PixelHeight;_stride=_pixelWidth*4;
+    }
+
     protected override HitTestResult? HitTestCore(PointHitTestParameters hitTestParameters)
     {
         return TryGetOpaqueSourcePoint(hitTestParameters.HitPoint, out _)
@@ -91,7 +100,8 @@ public sealed class AlphaHitTestImage : Image
             return false;
         }
 
-        var converted = new FormatConvertedBitmap(
+        // Hit testing consumes alpha only; premultiplication doesn't change it.
+        var converted = bitmap.Format==PixelFormats.Pbgra32||bitmap.Format==PixelFormats.Bgra32 ? bitmap : new FormatConvertedBitmap(
             bitmap,
             PixelFormats.Bgra32,
             null,
@@ -99,7 +109,8 @@ public sealed class AlphaHitTestImage : Image
         _pixelWidth = converted.PixelWidth;
         _pixelHeight = converted.PixelHeight;
         _stride = _pixelWidth * 4;
-        _pixels = new byte[_stride * _pixelHeight];
+        var length=_stride*_pixelHeight;
+        if(_pixels?.Length!=length)_pixels = new byte[length];
         converted.CopyPixels(_pixels, _stride, 0);
         _cachedSource = Source;
         return true;

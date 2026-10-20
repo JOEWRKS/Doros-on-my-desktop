@@ -1,5 +1,3 @@
-using System.IO;
-using System.IO.Compression;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -8,32 +6,24 @@ namespace Dororong.App.Controls;
 internal sealed class HuntFrames
 {
     internal static HuntFrames Instance { get; } = new();
-    private BitmapSource[] Bodies { get; } = new BitmapSource[157];
+    private BitmapSource?[] Bodies { get; } = new BitmapSource?[157];
     private byte[][] Heads { get; } = new byte[2][];
     private byte[][] EnlargedHeads { get; } = new byte[2][];
-    internal BitmapSource Body(int index) => Bodies[index];
-    internal ReadOnlyMemory<byte> Head(int index) => Heads[index];
-    internal void CopyEnlargedHead(int index, Span<byte> destination) => EnlargedHeads[index].AsSpan().CopyTo(destination);
-
-    private HuntFrames()
+    private readonly object gate = new();
+    private readonly IndexedMotionBank bank = new("hunting", Enumerable.Repeat(256*256*4,157)
+        .Concat(new[]{96*96*4,384*384*4,96*96*4,384*384*4}).ToArray());
+    internal int DecodedCount => bank.DecodedCount;
+    internal BitmapSource Body(int index)
     {
-        using var resource = typeof(HuntFrames).Assembly.GetManifestResourceStream("Dororong.App.Assets.hunting.pbgra.gz")
-            ?? throw new InvalidDataException("Missing approved hunting layers.");
-        using var gzip = new GZipStream(resource, CompressionMode.Decompress);
-        using var reader = new BinaryReader(gzip);
-        if (new string(reader.ReadChars(4)) != "HUNT" || reader.ReadUInt32() != 1 || reader.ReadUInt32() != 256 ||
-            reader.ReadUInt32() != 256 || reader.ReadUInt32() != 157) throw new InvalidDataException("Invalid hunting bank.");
-        byte[] Read(int count)
+        lock(gate)
         {
-            var data = reader.ReadBytes(count);
-            return data.Length == count ? data : throw new InvalidDataException("Truncated hunting bank.");
+            if(Bodies[index] is {} cached)return cached;
+            var image=BitmapSource.Create(256,256,96,96,PixelFormats.Pbgra32,null,bank.Read(index),1024);
+            image.Freeze();return Bodies[index]=image;
         }
-        for (var i = 0; i < Bodies.Length; i++)
-        {
-            Bodies[i] = BitmapSource.Create(256, 256, 96, 96, PixelFormats.Pbgra32, null, Read(256 * 256 * 4), 1024);
-            Bodies[i].Freeze();
-        }
-        for (var i = 0; i < 2; i++) { Heads[i] = Read(96 * 96 * 4); EnlargedHeads[i] = Read(384 * 384 * 4); }
-        if (gzip.ReadByte() != -1) throw new InvalidDataException("Unexpected hunting payload.");
     }
+    internal ReadOnlyMemory<byte> Head(int index)
+    {lock(gate)return Heads[index]??=bank.Read(157+index*2);}
+    internal void CopyEnlargedHead(int index, Span<byte> destination)
+    {lock(gate)(EnlargedHeads[index]??=bank.Read(158+index*2)).AsSpan().CopyTo(destination);}
 }

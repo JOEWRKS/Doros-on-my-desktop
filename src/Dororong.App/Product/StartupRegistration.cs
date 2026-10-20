@@ -10,7 +10,10 @@ internal sealed class StartupRegistration
     private readonly Func<string?> read;
     private readonly Action<string?> write;
     internal string Command { get; }
-    internal bool Enabled => string.Equals(read(), Command, StringComparison.OrdinalIgnoreCase);
+    private readonly string legacyCommand;
+    private bool Owned(string? value)=>string.Equals(value,Command,StringComparison.OrdinalIgnoreCase)||
+        string.Equals(value,legacyCommand,StringComparison.OrdinalIgnoreCase);
+    internal bool Enabled => Owned(read());
 
     internal StartupRegistration() : this(Environment.ProcessPath ?? throw new InvalidOperationException("실행 파일 경로를 찾을 수 없습니다."), Read, Write) { }
     internal StartupRegistration(string executable, Func<string?> read, Action<string?> write)
@@ -18,16 +21,28 @@ internal sealed class StartupRegistration
         if (!Path.IsPathFullyQualified(executable) || !executable.EndsWith(".exe",StringComparison.OrdinalIgnoreCase) ||
             executable.IndexOfAny(['"','\r','\n']) >= 0)
             throw new ArgumentException("자동 실행에는 올바른 실행 파일 경로가 필요합니다.",nameof(executable));
-        Command = $"\"{executable}\"";
+        legacyCommand = $"\"{executable}\"";
+        Command = legacyCommand+" "+LoginStartupDelay.Argument;
         this.read = read; this.write = write;
     }
     internal void SetEnabled(bool enabled)
     {
         var current=read();
-        if (!string.IsNullOrEmpty(current) && !string.Equals(current,Command,StringComparison.OrdinalIgnoreCase))
+        if (!string.IsNullOrEmpty(current) && !Owned(current))
             throw new InvalidOperationException("다른 경로의 도로롱 자동 실행이 등록되어 있습니다. 기존 등록을 해제한 뒤 다시 시도해 주세요.");
         write(enabled ? Command : null);
-        if(Enabled!=enabled)throw new IOException("자동 실행 설정이 저장되지 않았습니다.");
+        if(enabled ? !string.Equals(read(),Command,StringComparison.OrdinalIgnoreCase) : Enabled)
+            throw new IOException("자동 실행 설정이 저장되지 않았습니다.");
+    }
+    internal void UpgradeOwnedLegacy()
+    {
+        // Never opt in an OFF user or rewrite another executable/unknown args.
+        if(string.Equals(read(),legacyCommand,StringComparison.OrdinalIgnoreCase))
+        {
+            write(Command);
+            if(!string.Equals(read(),Command,StringComparison.OrdinalIgnoreCase))
+                throw new IOException("자동 실행 지연 설정이 저장되지 않았습니다.");
+        }
     }
     private static string? Read()
     {

@@ -13,12 +13,13 @@ namespace Dororong.App.Controls;
 internal sealed class SnackCursorWindow : Window
 {
     private bool closed;
+    private readonly Image image=new() { Stretch=Stretch.Uniform };
     internal SnackCursorWindow()
     {
         Width=32;Height=32;WindowStyle=WindowStyle.None;ResizeMode=ResizeMode.NoResize;
         AllowsTransparency=true;Background=Brushes.Transparent;Topmost=true;
         ShowActivated=false;ShowInTaskbar=false;IsHitTestVisible=false;
-        Content=new Image { Source=new BitmapImage(new Uri("pack://application:,,,/Dororong.App;component/Assets/snack-jewel.png")),Stretch=Stretch.Uniform };
+        Content=image;
         SourceInitialized+=(_,_)=>
         {
             var h=new WindowInteropHelper(this).Handle;
@@ -32,7 +33,7 @@ internal sealed class SnackCursorWindow : Window
     {
         if(closed)return;
         if(!visible||!pointer.IsAvailable) { if(IsVisible)Hide();return; }
-        if(!IsVisible)Show();
+        if(!IsVisible){image.Source??=SnackImage.Source;Show();}
         var h=new WindowInteropHelper(this).Handle;
         if(pointer.ScreenPixelPosition is { } pixels)
         {

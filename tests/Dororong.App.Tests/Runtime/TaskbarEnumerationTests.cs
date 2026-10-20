@@ -7,6 +7,37 @@ namespace Dororong.App.Tests.Runtime;
 
 public class TaskbarEnumerationTests
 {
+    [Fact]
+    public void Native_snapshot_reserves_the_enumerated_count_without_growth()
+    {
+        var windows=new List<TestWindow>();
+        try
+        {
+            for(var i=0;i<5;i++)windows.Add(new TestWindow($"SnapshotCapacityWindow{i}"));
+            var reader=new DesktopMetadataReader(0,_=>@"C:\Ordinary.exe");
+            var handles=windows.Select(w=>w.Handle).ToArray();
+            var snapshot=reader.ReadOrderedWindows(handles.ToHashSet(),handles);
+            Assert.Equal(5,snapshot.Count);Assert.Equal(5,snapshot.Capacity);
+            var previous=snapshot.Select(w=>w.Handle).ToArray();
+            var reversed=reader.ReadOrderedWindows(handles.ToHashSet(),handles.Reverse());
+            Assert.Equal(previous,snapshot.Select(w=>w.Handle));
+            Assert.Equal(previous.Reverse(),reversed.Select(w=>w.Handle));
+        }
+        finally{foreach(var window in windows)window.Dispose();}
+    }
+
+    [Fact]
+    public void Metadata_reuses_unchanged_records_without_caching_native_state()
+    {
+        using var window=new TestWindow("OrdinaryEnumerationWindow");
+        var reader=new DesktopMetadataReader(0,_=>@"C:\Ordinary.exe");
+        NativeWindow Read()=>Assert.Single(reader.ReadOrderedWindows([window.Handle],[window.Handle]));
+        var a=Read();var b=Read();Assert.Same(a,b);
+        window.Move(100,200,300,400);var c=Read();
+        Assert.NotSame(a,c);Assert.NotEqual(a.Bounds,c.Bounds);
+        Assert.Empty(reader.ReadOrderedWindows([],[]));
+        Assert.NotSame(c,Read());
+    }
     [Theory]
     [InlineData("Shell_TrayWnd")]
     [InlineData("Shell_SecondaryTrayWnd")]

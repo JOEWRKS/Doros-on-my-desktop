@@ -124,3 +124,23 @@ Commit/push waits until the requested UI is built and checked, per user instruct
   executable name remain unchanged. Subsequent installed-version acceptance is
   recorded in [TASKS](TASKS.md#accepted-ui-and-snack-checkpoint--2026-10-14).
 - Icon and tray-behavior evidence: [TASKS](TASKS.md#head-icons-and-tray-popup-stability--2026-10-14).
+
+## Size slider — bounded addition, 2026-10-20
+
+- User accepted r100 character lines and requested a size slider; that is not
+  approval of a new menu redesign. Retain the accepted B2 shell288/overall312 DIP,
+  brand header, command order/semantics and native dismissal.
+- Candidate: shared76-DIP row before the preference toggles, compact `크기` and
+  current percentage, native100–150 Slider/1% step. Do not transform menu content
+  or enlarge a low-resolution pet bitmap; use the accepted high-resolution render.
+- Only supported/resting size changes are enabled. Activity-bound resize is
+  unavailable rather than resetting a captured pose; disabled state must remain
+  apparent and explain itself. Persist successful choice when the menu closes.
+- Exact composition/user acceptance and native environment checks remain scoped
+  pending in [r101 evidence](docs/verification/2026-10-20-r101-size-slider.md).
+- r102 local interaction refinement: user reported basic size operation okay, but
+  requested continuous following. Preserve the row/composition/range; apply latest
+  requested size on a composition callback instead of waiting for input to stop.
+  Flush final choice on release/dismissal, preserve world feet and do not advance
+  gait by the anchoring correction. Actual feel/performance acceptance remains
+  separate from deterministic component tests.

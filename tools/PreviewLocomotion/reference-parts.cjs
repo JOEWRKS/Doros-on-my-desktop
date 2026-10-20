@@ -78,8 +78,8 @@ function mapPart(name,p){
     return [mix(u[0],l[0],w),mix(u[1],l[1],w)];
   };
 }
-function paths(name,p){
-  const map=mapPart(name,p);
+function paths(name,p,{artwork=art,mapOverride=null}={}){
+  const map=mapOverride?mapOverride(name,p):mapPart(name,p);
   // The seated reference exposes the far paw more front-on and the near paw
   // more upright. These small, explicitly authored contour corrections belong
   // to those paws; they never scale a bone, torso or whole character image.
@@ -105,7 +105,7 @@ function paths(name,p){
     }
     return result;
   };
-  return {name,fill:convert(art[name].fill),ink:art[name].ink.map(convert),rootInk:(art[name].rootInk||[]).map(convert)};
+  return {name,fill:convert(artwork[name].fill),ink:artwork[name].ink.map(convert),rootInk:(artwork[name].rootInk||[]).map(convert)};
 }
 function trace(ctx,path,begin=true){
   if(begin)ctx.beginPath();for(const [op,...q] of path){if(op==='M')ctx.moveTo(...q);else if(op==='C')ctx.bezierCurveTo(...q);else if(op==='L')ctx.lineTo(...q);else ctx.closePath();}
@@ -131,30 +131,50 @@ function addSkin(ctx,path){
   points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();
 }
 const depth=['farFront','chest','haunch','nearHind','nearFront'];
-function create(source,canvas){
-  const m=measure(source,canvas),head=extractHead(source,m,canvas);
-  function render(p,{colors=false}={}){
-    const c=canvas.createCanvas(96,96),ctx=c.getContext('2d');
-    const parts=Object.fromEntries(depth.map(name=>[name,paths(name,p)]));
+function skinShape(part,canvas){
+  if(part.shape)return part.shape;
+  const shape=new canvas.Path2D();
+  for(const [op,...q] of part.fill){if(op==='M')shape.moveTo(...q);else if(op==='C')shape.bezierCurveTo(...q);else if(op==='L')shape.lineTo(...q);else shape.closePath();}
+  return shape;
+}
+function create(source,canvas,{outputScale=1,headOverride=null,artwork=art,unionOutline=false}={}){
+  if(!Number.isFinite(outputScale)||outputScale<1||outputScale>4||!Number.isInteger(96*outputScale))throw Error('Integral output size between 96 and 384 required');
+  const size=96*outputScale;
+  const m=measure(source,canvas),head=headOverride||extractHead(source,m,canvas);
+  function render(p,{colors=false,includeHead=true,includeInk=true,mapOverride=null,extraParts={},interiorParts=[],interiorOpacity=1,interiorOccluders={},clipInteriorToSkin=false}={}){
+    const c=canvas.createCanvas(size,size),ctx=c.getContext('2d');ctx.scale(outputScale,outputScale);
+    const renderDepth=[...Object.keys(extraParts).filter(name=>!depth.includes(name)),...depth];
+    const parts=Object.fromEntries(renderDepth.map(name=>[name,extraParts[name]||paths(name,p,{artwork,mapOverride})]));
     const palette={farFront:'#619abd',chest:'#66c6b4',haunch:'#e6ab57',nearHind:'#a981c7',nearFront:'#58b7d8'};
     // Rasterize the SAME named vector skin faces in one nonzero-winding fill.
     // Adjacent antialiased edges must not source-over into a translucent joint.
     // No additional geometry, raster contour inference or post-render filling.
-    ctx.beginPath();for(const name of depth)addSkin(ctx,parts[name].fill);ctx.fillStyle='#fff';ctx.fill();
-    if(colors)for(const name of depth){trace(ctx,parts[name].fill);ctx.fillStyle=palette[name];ctx.fill();}
+    ctx.fillStyle='#fff';
+    if(renderDepth.some(name=>parts[name].shape)){
+      let skin=null;for(const name of renderDepth){const shape=skinShape(parts[name],canvas);skin=skin?skin.op(shape,canvas.PathOp.Union):shape;}ctx.fill(skin);
+    }else{ctx.beginPath();for(const name of renderDepth)addSkin(ctx,parts[name].fill);ctx.fill();}
+    if(colors)for(const name of renderDepth){ctx.fillStyle=palette[name]||'#a981c7';ctx.fill(skinShape(parts[name],canvas));}
     // All body ink shares one coverage mask. Taking maximum coverage, rather
     // than source-over, makes coincident interior/exterior paths idempotent:
     // the edge has the original single-stroke AA, not a darker second coat.
-    const layer=canvas.createCanvas(96,96),lc=layer.getContext('2d'),coverage=new Uint8ClampedArray(96*96);
-    function strokeInk(ink,occluders){
+    const layer=canvas.createCanvas(size,size),lc=layer.getContext('2d'),coverage=new Uint8ClampedArray(size*size);lc.scale(outputScale,outputScale);
+    function strokeInk(ink,occluders,opacity=1){
       lc.clearRect(0,0,96,96);lc.save();
-      for(const other of occluders){lc.beginPath();lc.rect(0,0,96,96);trace(lc,parts[other].fill,false);lc.clip('evenodd');}
-      trace(lc,ink);lc.strokeStyle='#fff';lc.lineWidth=m.ink.width;lc.lineCap='round';lc.lineJoin='round';lc.stroke();lc.restore();
-      const pixels=lc.getImageData(0,0,96,96).data;
-      for(let i=0;i<coverage.length;i++)coverage[i]=Math.max(coverage[i],pixels[i*4+3]);
+      if(clipInteriorToSkin){let skin=null;for(const name of renderDepth){const shape=skinShape(parts[name],canvas);skin=skin?skin.op(shape,canvas.PathOp.Union):shape;}lc.clip(skin);}
+      for(const other of occluders){const clip=new canvas.Path2D();clip.rect(0,0,96,96);clip.addPath(skinShape(parts[other],canvas));lc.clip(clip,'evenodd');}
+      const shape=Array.isArray(ink)?skinShape({fill:ink},canvas):ink;
+      lc.strokeStyle='#fff';lc.lineWidth=m.ink.width;lc.lineCap='round';lc.lineJoin='round';lc.stroke(shape);lc.restore();
+      const pixels=lc.getImageData(0,0,size,size).data;
+      for(let i=0;i<coverage.length;i++)coverage[i]=Math.max(coverage[i],Math.round(pixels[i*4+3]*opacity));
     }
-    for(const [index,name] of depth.entries()){
-      const foreground=depth.slice(index+1),part=parts[name];
+    for(const [index,name] of renderDepth.entries()){
+      if(unionOutline&&p.t===0){
+        // Keep the rear paw as a separate occluded layer, not merged skin.
+        if(name==='farHind')strokeInk(skinShape(parts[name],canvas),renderDepth.slice(index+1));
+        if(interiorParts.includes(name))for(const ink of parts[name].ink)strokeInk(ink,interiorOccluders[name]||renderDepth.slice(index+1),typeof interiorOpacity==='number'?interiorOpacity:(interiorOpacity[name]??1));
+        continue;
+      }
+      const foreground=renderDepth.slice(index+1),part=parts[name];
       for(const ink of part.ink)strokeInk(ink,foreground);
       const socketCover=name==='chest'?'farFront':'haunch';
       for(const ink of part.rootInk)strokeInk(ink,[...new Set([...foreground,socketCover])]);
@@ -165,11 +185,28 @@ function create(source,canvas){
     // exposed edge. Sequential complement clips form the complement of the
     // UNION (one even-odd clip would wrongly reveal doubly covered seams).
     // This never traces/replaces the composite silhouette or changes artwork.
-    for(const name of depth)strokeInk(parts[name].fill,depth.filter(other=>other!==name));
-    const image=lc.createImageData(96,96);
+    if(unionOutline){
+      // Union the authored VECTOR skin, not a traced output bitmap. A hidden
+      // limb boundary is not an exterior: stroke the merged shape once so
+      // overlapping hind/haunch paths cannot make two parallel socket lines.
+      let outline=null;
+      for(const name of renderDepth.filter(n=>n!=='farHind')){const shape=skinShape(parts[name],canvas);
+        outline=outline?outline.op(shape,canvas.PathOp.Union):shape;
+      }
+      lc.clearRect(0,0,96,96);lc.strokeStyle='#fff';lc.lineWidth=m.ink.width;lc.lineCap='round';lc.lineJoin='round';lc.stroke(outline);
+      const d=lc.getImageData(0,0,size,size).data;
+      for(let i=0;i<coverage.length;i++)coverage[i]=Math.max(coverage[i],d[i*4+3]);
+    }else for(const name of renderDepth)strokeInk(parts[name].fill,renderDepth.filter(other=>other!==name));
+    if(!includeInk)coverage.fill(0);
+    const image=lc.createImageData(size,size);
     for(let i=0;i<coverage.length;i++){image.data.set(m.ink.rgb,i*4);image.data[i*4+3]=coverage[i];}
-    lc.putImageData(image,0,0);ctx.drawImage(layer,0,0);
-    ctx.imageSmoothingEnabled=false;ctx.drawImage(head,...p.head);return c;
+    lc.setTransform(1,0,0,1,0,0);lc.putImageData(image,0,0);
+    ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(layer,0,0);
+    // Skia's high-quality filter can resample even a 1:1 canvas copy. Keep
+    // original head texels exact when no scale/subpixel movement is required.
+    const exactHead=head.width===size&&head.height===size&&p.head.every(v=>Number.isInteger(v*outputScale));
+    ctx.imageSmoothingEnabled=Boolean(headOverride)&&!exactHead;ctx.imageSmoothingQuality='high';
+    if(includeHead)ctx.drawImage(head,0,0,head.width,head.height,p.head[0]*outputScale,p.head[1]*outputScale,size,size);return c;
   }
   function attachmentProbes(p){
     return [[35,64+p.chest[1]],[53+p.haunch[0],62+p.haunch[1]],...p.legs.map(l=>l.joints[1])];

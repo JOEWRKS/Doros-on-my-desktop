@@ -13,8 +13,11 @@
     <Resource Include="Assets\dororong-canonical.png" />
     <EmbeddedResource Include="Assets\dororong.ico" LogicalName="Dororong.App.Assets.dororong.ico" />
     <EmbeddedResource Include="Assets\layered-pull.pbgra.gz" />
-    <EmbeddedResource Include="Assets\locomotion.pbgra.gz" />
-    <EmbeddedResource Include="Assets\hunting.pbgra.gz" />
+    <EmbeddedResource Include="Assets\high-resolution-grab.bank" />
+    <EmbeddedResource Include="Assets\high-resolution-hunt-body.bank" />
+    <EmbeddedResource Include="Assets\high-resolution-locomotion.bank" />
+    <EmbeddedResource Include="Assets\locomotion.indexed" />
+    <EmbeddedResource Include="Assets\hunting.indexed" />
     <Resource Include="Assets\dororong-edge-perch-09.png" />
     <Resource Include="Assets\user-body-drag\01.png" />
     <Resource Include="Assets\user-body-drag\02.png" />

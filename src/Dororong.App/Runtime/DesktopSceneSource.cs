@@ -13,6 +13,7 @@ internal sealed class DesktopSceneSource(IDesktopSceneNative native, bool backgr
     private TimeSpan highWater;
     private bool failed;
     private Task<CaptureResult>? pending;
+    private DesktopScene? lastOwnedSnapshot;
     internal string? LastFailure { get; private set; }
     // Caller supplies Stopwatch elapsed time on the UI thread. Clamp accidental rollback.
     internal SceneRead Read(TimeSpan now)
@@ -56,11 +57,15 @@ internal sealed class DesktopSceneSource(IDesktopSceneNative native, bool backgr
         try
         {
             var captured = native.Capture(requestedAt);
-            return new(requestedAt, captured is null ? null : captured with
-            {
-                Monitors = Array.AsReadOnly(captured.Monitors.ToArray()),
-                Windows = Array.AsReadOnly(captured.Windows.ToArray())
-            }, captured is null ? "CaptureUnavailable" : null);
+            if(captured is null)return new(requestedAt,null,"CaptureUnavailable");
+            // Freshness/revision still advance on every successful acquisition.
+            // Identical geometry may share our immutable collection, not the
+            // producer's arrays. Only one capture can be in flight.
+            var owned=captured with{
+                Monitors=ImmutableSnapshotCollection.CopyOrReuse(captured.Monitors,lastOwnedSnapshot?.Monitors),
+                Windows=ImmutableSnapshotCollection.CopyOrReuse(captured.Windows,lastOwnedSnapshot?.Windows)};
+            lastOwnedSnapshot=owned;
+            return new(requestedAt,owned,null);
         }
         catch (Exception exception)
         {

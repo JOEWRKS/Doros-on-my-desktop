@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Dororong.Core.Platforms;
 using Dororong.Core.Geometry;
 
@@ -13,7 +14,23 @@ internal sealed class PlatformContactPresentation
     // Weak keys allow generated frozen crossfade frames to be collected. Mutable
     // bitmaps are read afresh, so a changed alpha mask cannot reuse stale contact.
     private static readonly ConditionalWeakTable<BitmapSource, Point[]> Corners = new();
+    private sealed class RetainedContour
+    {
+        internal readonly List<Point> Corners=new();
+        internal bool Valid;
+        internal int Width,Height;
+    }
+    // Pixel slots are overwritten, not discarded. Keep their bounded contour
+    // storage too: remove/add churn creates CWT containers awaiting finalization.
+    // Weak keys still release all storage when a presenter/scale is discarded.
+    private static readonly ConditionalWeakTable<byte[],RetainedContour> RetainedCorners=new();
+    internal static void InvalidateRetainedPixels(byte[] pixels)
+    {
+        if(RetainedCorners.TryGetValue(pixels,out var entry))entry.Valid=false;
+    }
+    private readonly List<Point> _scratchCorners=new();
     private Point[] _measured = [];
+    private int _measuredCount;
     private FrameworkElement? _body;
     private Transform? _baseTransform;
     private Point _baseOrigin;
@@ -23,7 +40,27 @@ internal sealed class PlatformContactPresentation
     internal FootContact Measure(BitmapSource source, GeneralTransform imageToPresenter)
     {
         var corners = source.IsFrozen ? Corners.GetValue(source, ReadCorners) : ReadCorners(source);
-        _measured = new Point[corners.Length];
+        return MeasureCorners(corners,imageToPresenter);
+    }
+    internal FootContact MeasurePixels(byte[] pixels,int width,int height,GeneralTransform imageToPresenter)
+    {
+        ReadCorners(pixels,width,height,_scratchCorners);
+        return MeasureCorners(CollectionsMarshal.AsSpan(_scratchCorners),imageToPresenter);
+    }
+    internal FootContact MeasureRetainedPixels(byte[] pixels,int width,int height,GeneralTransform imageToPresenter)
+    {
+        var entry=RetainedCorners.GetValue(pixels,static _=>new());
+        if(!entry.Valid||entry.Width!=width||entry.Height!=height){
+            ReadCorners(pixels,width,height,entry.Corners);
+            entry.Width=width;entry.Height=height;entry.Valid=true;
+        }
+        return MeasureCorners(CollectionsMarshal.AsSpan(entry.Corners),imageToPresenter);
+    }
+
+    private FootContact MeasureCorners(ReadOnlySpan<Point> corners,GeneralTransform imageToPresenter)
+    {
+        if(_measured.Length<corners.Length)_measured=new Point[corners.Length];
+        _measuredCount=corners.Length;
         var left = double.PositiveInfinity; var right = double.NegativeInfinity;
         var top = double.PositiveInfinity; var bottom = double.NegativeInfinity;
         var fullLeft = double.PositiveInfinity; var fullRight = double.NegativeInfinity;
@@ -44,7 +81,7 @@ internal sealed class PlatformContactPresentation
         // the band's upper edge contributes no positive-area support.
         var bandTop = bottom - 2;
         ReadOnlySpan<int> order = [0, 1, 3, 2];
-        for (var i = 0; i < _measured.Length; i += 4)
+        for (var i = 0; i < _measuredCount; i += 4)
         {
             var lowest = Math.Max(Math.Max(_measured[i].Y, _measured[i + 1].Y), Math.Max(_measured[i + 2].Y, _measured[i + 3].Y));
             // Trigonometric roundoff at e.g. 90 degrees is not real area.
@@ -83,7 +120,7 @@ internal sealed class PlatformContactPresentation
     internal void Apply(FrameworkElement body, FootContact current, double targetSoleY, double squash, double sway, bool extreme = false)
     {
         Restore();
-        if (_measured.Length == 0 || !double.IsFinite(targetSoleY) || !double.IsFinite(current.SoleY) ||
+        if (_measuredCount == 0 || !double.IsFinite(targetSoleY) || !double.IsFinite(current.SoleY) ||
             !double.IsFinite(current.Left) || !double.IsFinite(current.Right)) return;
         squash = double.IsFinite(squash) ? Math.Clamp(squash, extreme ? -.16 : -.10, extreme ? .82 : .30) : 0;
         var angle = double.IsFinite(sway) ? Math.Clamp(sway * 180 / Math.PI, -2, 2) : 0;
@@ -92,7 +129,7 @@ internal sealed class PlatformContactPresentation
         pose.ScaleAt(1 + squash * .5, 1 - squash, center.X, center.Y);
         pose.RotateAt(angle, center.X, center.Y);
         var soleAfterPose = double.NegativeInfinity;
-        foreach (var corner in _measured) soleAfterPose = Math.Max(soleAfterPose, pose.Transform(corner).Y);
+        for(var i=0;i<_measuredCount;i++)soleAfterPose=Math.Max(soleAfterPose,pose.Transform(_measured[i]).Y);
         var correctionY = targetSoleY - soleAfterPose;
 
         _body = body; _baseTransform = body.RenderTransform; _baseOrigin = body.RenderTransformOrigin;
@@ -123,15 +160,33 @@ internal sealed class PlatformContactPresentation
     private static Point[] ReadCorners(BitmapSource source)
     {
         var bitmap = source.Format == PixelFormats.Pbgra32 ? source : new FormatConvertedBitmap(source, PixelFormats.Pbgra32, null, 0);
-        var stride = checked(bitmap.PixelWidth * 4); var pixels = new byte[checked(stride * bitmap.PixelHeight)];
+        var stride = checked(bitmap.PixelWidth * 4);
+        var pixels = System.Buffers.ArrayPool<byte>.Shared.Rent(checked(stride * bitmap.PixelHeight));
+        try{
         bitmap.CopyPixels(pixels, stride, 0);
+        return ReadCorners(pixels,bitmap.PixelWidth,bitmap.PixelHeight);
+        }finally{System.Buffers.ArrayPool<byte>.Shared.Return(pixels);}
+    }
+    private static Point[] ReadCorners(byte[] pixels,int width,int height)
+    {
         var corners = new List<Point>();
-        for (var y = 0; y < bitmap.PixelHeight; y++) for (var x = 0; x < bitmap.PixelWidth; x++)
-        {
-            if (pixels[y * stride + x * 4 + 3] < 128) continue;
-            corners.Add(new(x, y)); corners.Add(new(x + 1, y));
-            corners.Add(new(x, y + 1)); corners.Add(new(x + 1, y + 1));
-        }
+        ReadCorners(pixels,width,height,corners);
         return corners.ToArray();
+    }
+    private static void ReadCorners(byte[] pixels,int width,int height,List<Point> corners)
+    {
+        var stride=width*4;
+        corners.Clear();
+        // Adjacent occupied pixel quads in one row are exactly one rectangle.
+        // Preserve their union (including holes), not every internal shared edge.
+        // Affine transforms and clipping to the sole band commute with this union.
+        for (var y = 0; y < height; y++) for (var x = 0; x < width;)
+        {
+            if (pixels[y * stride + x * 4 + 3] < 128) { x++; continue; }
+            var start=x++;
+            while(x<width && pixels[y*stride+x*4+3]>=128)x++;
+            corners.Add(new(start, y)); corners.Add(new(x, y));
+            corners.Add(new(start, y + 1)); corners.Add(new(x, y + 1));
+        }
     }
 }

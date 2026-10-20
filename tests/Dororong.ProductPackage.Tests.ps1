@@ -191,12 +191,16 @@ namespace Dororong.PackageTests
             return new NativeDesktopHarness(desktop, name);
         }
 
-        public int Start(string executablePath)
+        public int Start(string executablePath) { return Start(executablePath, false); }
+
+        public int Start(string executablePath, bool loginStartup)
         {
             var startup = new StartupInfo();
             startup.cb = Marshal.SizeOf<StartupInfo>();
             startup.lpDesktop = name;
-            if (!CreateProcessW(executablePath, null, IntPtr.Zero, IntPtr.Zero, false, 0, IntPtr.Zero,
+            var command = new System.Text.StringBuilder("\"" + executablePath + "\"" +
+                (loginStartup ? " --login-startup" : ""));
+            if (!CreateProcessW(executablePath, command, IntPtr.Zero, IntPtr.Zero, false, 0, IntPtr.Zero,
                     System.IO.Path.GetDirectoryName(executablePath), ref startup, out var processInfo))
             {
                 throw new Win32Exception(Marshal.GetLastWin32Error(), "CreateProcessW failed.");
@@ -263,6 +267,22 @@ namespace Dororong.PackageTests
             return windows.Count;
         }
 
+        public int VisibleWindows(int processId)
+        {
+            var count = 0;
+            var enumerated = EnumDesktopWindows(desktop, (window, _) =>
+            {
+                GetWindowThreadProcessId(window, out var owner);
+                if (owner == unchecked((uint)processId) && IsWindowVisible(window)) count++;
+                return true;
+            }, IntPtr.Zero);
+            // A newly created desktop has no windows during the login delay.
+            // Windows may return false without an error for that empty list.
+            var error = Marshal.GetLastWin32Error();
+            if (!enumerated && error != 0) throw new Win32Exception(error);
+            return count;
+        }
+
         public void Dispose()
         {
             foreach (var process in processes.Values)
@@ -294,8 +314,11 @@ namespace Dororong.PackageTests
         [DllImport("user32.dll")]
         private static extern uint GetWindowThreadProcessId(IntPtr window, out uint processId);
 
+        [DllImport("user32.dll")]
+        private static extern bool IsWindowVisible(IntPtr window);
+
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern bool CreateProcessW(string applicationName, string commandLine,
+        private static extern bool CreateProcessW(string applicationName, System.Text.StringBuilder commandLine,
             IntPtr processAttributes, IntPtr threadAttributes, bool inheritHandles, uint creationFlags,
             IntPtr environment, string currentDirectory, ref StartupInfo startupInfo,
             out ProcessInformation processInformation);

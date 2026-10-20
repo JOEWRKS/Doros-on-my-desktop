@@ -43,7 +43,7 @@ public sealed class SnackSession
         Current = default;
     }
 
-    public SnackPose Advance(TimeSpan elapsed, PointerSample pointer, PointD mouth, bool supported)
+    public SnackPose Advance(TimeSpan elapsed, PointerSample pointer, PointD mouth, bool supported, double chaseScale = 1)
     {
         if (!Active) return Current;
         // A lock/resume or lost input must not leave a runaway chase/cursor.
@@ -51,6 +51,8 @@ public sealed class SnackSession
             !double.IsFinite(elapsed.TotalSeconds) || elapsed.TotalSeconds > 1)
         { Cancel(); return Current; }
         var dt = Math.Clamp(elapsed.TotalSeconds, 0, .05);
+        // Logical pet size, not monitor DPI. Keep the legacy/default host at1x.
+        chaseScale = double.IsFinite(chaseScale) ? Math.Clamp(chaseScale, 1, 1.5) : 1;
         age += dt; cooldown = Math.Max(0, cooldown - dt);
         if (jumpAge >= 0)
         {
@@ -72,7 +74,7 @@ public sealed class SnackSession
             if (jumpAge < 0)
             {
                 if (Math.Abs(dx) > 30) facing = dx > 0 ? FacingDirection.Right : FacingDirection.Left;
-                if (Math.Abs(dx) > 8) move = Math.Sign(dx) * Math.Min(Math.Abs(dx)-8, 185*dt);
+                if (Math.Abs(dx) > 8) move = Math.Sign(dx) * Math.Min(Math.Abs(dx)-8, 185*chaseScale*dt);
             }
             // Holding at the mouth gives, moving past the face does not.
             biteTime = jumpAge < 0 && Math.Abs(dx) <= 19 && Math.Abs(dy) <= 17 && stillTime >= .16
@@ -102,7 +104,10 @@ public sealed class SnackSession
         var lift = jumpAge < 0 ? 0 : JumpLift(flight,jumpHeight);
         var targetRun = Math.Abs(move) > .01 && jumpAge < 0 ? 1d : 0d;
         runAmount += Math.Clamp(targetRun-runAmount,-dt/.12,dt/.12);
-        distance += Math.Abs(move);
+        // Ground gait is measured in authored1x units: larger legs cover more
+        // screen distance per stride, without speeding up the animation cycle.
+        // Preserve the existing jump trajectory and its phase contribution.
+        distance += Math.Abs(move) / (jumpAge < 0 ? chaseScale : 1);
         return Current = new(phase, facing, move, lift, age, distance) { JumpAge = jumpAge, RunAmount = runAmount };
     }
 

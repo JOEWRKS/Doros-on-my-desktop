@@ -1,18 +1,16 @@
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
-using System.IO;
-using System.IO.Compression;
 
 namespace Dororong.App.Controls;
 
 internal static class LocomotionFrames
 {
     private const int EyeFrames = 65 + 8 * 32 + 65;
-    internal static IReadOnlyList<BitmapSource> All { get; } = Load();
-    private static readonly HashSet<BitmapSource> Frames = new(All);
+    private static readonly HashSet<BitmapSource> Frames = new();
+    internal static IReadOnlyList<BitmapSource> All { get; } = new LazyFrames();
     private static readonly Dictionary<(int Level,int Phase,bool Closed),BitmapSource> WalkFrames = new();
 
-    internal static bool Contains(object? frame) => frame is BitmapSource bitmap && Frames.Contains(bitmap);
+    internal static bool Contains(object? frame) { lock(Frames)return frame is BitmapSource bitmap && Frames.Contains(bitmap); }
 
     internal static BitmapSource Sit(double amount, bool closed = false, bool rising = false)
     {
@@ -36,7 +34,7 @@ internal static class LocomotionFrames
         if(!WalkFrames.TryGetValue(key,out var image))
         {
             image=SnackRunFrames.Render(phase*10d/32,level/8d,walking:true,closed:closed);
-            WalkFrames.Add(key,image);Frames.Add(image);
+            WalkFrames.Add(key,image);lock(Frames)Frames.Add(image);
         }
         return image;
     }
@@ -46,24 +44,22 @@ internal static class LocomotionFrames
         if (!double.IsFinite(value)) throw new ArgumentOutOfRangeException(nameof(value));
     }
 
-    private static IReadOnlyList<BitmapSource> Load()
+    internal sealed class LazyFrames : IReadOnlyList<BitmapSource>
     {
-        using var resource = typeof(LocomotionFrames).Assembly.GetManifestResourceStream("Dororong.App.Assets.locomotion.pbgra.gz")
-            ?? throw new InvalidDataException("Missing approved locomotion bank.");
-        using var gzip = new GZipStream(resource, CompressionMode.Decompress);
-        using var reader = new BinaryReader(gzip);
-        if (new string(reader.ReadChars(4)) != "LOCO" || reader.ReadUInt32() != 2 ||
-            reader.ReadUInt32() != 96 || reader.ReadUInt32() != 96 || reader.ReadUInt32() != EyeFrames * 2)
-            throw new InvalidDataException("Invalid locomotion bank geometry/version.");
-        var frames = new BitmapSource[EyeFrames * 2];
-        for (var n = 0; n < frames.Length; n++)
+        private readonly IndexedMotionBank bank=new("locomotion",Enumerable.Repeat(96*96*4,EyeFrames*2).ToArray());
+        private readonly BitmapSource?[] frames=new BitmapSource?[EyeFrames*2];
+        internal int DecodedCount=>bank.DecodedCount;
+        public int Count=>frames.Length;
+        public BitmapSource this[int index]
         {
-            var bytes = reader.ReadBytes(96 * 96 * 4);
-            if (bytes.Length != 96 * 96 * 4) throw new InvalidDataException("Truncated locomotion frame.");
-            frames[n] = BitmapSource.Create(96, 96, 96, 96, PixelFormats.Pbgra32, null, bytes, 96 * 4);
-            frames[n].Freeze();
+            get { lock(frames)
+            {
+                if(frames[index] is {} cached)return cached;
+                var image=BitmapSource.Create(96,96,96,96,PixelFormats.Pbgra32,null,bank.Read(index),384);
+                image.Freeze();frames[index]=image;lock(Frames)Frames.Add(image);return image;
+            }}
         }
-        if (gzip.ReadByte() != -1) throw new InvalidDataException("Unexpected locomotion bank payload.");
-        return Array.AsReadOnly(frames);
+        public IEnumerator<BitmapSource> GetEnumerator(){for(var i=0;i<Count;i++)yield return this[i];}
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()=>GetEnumerator();
     }
 }

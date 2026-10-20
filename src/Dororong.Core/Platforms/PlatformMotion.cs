@@ -16,6 +16,8 @@ public readonly record struct PlatformMotionInput(TimeSpan Delta, PointD Display
     public IReadOnlyList<DesktopMonitor>? Monitors { get; init; }
     public double SupportedOffsetY { get; init; }
     public double SupportedLiftLimit { get; init; } = 12;
+    // Live app opt-in: unfold before physical contact, not after a grounded pause.
+    public bool AnticipateExtremeLanding { get; init; }
 }
 
 public sealed class PlatformMotion
@@ -29,6 +31,9 @@ public sealed class PlatformMotion
     private double fallDistance;
     private double landingStrength;
     private bool extremeLanding;
+    private SurfaceKey? anticipatedSurface;
+    private bool expandedBeforeContact;
+    private const double ExpansionSeconds = .035;
     private const double LandingSeconds = .45;
     private const double ExtremeCompression = .82 * .70;
 
@@ -50,6 +55,8 @@ public sealed class PlatformMotion
         velocity = phaseSeconds = sway = 0;
         fallDistance = landingStrength = 0;
         extremeLanding = false;
+        anticipatedSurface = null;
+        expandedBeforeContact = false;
         previousBars = Array.Empty<PlatformSurface>();
         Current = new(PlatformPhase.Suspended, displayedPosition, null, 0, 0);
     }
@@ -114,6 +121,7 @@ public sealed class PlatformMotion
                 releasedKey = previous.Key;
                 support = null;
                 velocity = phaseSeconds = 0;
+                anticipatedSurface = null;
                 fallDistance = landingStrength = 0;
                 sway = 0;
                 phase = PlatformPhase.Falling;
@@ -129,6 +137,7 @@ public sealed class PlatformMotion
                     !Overlaps(surface, position, input.LocalContact)) continue;
                 support = surface;
                 velocity = phaseSeconds = 0;
+                anticipatedSurface = null;
                 fallDistance = landingStrength = 0;
                 phase = PlatformPhase.Supported;
                 position = new(position.X, surface.Top - input.LocalContact.SoleY);
@@ -201,7 +210,12 @@ public sealed class PlatformMotion
                 extremeLanding = double.IsFinite(screenHeight) && screenHeight > 0 && fallDistance + 1e-7 >= screenHeight * .8;
                 position = new(position.X + (next.X - position.X) * t, landedY);
                 support = landed;
-                velocity = phaseSeconds = 0;
+                velocity = 0;
+                // Continue the same expansion curve already shown in air.
+                // Do not replay a neutral grounded frame or speed up the curve.
+                expandedBeforeContact = input.AnticipateExtremeLanding && extremeLanding && anticipatedSurface == landed.Key;
+                phaseSeconds = 0;
+                anticipatedSurface = null;
                 return Set(PlatformPhase.Landing, position);
             }
             fallDistance += Math.Max(0, next.Y - position.Y);
@@ -209,7 +223,41 @@ public sealed class PlatformMotion
             velocity = nextVelocity;
             remaining -= dt;
         }
-        return Set(phase, position);
+        var falling = Set(phase, position);
+        anticipatedSurface = null;
+        if(input.AnticipateExtremeLanding){
+            var forecast=PredictContact(position,input.LocalContact,collisionSurfaces,
+                releasedKey is null&&seconds>0?walkingX/seconds:0);
+            if(forecast is {} hit){
+                var height=input.Monitors?.FirstOrDefault(m=>m.Id==hit.Surface.MonitorId)?.Bounds.Height??0;
+                var totalFall=fallDistance+Math.Max(0,hit.Surface.Top-input.LocalContact.SoleY-position.Y);
+                if(double.IsFinite(height)&&height>0&&totalFall+1e-7>=height*.8){
+                    anticipatedSurface=hit.Surface.Key;
+                    var spread=ImpactExpansion(ExpansionSeconds-hit.Seconds);
+                    return Current=falling with{IsExtremeLanding=true,LegSpread=spread,Squash=ExtremeCompression*spread};
+                }
+            }
+        }
+        return falling;
+    }
+
+    private (PlatformSurface Surface,double Seconds)? PredictContact(PointD position,FootContact contact,
+        IReadOnlyList<PlatformSurface> surfaces,double xVelocity){
+        var elapsed=0d;var speed=velocity;
+        // Same gravity, cap, substeps and first-crossing rule as actual falling.
+        // A moved/removed surface is re-evaluated next tick, never held as support.
+        while(elapsed<ExpansionSeconds){
+            var dt=Math.Min(.008,ExpansionSeconds-elapsed);
+            var nextSpeed=Math.Min(1200,speed+1800*dt);
+            var next=new PointD(position.X+xVelocity*dt,position.Y+(speed+nextSpeed)*.5*dt);
+            var hit=PlatformGeometry.FirstCrossing(surfaces,WorldContact(position,contact),WorldContact(next,contact));
+            if(hit is {} surface){
+                var fraction=(surface.Top-position.Y-contact.SoleY)/(next.Y-position.Y);
+                return(surface,elapsed+dt*fraction);
+            }
+            elapsed+=dt;position=next;speed=nextSpeed;
+        }
+        return null;
     }
 
     private PlatformPose Set(PlatformPhase phase, PointD position)
@@ -219,18 +267,21 @@ public sealed class PlatformMotion
         if (phase == PlatformPhase.Landing && extremeLanding)
         {
             var t = phaseSeconds;
+            // Only expansion starts in air. Preserve the existing grounded
+            // hold/recovery clock, including the one-second flat hold and hop.
+            var expansion = ImpactExpansion(t+(expandedBeforeContact?ExpansionSeconds:0));
             // Reach full compression, hold it for one whole second, then spring
             // back. This is one supported landing, never a second free fall.
             squash = t switch
             {
-                < .10 => ExtremeCompression * ImpactExpansion(t),
+                < .10 => ExtremeCompression * expansion,
                 < 1.10 => ExtremeCompression,
                 < 1.28 => ExtremeCompression - (ExtremeCompression + .16) * Smooth((t - 1.10) / .18),
                 < 1.60 => -.16 * (1 - Smooth((t - 1.28) / .32)),
                 < 1.68 => .12 * Smooth((t - 1.60) / .08),
                 _ => .12 * (1 - Smooth((t - 1.68) / .12))
             };
-            spread = ImpactExpansion(t) * (1 - Smooth((t - 1.10) / .28));
+            spread = expansion * (1 - Smooth((t - 1.10) / .28));
             if (t > 1.10 && t < 1.60)
             {
                 var arc = Math.Sin(Math.PI * (t - 1.10) / .50);

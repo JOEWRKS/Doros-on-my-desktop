@@ -69,7 +69,7 @@ public sealed class LocomotionTests
         snapshot=snapshot with {Facing=FacingDirection.Left,Position=new(105,100)};Capture("walk-left",100);
     });
     [Fact]
-    public void Approved_bank_is_embedded() => Assert.Contains("Dororong.App.Assets.locomotion.pbgra.gz",
+    public void Approved_bank_is_embedded() => Assert.Contains("Dororong.App.Assets.locomotion.indexed",
         typeof(DororongPresenter).Assembly.GetManifestResourceNames());
 
     [Fact]

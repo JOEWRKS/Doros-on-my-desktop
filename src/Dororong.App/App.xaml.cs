@@ -9,16 +9,25 @@ public partial class App : Application
 {
     private readonly AppStartupSequence _startupSequence = new();
     private ProductShell? _productShell;
+    private readonly CancellationTokenSource _startupCancellation = new();
 
     public App()
     {
         DispatcherUnhandledException += OnDispatcherUnhandledException;
     }
 
-    protected override void OnStartup(StartupEventArgs e)
+    protected override async void OnStartup(StartupEventArgs e)
     {
         ShutdownMode = ShutdownMode.OnExplicitShutdown;
         base.OnStartup(e);
+
+        try
+        {
+            if(!await new LoginStartupDelay().WaitAsync(e.Args,_startupCancellation.Token))
+            { Shutdown();return; }
+        }
+        catch(OperationCanceledException) when(_startupCancellation.IsCancellationRequested){return;}
+        catch(Exception exception){HandleFatal(exception,DiagnosticEvent.StartupFailure);return;}
 
         ProductShell? productShell = null;
         object? createdWindow = null;
@@ -44,6 +53,10 @@ public partial class App : Application
             return;
         }
 
+        // Migrate only this executable's old opt-in command. Failure must not
+        // prevent manual use or overwrite unrelated startup registrations.
+        try { new StartupRegistration().UpgradeOwnedLegacy(); }
+        catch(Exception exception){productShell!.Report(DiagnosticEvent.TrayCommandFailure,exception);}
         _startupSequence.TryRun(
             () => createdWindow!,
             window =>
@@ -63,6 +76,7 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        _startupCancellation.Cancel();
         DispatcherUnhandledException -= OnDispatcherUnhandledException;
         CleanupStartupResources();
         base.OnExit(e);

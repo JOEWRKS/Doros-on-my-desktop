@@ -34,6 +34,12 @@ begin
   Result := True;
 end;
 
+function OwnedStartupCommand(Command, Executable: String): Boolean;
+begin
+  Result := (CompareText(Command, '"' + Executable + '"') = 0) or
+    (CompareText(Command, '"' + Executable + '" --login-startup') = 0);
+end;
+
 function VersionAllowed(Incoming, Installed: String): Boolean;
 var A, B: TArrayOfInteger; I: Integer;
 begin

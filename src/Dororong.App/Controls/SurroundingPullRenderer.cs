@@ -16,18 +16,24 @@ internal static class SurroundingPullRenderer
         return Warp(baseline,p=>HeadDisplacement(p,center,grab,near,far));
     }
     internal static PointD HeadDisplacement(PointD p,PointD center,PointD grab,PointD near,PointD far)
+        => HeadDisplacement(p,center,grab,near,far,HeadFacePin(center,grab));
+    internal static double HeadFacePin(PointD center,PointD grab)
+        => Smooth((Length(new PointD(center.X-8,center.Y+16)-grab)-3)/9);
+    internal static PointD HeadDisplacement(PointD p,PointD center,PointD grab,PointD near,PointD far,double facePin)
     {
             // Keep the grab and soles stationary in the existing registered pose.
-            var pin=Smooth((Length(p-grab)-3)/9);var sole=1-Smooth((p.Y-79)/5);
-            if(pin==0||sole==0)return default;
-            var face=Bump(p.X,center.X-31,center.X-23,center.X+6,center.X+13)*
-                Bump(p.Y,center.Y+3,center.Y+8,center.Y+24,center.Y+31);
-            // A rigid face plateau: eyes/mouth translate together, without global face scaling.
-            var facePin=Smooth((Length(new PointD(center.X-8,center.Y+16)-grab)-3)/9);
-            var hair=Math.Exp(-Math.Pow((p.X-grab.X)/25,2)-Math.Pow((p.Y-grab.Y)/24,2));
+            var sole=1-Smooth((p.Y-79)/5);if(sole==0)return default;
+            var pin=Smooth((Length(p-grab)-3)/9);if(pin==0)return default;
             var accessoryLock=1-Smooth((p.X-(center.X+12))/7)*(1-Smooth((p.Y-(center.Y+15))/14));
             var headGate=1-Smooth((p.Y-(center.Y+25))/10);
-            var h=(hair*pin*(1-face)+.6*face*facePin*pin)*headGate*accessoryLock;
+            var h=0d;
+            if(near!=default&&headGate!=0&&accessoryLock!=0){
+                var face=Bump(p.X,center.X-31,center.X-23,center.X+6,center.X+13)*
+                    Bump(p.Y,center.Y+3,center.Y+8,center.Y+24,center.Y+31);
+                // A rigid face plateau: eyes/mouth translate together, without global face scaling.
+                var hair=Math.Exp(-Math.Pow((p.X-grab.X)/25,2)-Math.Pow((p.Y-grab.Y)/24,2));
+                h=(hair*pin*(1-face)+.6*face*facePin*pin)*headGate*accessoryLock;
+            }
             var body=Smooth((p.Y-(center.Y+24))/12)*Bump(p.X,12,30,72,85)*sole;
             // Negative sign is material lag behind the grabbed point, not a second pointer move.
             return Scale(near,-.12*h*sole)+Scale(far,-.055*body*pin);

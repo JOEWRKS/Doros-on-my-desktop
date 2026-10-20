@@ -261,7 +261,7 @@ begin
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
-var Reason, Path: String; Obsolete: TArrayOfString; I, N: Integer;
+var Reason, Path, StartupCommand, DelayedCommand: String; Obsolete: TArrayOfString; I, N: Integer;
 begin
   if CurStep = ssInstall then begin
     DesktopWillBeOwned := WizardIsTaskSelected('desktopicon');
@@ -301,6 +301,18 @@ begin
       Path := ExpandConstant('{userdesktop}\') + ShortcutFile;
       if not NoReparseComponents(Path) or not FileExists(Path) then
         RaiseException('Desktop shortcut creation failed. Repair or reinstall is required.');
+    end;
+    { Preserve opt-in only: migrate this install's exact legacy command, never
+      enable a fresh/OFF user or change a foreign path/unknown argument. }
+    Path := AddBackslash(FixedRoot) + 'Dororong.exe';
+    if RegQueryStringValue(HKCU64, 'Software\Microsoft\Windows\CurrentVersion\Run',
+      'JOEWRKS.Dororong', StartupCommand) and (CompareText(StartupCommand, '"' + Path + '"') = 0) then begin
+      DelayedCommand := '"' + Path + '" --login-startup';
+      if not RegWriteStringValue(HKCU64, 'Software\Microsoft\Windows\CurrentVersion\Run',
+        'JOEWRKS.Dororong', DelayedCommand) then RaiseException('Could not migrate Dororong startup delay.');
+      if not RegQueryStringValue(HKCU64, 'Software\Microsoft\Windows\CurrentVersion\Run',
+        'JOEWRKS.Dororong', StartupCommand) then RaiseException('Cannot verify Dororong startup delay.');
+      if CompareText(StartupCommand, DelayedCommand) <> 0 then RaiseException('Startup delay verification failed.');
     end;
     InstallVerified := True;
   end;
@@ -347,7 +359,7 @@ begin
     { Remove only this install's exact opt-in command; preserve a foreign entry. }
     if RegQueryStringValue(HKCU64, 'Software\Microsoft\Windows\CurrentVersion\Run',
       'JOEWRKS.Dororong', StartupCommand) and
-      (CompareText(StartupCommand, '"' + AddBackslash(FixedRoot) + 'Dororong.exe"') = 0) then
+      OwnedStartupCommand(StartupCommand, AddBackslash(FixedRoot) + 'Dororong.exe') then
       if not RegDeleteValue(HKCU64, 'Software\Microsoft\Windows\CurrentVersion\Run',
         'JOEWRKS.Dororong') then RaiseException('Could not remove Dororong startup registration.');
     if not RemoveProductFiles(FixedRoot, ExpandConstant('{userprograms}'), ExpandConstant('{userdesktop}'),

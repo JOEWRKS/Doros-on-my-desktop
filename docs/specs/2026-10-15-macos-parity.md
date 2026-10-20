@@ -8,6 +8,18 @@ v0.1.3 candidate14, source checkpoint d061177. This is not approval to remove
 window/Dock hanging, ship a reduced product, buy signing, publish or contact testers.
 Keep the existing WPF product, artwork and Windows installer unchanged.
 
+2026-10-21 updated authority: user requests the accepted **r104** Windows
+experience on **Apple Silicon (M1 or later)** and explicitly chooses a full port
+over a rebuild of the existing tester. The table below remains historical
+test04 implementation evidence, not r104 parity. Current work and validation
+gates are in [the r104 port record](../verification/2026-10-21-r104-source-and-mac-port.md).
+Intel packaging is not a prerequisite for this Apple Silicon delivery.
+
+2026-10-16 authorized exception: user clarified physical screen-bottom movement
+in front of Dock in z-order, not Dock-top height. Dock support/hanging is replaced
+by screen-floor movement; ordinary-window support/hanging is retained. This later
+decision supersedes the original Dock-equivalence requirement only (MAC-12).
+
 This human implementation checklist follows AGENTS/TASKS/ROADMAP. It is not a
 JOEFLOW V2 closure/manifest; the old snack candidate is not canonical authority.
 Existing visual authority remains DESIGN and accepted product records.
@@ -49,7 +61,7 @@ acceptance are verified on Mac. Tests alone do not authorize a visual redesign.
 | MAC-09 | Head drag and dangle | Correct grab anchor, swing, release/landing, no cursor jump | Partial: grab/gutter plus body-click wake, pending sole and extreme spread/frozen source connected; reference math and simulated interruption checked; native/composed Mac TODO |
 | MAC-10 | Cheek pull | Same shape/length; no body dragging; timed spring/back-hop and new landing position | Partial: captured standing/seated/hunting/perched pose, existing raster/follow/spring/hop math and refined composition Windows checked; native Mac TODO |
 | MAC-11 | Window edge hanging | Same readiness/release boundary; moving/closed/minimized windows recover safely | Partial: shared engine, advertised cue/release and native adapter; synthetic move/close tests pass; actual minimized/window behavior/Mac TODO |
-| MAC-12 | Dock equivalent of taskbar | Visible/auto-hidden Dock, orientation, menus and occlusion; no phantom support/drop | Partial: bundle/layer/geometry mapping, horizontal support, popup exclusion and hide fallback tested synthetically; Mac TODO |
+| MAC-12 | Screen floor in front of Dock (approved Mac exception, 2026-10-16) | Walk at physical screen bottom; Dock is not a support/perch; remain visually in front of Dock; ordinary window support preserved | Partial: test04 mapper/startup and synthetic/package checks pass; actual Dock z-order, orientation/auto-hide and fullscreen transitions require Mac validation. Replaces previous Dock-top hanging requirement by user decision. |
 | MAC-13 | Hanging paw interaction | One paw tap-wave or stretch; pet stays anchored; no seam exposure | Partial: same local render/inverse hit-test and tap/pull/release timing connected;48 exact reference poses and anchored/owner-loss tests pass; Mac TODO |
 | MAC-14 | Snack mode entry/cancel | Existing location preserved; jewel follows pointer without intercepting input | Partial: desktop entry preserves position, global click-through jewel connected; native input/cancel/Mac TODO |
 | MAC-15 | Snack chase/run/jump | Same gallop and ballistic jump, not cursor teleport/floating | Partial: current frames/Core session connected to native movement and platform engine; Mac TODO |
@@ -105,9 +117,9 @@ Windows-side tests and developer bundle scaffold are recorded in
 Actual Mac execution and login acceptance remain required, not scope exclusions.
 
 Record Mac model/chip, macOS version, resolution/scaling, monitors and Dock mode.
-The current arm64 test02 ZIP and exact hash are in the
-[refinement execution record](../../TASKS.md#macos-rendering-and-pet-only-launch--2026-10-15).
-Earlier test01 remains historical evidence, not the current candidate.
+The current local arm64 test04 ZIP and exact hash are in the
+[screen-floor record](../../TASKS.md#mac-screen-floor-and-scalestartup-review--2026-10-16).
+The remote test03 and earlier test01/test02 remain historical, unchanged artifacts.
 It requires macOS13+ for this test; OS version and native execution remain unknown.
 Send exact version/hash and checklist IDs. Tester records PASS/FAIL/NOT_TESTED,
 steps, expected/actual result and optionally a cropped recording. Ask them to

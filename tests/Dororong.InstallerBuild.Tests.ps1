@@ -7,8 +7,8 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $artifacts = Join-Path $root 'artifacts/installer'
-$runtime = Join-Path $root 'artifacts/product-shell/candidate-20261014-figma-tray-13/runtime'
-$archive = Join-Path $root 'artifacts/product-shell/candidate-20261014-figma-tray-13/Doros-on-my-desktop-Portable-0.1.3-win-x64.zip'
+$runtime = Join-Path $root 'artifacts/product-shell/candidate-20261016-startup-lazy-16/runtime'
+$archive = Join-Path $root 'artifacts/product-shell/candidate-20261016-startup-lazy-16/Doros-on-my-desktop-Portable-0.1.3-win-x64.zip'
 $builder = Join-Path $root 'tools/Build-Installer.ps1'
 if (-not $CompilerPath) { $CompilerPath = Join-Path $artifacts 'toolchain-inno-7.1.0-x64-20260912-02/ISCC.exe' }
 function Check([bool]$condition, [string]$message) { if (-not $condition) { throw $message } }

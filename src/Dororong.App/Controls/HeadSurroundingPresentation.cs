@@ -59,5 +59,11 @@ internal sealed class HeadSurroundingPresentation
         result.Freeze();
         return result;
     }
+    internal (PointD Near,PointD Far) LocalOffsets(FacingDirection facing,double angle)
+    {
+        var radians=angle*Math.PI/180;var c=Math.Cos(radians);var s=Math.Sin(radians);
+        PointD Local(PointD p)=>new((p.X*c+p.Y*s)*(facing==FacingDirection.Left?-1:1),-p.X*s+p.Y*c);
+        return (Local(_motion.Current),Local(_motion.Far));
+    }
     internal void Reset() { _motion.Reset(); _settling = false; _holding = false; _previousPointer = null; }
 }

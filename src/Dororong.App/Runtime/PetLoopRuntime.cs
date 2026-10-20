@@ -49,16 +49,20 @@ internal sealed class PetLoopTimer
 
 internal sealed class PetLoopHost
 {
+    internal Func<PointD?>? MeasureSizeAnchor { get; init; }
+    internal Action<PointD>? RebaseSizePresentation { get; init; }
     internal PetPlatformRuntime? Platforms { get; init; }
     internal Action? MaintainPerchLayer { get; init; }
     internal Action<TimeSpan>? MaintainWindowLayer { get; init; }
     internal Func<PetSnapshot,bool>? HoldLocomotionWalk { get; init; }
     internal Action<bool>? SetLocomotionBlocked { get; init; }
     internal Action<bool>? SetSittingRequested { get; init; }
+    internal Action? BeginPlatformFrame { get; init; }
     internal Func<PetSnapshot, DirectInteractionSnapshot, PointerSample, TimeSpan, bool, bool>? UpdateHunting { get; init; }
     internal Func<Dororong.App.Controls.PouncePose>? GetPouncePose { get; init; }
     internal Action<SnackPose, PointerSample>? PresentSnack { get; init; }
     internal Func<PointD>? GetSnackMouth { get; init; }
+    internal Func<double>? GetSnackChaseScale { get; init; }
     internal Action<PointerSample, bool>? ShowSnackCursor { get; init; }
     internal Action? DisposeSnackCursor { get; init; }
     private readonly Func<RectD> _getWorkArea;
@@ -114,7 +118,12 @@ internal sealed class PetLoopHost
     internal PointerSample SamplePointer() => _samplePointer();
     internal bool IsPrimaryButtonDown() => _isPrimaryButtonDown();
     internal PointD GetWindowPosition() => _getWindowPosition();
-    internal void SetWindowPosition(PointD position) => _setWindowPosition(position);
+    internal double WindowMoveMilliseconds { get; private set; }
+    internal void SetWindowPosition(PointD position){
+        var started=System.Diagnostics.Stopwatch.GetTimestamp();
+        try{_setWindowPosition(position);}
+        finally{WindowMoveMilliseconds+=System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds;}
+    }
     internal void Render(PetSnapshot snapshot, DirectInteractionSnapshot directInteraction) =>
         _render(snapshot, directInteraction);
     internal void Render(PetSnapshot snapshot, DirectInteractionSnapshot directInteraction, TimeSpan elapsed)

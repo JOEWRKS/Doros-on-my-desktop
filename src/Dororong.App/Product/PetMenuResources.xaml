@@ -12,7 +12,7 @@
                     <Border Margin="3" BorderThickness="1" BorderBrush="#50FFFFFF" CornerRadius="2" IsHitTestVisible="False"/>
                     <Path Data="M 0,30 L 30,0 60,30 30,60 Z" Fill="#12FFFFFF" Width="60" HorizontalAlignment="Right" IsHitTestVisible="False"/>
                     <Grid Margin="11,0"><Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/><ColumnDefinition Width="20"/></Grid.ColumnDefinitions>
-                        <Image Width="36" Height="36" Source="/Dororong.App;component/Assets/snack-jewel.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <Image Width="36" Height="36" Source="{x:Static product:PetContextMenu.SnackIcon}" RenderOptions.BitmapScalingMode="HighQuality"/>
                         <ContentPresenter Grid.Column="1" ContentSource="Header" VerticalAlignment="Center" Margin="8,0,0,0" RecognizesAccessKey="True"/>
                         <Path x:Name="Arrow" Grid.Column="2" Data="M 2,9 L 15,9 M 10,4 L 15,9 10,14" Stroke="#123D52" StrokeThickness="1.5" Width="18" Height="18" VerticalAlignment="Center"/>
                         <Rectangle x:Name="Stop" Grid.Column="2" Width="10" Height="10" Fill="#557F92" Visibility="Collapsed"/>

@@ -13,8 +13,8 @@ $output = Assert-InstallerOutputPath -OutputPath $OutputPath
 $payload = Get-InstallerPayload -PackagePath $PackagePath
 $archive = (Resolve-Path -LiteralPath $ArchivePath).Path
 $archiveHash = (Get-FileHash -LiteralPath $archive).Hash
-# Automatic sleep option candidate14, validated local update 2026-10-14.
-if ($archiveHash -cne '8B135B76436F7BBBE0ACBF644F39A04A90DAD95A6876E5680CD7DB8E3FCEF8DD') {
+# Startup/lazy candidate16, pixel/source/native-delay tested; local update authorized 2026-10-16.
+if ($archiveHash -cne '9648BC4E4E5DA086A2FFB84E774BCD4C08DFA12B98F1DF4BA62924942AFBE9F9') {
     throw 'Archive hash does not match the approved 0.1.3 candidate.'
 }
 $compiler = (Resolve-Path -LiteralPath $CompilerPath).Path

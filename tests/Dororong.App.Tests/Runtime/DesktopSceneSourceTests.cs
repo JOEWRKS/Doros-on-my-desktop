@@ -41,6 +41,34 @@ public class DesktopSceneSourceTests(ITestOutputHelper output)
         internal void Set(params NativeWindow[] windows) => Value = new(Value!.Monitors,windows);
     }
     [Fact]
+    public void Native_capture_reuses_equal_records_but_observes_changed_values_and_order()
+    {
+        var reader=new Metadata();var native=new DesktopSceneNative(reader);
+        var first=new NativeWindow(42,7,new(0,300,500,500));
+        var second=new NativeWindow(43,8,new(20,200,400,300));reader.Set(first,second);
+        var a=native.Capture(Ms(0))!;
+        reader.Set(first with{},second with{});var b=native.Capture(Ms(80))!;
+        Assert.Same(a.Windows[0],b.Windows[0]);Assert.Same(a.Windows[1],b.Windows[1]);
+        reader.Set(first with{Bounds=new(1,300,500,500)},second);
+        var c=native.Capture(Ms(160))!;Assert.NotSame(b.Windows[0],c.Windows[0]);
+        Assert.Equal(0,a.Windows[0].Bounds.X);Assert.Equal(1,c.Windows[0].Bounds.X);
+        reader.Set(second,first);var d=native.Capture(Ms(240))!;
+        Assert.Equal(43,d.Windows[0].Key.Handle);Assert.Equal(0,d.Windows[0].ZOrder);
+        reader.Set(first with{IsTransientMenu=true,CanOcclude=false});
+        var e=Assert.Single(native.Capture(Ms(320))!.Windows);
+        Assert.True(e.IsTransientMenu);Assert.False(e.CanOcclude);
+    }
+    [Fact]
+    public void Equal_native_metadata_does_not_allocate_every_mapped_window_again()
+    {
+        var reader=new Metadata();reader.Set(Enumerable.Range(1,200).Select(i=>new NativeWindow(i,7,new(i,300,500,500))).ToArray());
+        var native=new DesktopSceneNative(reader);for(var i=0;i<10;i++)native.Capture(Ms(i*80));
+        var start=GC.GetAllocatedBytesForCurrentThread();
+        for(var i=0;i<100;i++)native.Capture(Ms(800+i*80));
+        var bytes=GC.GetAllocatedBytesForCurrentThread()-start;output.WriteLine($"100 captures,200 windows: {bytes} bytes");
+        Assert.InRange(bytes,1,500_000);
+    }
+    [Fact]
     public void Successful_absence_and_changed_pid_invalidate_handle_identity()
     {
         var reader = new Metadata(); var native = new DesktopSceneNative(reader);

@@ -31,9 +31,11 @@ public sealed class MacSceneMapper
                 (Math.Abs(row.Bounds.X-m.Bounds.X)<=20||Math.Abs(row.Bounds.Right-m.Bounds.Right)<=20));
             var dock=horizontal||side;
             var menu=row.Layer>=menuLevel;
-            // Non-normal system surfaces can occlude, but aren't phantom ledges.
-            // Side Dock follows the Windows vertical-taskbar policy: no top perch.
-            var support=horizontal||!row.Dock&&row.Layer==0;
+            // Mac policy: walk on the screen floor, visually in front of Dock.
+            // Dock still occludes ordinary ledges behind it, but never owns a
+            // support/perch. Menus/overlays therefore cannot delete our ground.
+            // Ordinary layer-zero app windows retain support and occlusion.
+            var support=!row.Dock&&row.Layer==0;
             var occlude=dock||!row.Dock&&row.Layer>=0;
             windows.Add(new(new(row.Id,row.Pid,age),row.Bounds,z,true,false,false,false,support,occlude,dock,horizontal)
                 {IsTransientMenu=menu});

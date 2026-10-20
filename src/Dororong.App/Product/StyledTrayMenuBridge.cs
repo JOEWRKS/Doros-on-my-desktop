@@ -71,6 +71,12 @@ internal sealed class StyledTrayMenuBridge : IDisposable
                     menu.Items.Add(new MenuItem { Header = sourceItem.Text, IsEnabled = false });
                 continue;
             }
+            if (Equals(sourceItem.Tag, "sleep") && owner is MainWindow pet && pet.UsesHighResolutionArt)
+            {
+                var size = pet.CreateSizeMenuItem();
+                menu.Items.Add(size);
+                menu.Closed += (_, _) => size.Finish();
+            }
             if (Equals(sourceItem.Tag, "logs")) menu.Items.Add(new Separator());
             var item = new MenuItem
             {

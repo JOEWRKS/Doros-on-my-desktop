@@ -1,8 +1,10 @@
-도로롱이 내 컴에?! — Mac 테스트 03 (v0.1.3 기반)
+도로롱이 내 컴에?! — Mac 테스트 04 (v0.1.3 기반)
 
 Apple Silicon(M1 이상), macOS 13 이상용 테스트 묶음입니다.
 실제 Mac에서 아직 실행 검증하지 않았습니다. 정식 Mac 지원/안전 보증이 아닙니다.
-테스트 03은 먹기 시작 시 효과 로딩 지연을 개선했습니다. 모션·픽셀·재생 시간은 유지했습니다.
+테스트 04는 Dock을 발판으로 쓰지 않고 화면 맨 아래에서 걷습니다.
+Dock보다 앞쪽(z-order)에 표시하며 일반 창 걸치기는 유지합니다.
+테스트 03의 먹기 로딩 개선과 기존 모션·픽셀·재생 시간은 유지했습니다.
 Intel/Windows용이 아닙니다. .NET·Rosetta·터미널 명령 설치는 필요하지 않습니다.
 
 실행
@@ -25,7 +27,9 @@ https://support.apple.com/ko-kr/102445
 먼저 확인할 것
 - 칩 모델과 macOS 버전, 화면 배율/모니터 수를 알려주세요.
 - 도로롱 걷기·마우스 추적 → 간식 주기 → 먹기·식후 흔들림.
-- 머리 잡기/놓기, 볼 당기기, 몸 클릭, 창/Dock에 걸치기와 앞발 조작.
+- 머리 잡기/놓기, 볼 당기기, 몸 클릭, 일반 창에 걸치기와 앞발 조작.
+- 화면 바닥에서 걷는지, Dock 아이콘 앞에 표시되는지 확인하세요. Dock에는 걸치지 않습니다.
+- 창 최대화/복원·메뉴/오버레이 표시·Dock 숨김/좌우 이동 때 바닥 높이가 바뀌지 않는지 확인하세요.
 - 캐릭터 우클릭과 메뉴 막대 머리 아이콘 좌·우 클릭, 밖 클릭/Escape 닫기.
 - 자동 눕기 OFF 저장 → 종료 → 다시 열어 OFF 유지 확인.
 - 앱을 두 번 열어도 한 마리인지, 정상 종료 후 다시 켜지는지.
@@ -63,6 +67,9 @@ Apple Silicon, macOS 13+ tester build. Extract, move Doro Mac Test.app into
 Applications, then double-click. Includes .NET. Normal launch shows only the pet
 and menu-bar head icon; use either pet/menu-bar menu to exit. No diagnostic window
 opens during normal startup. Failures show an exit/recovery dialog.
+Test04 walks at the physical screen bottom, in front of Dock (z-order), not on
+Dock's top edge. Ordinary window support/hanging remains. Please test window-mode
+transitions, overlays and Dock orientation/auto-hide; native layering is unverified.
 No Developer ID or Apple notarization; ad-hoc integrity
 only. Native execution and Gatekeeper acceptance are UNVERIFIED. Follow Apple's
 per-app guidance only if you trust the source; never disable OS protections.
