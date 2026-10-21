@@ -9,7 +9,12 @@
   rechecked. Matching Mac optimizations/tests/probe evidence are captured with this
   delivery; native M2/graphics/Gatekeeper acceptance remains unverified.
 - [Launch and essential checks](docs/releases/macos-r104-test04.md).
-  Public upload and fresh-download digest confirmation are pending at this checkpoint.
+  Published prerelease419740104/tagmacos-r104-test04/source119f2f5848220ff7826d7cb212c9d4ae818dcb4c.
+  Branch and tag verified on origin. Uploaded ZIP digest and fresh unauthenticated
+  public download both match the original99,175,502bytes/SHA256 above. SHA256 sidecar
+  and verification.json uploaded separately. Windows release419275770 and its ZIP
+  digest27bb7d390f6042b4972d152f4b9ee1e2ee8949df9cea55ba61ab3a1549db0103 unchanged.
+  This supersedes local-only status for test04; native acceptance remains open.
 
 ## Mac test04 two-hour host memory soak — 2026-10-21
 

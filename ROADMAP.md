@@ -5,7 +5,8 @@
 - Latest Mac direct download requested. Publish exact verified test04 ZIP with
   matching source and [M2 essential checks](docs/releases/macos-r104-test04.md).
   Rebuild/Windows changes excluded; preserve old releases.
-- Local hash confirmed; public asset/download verification pending at this checkpoint.
+- Public prerelease419740104/tagmacos-r104-test04 published; original ZIP/server digest/
+  fresh public download match. Matching source119f2f5 pushed; Windows release unchanged.
   Next gate remains actual Mac CPU and memory/graphics acceptance, not a repeat host soak.
 
 ## Mac test04 host long-run memory investigation · 2026-10-21
