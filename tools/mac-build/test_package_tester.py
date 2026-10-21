@@ -84,7 +84,7 @@ class PackageTests(unittest.TestCase):
                 pack.validate_publish(Path(tmp))
 
     def fixture(self, root):
-        names = ["Dororong.Mac", "Dororong.Mac.dll", "Dororong.Core.dll", "Dororong.Portable.dll",
+        names = ["Dororong.Mac", "Dororong.Mac.dll", "Dororong.Core.dll", "Dororong.Portable.dll", "Dororong.Raster.dll",
                  "libhostfxr.dylib", "libcoreclr.dylib", "libAvaloniaNative.dylib", "OFL-Pretendard.txt"]
         for name in names:
             (root/name).write_bytes(b"\xcf\xfa\xed\xfe"+struct.pack("<I", pack.ARM64) if name.endswith(".dylib") or name == "Dororong.Mac" else b"fixture")
@@ -95,7 +95,7 @@ class PackageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self.fixture(root)
-            self.assertEqual(len(pack.validate_publish(root)), 10)
+            self.assertEqual(len(pack.validate_publish(root)), 11)
             (root/"Dororong.Mac").write_bytes(b"\xcf\xfa\xed\xfe"+struct.pack("<I", 0x01000007))
             with self.assertRaisesRegex(ValueError, "arm64"):
                 pack.validate_publish(root)

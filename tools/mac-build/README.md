@@ -4,10 +4,11 @@ This packages a **test candidate**, not a Mac-verified release. No script upload
 registers login startup, uses a personal certificate or disables OS protection.
 The tester only extracts the ZIP, moves the `.app` to Applications and opens it;
 the included README describes the first-launch security boundary and recovery.
-Test04 opens the pet and menu-bar icon only; diagnostic controls require an
+The r104 port tester opens the pet and menu-bar icon only; diagnostic controls require an
 explicit developer flag. Its floor is the screen bottom, visually in front of Dock;
-Dock is no longer a support/perch. Ordinary windows and test03 eating-effect
-decoding/pixels/timing are preserved. Existing packages are not overwritten.
+Dock is no longer a support/perch. The r104 high-resolution runtime and continuous
+slider are connected. Neck/drool edge coverage and native execution remain open
+parity gates; see the dated port verification record. Existing packages are not overwritten.
 macOS13 is this full-feature tester's minimum, not a verified global support claim.
 
 ## Build on Windows

@@ -4,6 +4,21 @@ Direction, current stage and release completion gates live in [ROADMAP](ROADMAP.
 This file remains the sole active execution/verification ledger; a finished task
 does not close a roadmap stage with open requirements.
 
+## r104 Mac runtime/slider connected; Apple Silicon test01 packaged — 2026-10-21
+
+후속 요청에 따라 Mac 기본 실행 경로를 r104 고해상도 상태/입력 coordinator로 교체하고
+연속 크기 슬라이더·발 위치 보정·Retina 밀도 분리·Mac 크기 저장을 연결했다.
+Windows App/Core 소스는 3813312와 차이 없고 수락 DLL 해시도 유지했다.
+고정 팔/60Hz 먹기 효과는 수락 DLL 픽셀을 원형대로 가져왔다. 자동 검사 Raster36,
+Mac headless33, 패키저11개 및 자세237표본 동일 확인. 모두 Windows 호스트 검사다.
+[전체 근거·변경 경계·파일 해시](docs/verification/2026-10-21-r104-source-and-mac-port.md#connected-r104-apple-silicon-test-candidate--2026-10-21).
+`artifacts/macos/r104-test01-20261021/candidate-final/Doro-Mac-arm64-r104-test01.zip`
+생성 및 18개 네이티브 코드 해시/235파일 ZIP·리소스 봉인·실행 비트 확인.
+macOS13+/Apple Silicon 테스트 후보이며 임시 무결성 서명만 있다. 실제 Mac 실행,
+프레임 지연·메모리·창 순서는 미확인. 동적 목/침 경계 픽셀 차이는 남아 있어
+전체 이식/화질 동일 통과로 닫지 않는다. 다음은 해당 후보의 실제 맥 검수와 경계 차이
+해결·수락이며 Windows 메모리 반복 검사는 재개하지 않는다. 아래 foundation 상태는 당시 기록.
+
 ## Accepted r104 source pushed; Apple Silicon renderer foundation only — 2026-10-21
 
 사용자 최종본 푸시·맥북 버전 요청 및 Apple Silicon/r104 전체 이식 선택 확인.

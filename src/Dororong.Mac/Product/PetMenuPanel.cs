@@ -22,9 +22,10 @@ internal sealed class PetMenuPanel:UserControl,IDisposable
     internal Button SnackButton {get;}
     internal ToggleButton SleepButton {get;}
     internal Button StartupButton {get;}
+    internal Slider SizeSlider {get;}
     internal TextBlock Error {get;}=new(){IsVisible=false,TextWrapping=TextWrapping.Wrap,FontSize=11,Foreground=new SolidColorBrush(Color.Parse("#8D2338")),Margin=new(11,5)};
     internal event Action? Dismiss;
-    internal PetMenuPanel(bool tray,bool snackActive,bool sleepEnabled,Action snack,Action sit,Func<bool,bool> sleep,Action logs,Action exit,Func<LoginSnapshot>? startupRead=null,Func<bool,LoginSnapshot>? startupSet=null)
+    internal PetMenuPanel(bool tray,bool snackActive,bool sleepEnabled,Action snack,Action sit,Func<bool,bool> sleep,Action logs,Action exit,Func<LoginSnapshot>? startupRead=null,Func<bool,LoginSnapshot>? startupSet=null,int size=100,Func<int,bool>? resize=null)
     {
         FontFamily=Font;Width=288;
         var layout=new StackPanel();
@@ -54,6 +55,14 @@ internal sealed class PetMenuPanel:UserControl,IDisposable
             Dismiss?.Invoke();
         };
         rows.Children.Add(SleepButton);
+        var sizeLabel=Text($"크기 · {size}%",12,FontWeight.SemiBold,"#354049");
+        SizeSlider=new Slider{Minimum=100,Maximum=150,Value=size,TickFrequency=1,IsSnapToTickEnabled=true,IsEnabled=resize is not null};
+        AutomationProperties.SetName(SizeSlider,"캐릭터 크기 (%)");
+        var changing=false;var accepted=size;
+        SizeSlider.ValueChanged+=(_,_)=>{if(changing)return;var requested=(int)Math.Round(SizeSlider.Value);if(resize?.Invoke(requested)==true){accepted=requested;sizeLabel.Text=$"크기 · {requested}%";}else{changing=true;SizeSlider.Value=accepted;changing=false;}};
+        // Arrow keys belong to the focused slider, not the menu's row navigation.
+        SizeSlider.KeyDown+=(_,e)=>{if(e.Key is Key.Up or Key.Down)e.Handled=true;};
+        rows.Children.Add(new StackPanel{Margin=new(11,5),Children={sizeLabel,SizeSlider}});
         var login=startupRead?.Invoke()??new LoginSnapshot(LoginState.Unavailable,"연결되지 않음");
         var startup=new ToggleButton{IsChecked=login.Requested};StartupButton=startup;
         ConfigureButton(startup,SettingContent("macOS 로그인 시 실행",login.Label,login.Requested),54,Brushes.Transparent,null);

@@ -1,10 +1,14 @@
-도로롱이 내 컴에?! — Mac 테스트 04 (v0.1.3 기반)
+도로롱이 내 컴에?! — Mac r104 이식 테스트 01
 
 Apple Silicon(M1 이상), macOS 13 이상용 테스트 묶음입니다.
 실제 Mac에서 아직 실행 검증하지 않았습니다. 정식 Mac 지원/안전 보증이 아닙니다.
-테스트 04는 Dock을 발판으로 쓰지 않고 화면 맨 아래에서 걷습니다.
+수락된 Windows r104의 고해상도 원화·상호작용·100~150% 연속 크기 조절을 연결했습니다.
+이전 144px 테스트판을 확대해 포장한 것이 아닙니다. Windows 설치본은 변경하지 않습니다.
+Dock을 발판으로 쓰지 않고 화면 맨 아래에서 걷습니다.
 Dock보다 앞쪽(z-order)에 표시하며 일반 창 걸치기는 유지합니다.
-테스트 03의 먹기 로딩 개선과 기존 모션·픽셀·재생 시간은 유지했습니다.
+미확인: 실제 Apple Silicon 실행·Retina 조작·창 순서·성능·장시간 메모리.
+남은 차이: 목 연결과 침 벡터의 경계 픽셀은 WPF와 Skia에서 일부 다릅니다.
+전체 픽셀 동일 또는 Mac 전체 동작 통과를 주장하는 빌드가 아닙니다.
 Intel/Windows용이 아닙니다. .NET·Rosetta·터미널 명령 설치는 필요하지 않습니다.
 
 실행
@@ -32,6 +36,8 @@ https://support.apple.com/ko-kr/102445
 - 창 최대화/복원·메뉴/오버레이 표시·Dock 숨김/좌우 이동 때 바닥 높이가 바뀌지 않는지 확인하세요.
 - 캐릭터 우클릭과 메뉴 막대 머리 아이콘 좌·우 클릭, 밖 클릭/Escape 닫기.
 - 자동 눕기 OFF 저장 → 종료 → 다시 열어 OFF 유지 확인.
+- 크기 100↔150% 연속 왕복 → 발 위치/클릭 위치 확인 → 종료·재실행 시 크기 유지.
+- 앉은 채 추적·볼 당기기, 수면 눈 감김, 기울여 잡은 상태 놓기·착지 직전 퍼짐.
 - 앱을 두 번 열어도 한 마리인지, 정상 종료 후 다시 켜지는지.
 - 자동 실행은 기본 OFF. 원할 때만 메뉴에서 켭니다. '시스템 승인 필요'는
   등록 완료 표시가 아닙니다. 로그인 항목에서 승인 후 상태를 다시 확인하세요.
@@ -67,9 +73,12 @@ Apple Silicon, macOS 13+ tester build. Extract, move Doro Mac Test.app into
 Applications, then double-click. Includes .NET. Normal launch shows only the pet
 and menu-bar head icon; use either pet/menu-bar menu to exit. No diagnostic window
 opens during normal startup. Failures show an exit/recovery dialog.
-Test04 walks at the physical screen bottom, in front of Dock (z-order), not on
+This r104 port tester walks at the physical screen bottom, in front of Dock (z-order), not on
 Dock's top edge. Ordinary window support/hanging remains. Please test window-mode
 transitions, overlays and Dock orientation/auto-hide; native layering is unverified.
+The r104 high-resolution renderer, interaction coordinator and continuous size
+slider are connected. Neck/drool edge coverage differs from WPF in sampled pixels;
+this is not an all-pixel-equivalent or native-Mac-accepted release.
 No Developer ID or Apple notarization; ad-hoc integrity
 only. Native execution and Gatekeeper acceptance are UNVERIFIED. Follow Apple's
 per-app guidance only if you trust the source; never disable OS protections.

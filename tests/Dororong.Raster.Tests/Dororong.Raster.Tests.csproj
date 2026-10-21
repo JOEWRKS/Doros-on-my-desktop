@@ -11,6 +11,8 @@
     <PackageReference Include="xunit" Version="2.5.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
     <Using Include="Xunit" />
+    <Compile Include="../Dororong.App.Tests/Interaction/DirectInteractionControllerTests.cs" Link="Shared/DirectInteractionControllerTests.cs" />
+    <Compile Include="../Dororong.App.Tests/Controls/PounceSessionTests.cs" Link="Shared/PounceSessionTests.cs" />
     <ProjectReference Include="../../src/Dororong.Raster/Dororong.Raster.csproj" />
   </ItemGroup>
 </Project>

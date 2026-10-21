@@ -9,8 +9,8 @@ using Dororong.Raster;
 
 namespace Dororong.Mac.Rendering;
 
-// Fixed-capacity display primitive for the r104 port. Not yet wired to the
-// legacy DesktopSession: the accepted input/pose coordinator must move first.
+// Fixed-capacity display for DesktopSession's r104 coordinator. Native Mac
+// composition and Retina execution remain separate verification gates.
 internal sealed class R104Surface : Control, IDisposable
 {
     private R104Raster? raster;
@@ -44,6 +44,16 @@ internal sealed class R104Surface : Control, IDisposable
         if(lastPose==pose&&size==productScale&&density==displayScale)return;
         raster??=new();
         pixels=raster.Render(pose,productScale,pixels,displayScale);
+        Upload(pixels,productScale,displayScale);
+        lastPose=pose;
+    }
+
+    internal void Upload(byte[] source,double productScale,double displayScale)
+    {
+        Dispatcher.UIThread.VerifyAccess();ObjectDisposedException.ThrowIf(disposed,this);
+        var extent=R104Raster.Extent(productScale,displayScale);
+        if(source.Length<extent*extent*4)throw new ArgumentException("Active pixels required.");
+        pixels=source;
         if(bitmap is null||density!=displayScale)
         {
             var maximum=R104Raster.Extent(1.5,displayScale);
@@ -53,14 +63,15 @@ internal sealed class R104Surface : Control, IDisposable
         using(var framebuffer=bitmap.Lock())
             for(var y=0;y<extent;y++)
                 Marshal.Copy(pixels,y*extent*4,framebuffer.Address+y*framebuffer.RowBytes,extent*4);
-        size=productScale;density=displayScale;ActiveExtent=extent;lastPose=pose;
+        size=productScale;density=displayScale;ActiveExtent=extent;lastPose=null;
         InvalidateVisual();
     }
 
     internal bool HitOpaque(Point point)
     {
         if(disposed||bitmap is null)return false;
-        var x=(point.X-Origin.X)*density;var y=(point.Y-Origin.Y)*density;
+        var ratio=ActiveExtent/(256*size);
+        var x=(point.X-Origin.X)*ratio;var y=(point.Y-Origin.Y)*ratio;
         if(!double.IsFinite(x)||!double.IsFinite(y)||x<0||y<0||x>=ActiveExtent||y>=ActiveExtent)return false;
         return pixels[((int)y*ActiveExtent+(int)x)*4+3]>=16;
     }
@@ -70,7 +81,7 @@ internal sealed class R104Surface : Control, IDisposable
         base.Render(context);
         if(bitmap is not null&&!disposed)
             context.DrawImage(bitmap,new Rect(0,0,ActiveExtent,ActiveExtent),
-                new Rect(Origin,new Size(ActiveExtent/density,ActiveExtent/density)));
+                new Rect(Origin,new Size(256*size,256*size)));
     }
 
     public void Dispose()

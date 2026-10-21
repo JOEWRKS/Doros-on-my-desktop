@@ -41,6 +41,7 @@ internal static class Program
             ("flutter", new() { Progress = 1, FlutterPhase = .2 }, true),
             ("neck", new() { BodyFrame = 60 }, true),
             ("eat", new() { Closed = true, MouthAge = .18 }, true),
+            ("eat-runtime-60hz", new() { Closed = true, MouthAge = 11/60d }, true),
             ("drool", new() { DroolAge = .7 }, true)
         };
         var results = new List<object>(); var failures = 0; var vectorDifferences = 0;
@@ -79,7 +80,7 @@ internal static class Program
         File.WriteAllText(Path.Combine(output,"summary.json"), JsonSerializer.Serialize(new
         {
             acceptedDll=path, hash, sourcePixelFailures=failures, vectorDifferingFrames=vectorDifferences,
-            nativeMacExecution="NOT_TESTED", hostIntegration="NOT_IMPLEMENTED", results
+            nativeMacExecution="NOT_TESTED", hostIntegration="CONNECTED_NOT_NATIVE_VERIFIED", results
         },new JsonSerializerOptions { WriteIndented=true }));
         // A vector mismatch is an open parity gate, not a green overall run.
         return failures > 0 ? 1 : vectorDifferences > 0 ? 2 : 0;

@@ -1,4 +1,4 @@
-# r104 portable renderer foundation — not the Mac product
+# r104 portable renderer and headless interaction coordinator
 
 This `net8.0` library compiles the accepted Windows CPU pixel sampler and source
 banks directly. Windows does not reference it. Internal geometry and Skia drawing
@@ -26,7 +26,25 @@ separately from vector-backend coverage differences. Exit 1 means source-pixel
 mismatches; exit 2 means a vector coverage gate remains open. Even exit zero is
 only the sampled renderer comparison, never all-frame or actual Mac acceptance.
 
-Still required: vector difference review/correction, accepted state/input and
-landing orchestration, Mac host/continuous-slider integration, arm64 application
-packaging, and actual Mac execution. The older `Dororong.Mac` still uses its old
-renderer; do not call that application an r104 port.
+`RuntimePort` contains Mac-only extractions of accepted PetLoop and high-resolution
+presentation methods. Input controllers, platform/perch engines and behavior
+clocks compile from unchanged source. Native WPF factories and display services
+are replaced with Mac host adapters, not used at runtime. DesktopSession now
+connects this coordinator to the fixed-capacity surface and continuous slider.
+
+Fixed paw textures and the 103 possible 60Hz eating-effect frames are exported
+from the hash-checked accepted DLL by `tools/MacR104FixedEffects`. Only occupied
+eating rectangles are stored; no resize or new artwork is involved. The two
+compressed banks together are under 9KB. Neck/drool remain dynamic paths with
+the original geometry; their edge coverage differs between the raster backends.
+Non-60Hz eating ages (not emitted by the coordinator) use the dynamic fallback.
+
+Runtime geometry uses the same alpha-128 silhouette and lower 2-DIP support band.
+Retina density changes refresh the raster before any geometry read; hit/display
+mapping uses the active extent, including fractional-size ceil rounding. One
+high-water display buffer and 24 bounded sole results are retained. No unbounded
+size cache, forced GC or native window resizing is introduced.
+
+Actual Apple Silicon launch, native interaction, Retina/window behavior, rendering
+latency and long-running memory are NOT validated by these Windows-hosted tests.
+See `docs/verification/2026-10-21-r104-source-and-mac-port.md` for the exact bundle.

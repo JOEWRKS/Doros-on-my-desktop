@@ -136,7 +136,7 @@ namespace System.Windows.Media
                 using var bitmap = new SKBitmap();
                 if (!bitmap.InstallPixels(new(source.PixelWidth, source.PixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul),
                     pin.AddrOfPinnedObject(), source.PixelWidth * 4)) throw new InvalidOperationException("Cannot bind image pixels.");
-                using var p = new SKPaint { IsAntialias = true, FilterQuality = SKFilterQuality.High };
+                using var p = new SKPaint { IsAntialias = true, FilterQuality = SKFilterQuality.Low };
                 c.DrawBitmap(bitmap, new SKRect((float)rect.X, (float)rect.Y, (float)(rect.X + rect.Width), (float)(rect.Y + rect.Height)), p);
             }
             finally { pin.Free(); }

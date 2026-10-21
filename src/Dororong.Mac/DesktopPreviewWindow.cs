@@ -14,6 +14,7 @@ using Dororong.Mac.Native;
 using Dororong.Mac.Product;
 using Dororong.Portable.Desktop;
 using Dororong.Portable.Rendering;
+using Dororong.Mac.Rendering;
 
 namespace Dororong.Mac;
 
@@ -24,15 +25,19 @@ internal sealed class DesktopSession : IDisposable
     private QuartzDesktop? nativeInstance;
     private QuartzDesktop native=>nativeInstance??=new();
     private readonly SceneCache scenes=new(background:true);
-    private readonly Window petWindow=Overlay(DesktopFrames.ViewportSize);
+    private readonly Window petWindow=Overlay(408);
     private readonly Window jewelWindow=Overlay(32);
-    private readonly Image petImage=new(){Width=DesktopFrames.ViewportSize,Height=DesktopFrames.ViewportSize,Stretch=Stretch.None};
-    private readonly WriteableBitmap bitmap=new(new(DesktopFrames.ViewportSize,DesktopFrames.ViewportSize),new(96,96),PixelFormat.Bgra8888,AlphaFormat.Premul);
+    private readonly R104Surface petImage=new(){Width=408,Height=408};
+    private long displayedRevision=-1;
+    private double displayedDensity;
+    private SizeSettings? sizeSettings;
+    private int savedSize;
+    private TimeSpan sizeChangedAt;
     private readonly Bitmap jewel;
     private readonly TextBlock status=new(){Text="시작 중",TextWrapping=TextWrapping.Wrap,Margin=new Thickness(12)};
     private readonly DispatcherTimer timer=new(){Interval=TimeSpan.FromMilliseconds(16)};
     private readonly Stopwatch clock=Stopwatch.StartNew();
-    private DesktopPetController? controller;
+    private R104DesktopController? controller;
     private IReadOnlyList<DesktopMonitor> monitors=[];
     private nint petHandle,jewelHandle;
     private TimeSpan last,lastMonitorRead;
@@ -62,7 +67,7 @@ internal sealed class DesktopSession : IDisposable
         inspection.Closed+=(_,_)=>{if(!disposed)quit();};
         inspection.Deactivated+=(_,_)=>menu.Close();
         }
-        petWindow.Content=petImage;petImage.Source=bitmap;
+        petWindow.Content=petImage;
         RenderOptions.SetBitmapInterpolationMode(petImage,BitmapInterpolationMode.None);
         using(var stream=typeof(DesktopSession).Assembly.GetManifestResourceStream("Dororong.jewel")!)jewel=new Bitmap(stream);
         jewelWindow.Content=new Image{Source=jewel,Width=32,Height=32,IsHitTestVisible=false};
@@ -82,8 +87,9 @@ internal sealed class DesktopSession : IDisposable
     public void Dispose()
     {
             if(disposed)return;
-            disposed=true;timer.Stop();timer.Tick-=Tick;menu.Dispose();statusMenu.Dispose();statusItem?.Dispose();statusItem=null;controller?.CancelSnack();
-            petImage.Source=null;jewelWindow.Content=null;petWindow.Close();jewelWindow.Close();bitmap.Dispose();jewel.Dispose();
+            if(sizeChangedAt!=TimeSpan.Zero){try{sizeSettings?.Save(savedSize);}catch(Exception e){ReportError("크기 저장",e);}}
+            disposed=true;timer.Stop();timer.Tick-=Tick;menu.Dispose();statusMenu.Dispose();statusItem?.Dispose();statusItem=null;controller?.Dispose();
+            jewelWindow.Content=null;petWindow.Close();jewelWindow.Close();petImage.Dispose();jewel.Dispose();
             inspection?.Close();errorWindow?.Close();
     }
     internal void Start()
@@ -93,13 +99,15 @@ internal sealed class DesktopSession : IDisposable
         {
             settings=new BehaviorSettings(Path.Combine(dataDirectory,"settings.json"));
             var sleepEnabled=settings.AutomaticSleepEnabled;
+            sizeSettings=new(Path.Combine(dataDirectory,"size.json"));savedSize=sizeSettings.Read();
             monitors=native.Monitors();scenes.Read(clock.Elapsed,native.Capture,monitors);
             var main=monitors[0];var frame=DesktopFrames.Place(MotionRenderer.Standing(),false);
             var contact=DesktopFrames.Measure(frame).Contact;
             var x=main.Bounds.X+main.Bounds.Width/2-72;var top=main.Bounds.Bottom;
             // Start at the physical screen bottom, not Dock's variable top.
             // ConfigureWindow keeps the pet in front of Dock independently.
-            controller=new(new(x,top-contact.SoleY),new RandomSource());
+            controller=new(new(x,top-contact.SoleY),new RandomSource(),savedSize);
+            controller.Faulted+=e=>{timer.Stop();ReportError("동작 처리",e);};
             controller.SetAutomaticSleep(sleepEnabled);
             petWindow.Show();jewelWindow.Show();jewelWindow.Hide();
             petHandle=Handle(petWindow);jewelHandle=Handle(jewelWindow);
@@ -116,7 +124,7 @@ internal sealed class DesktopSession : IDisposable
         if(controller is null)return;
         try
         {
-            PetMenuPanel Create()=>new(tray,controller.Snack!=SnackPhase.None,controller.AutomaticSleep,ToggleSnack,()=>controller.ToggleSit(),SetSleep,OpenLogs,quit,startup.Read,startup.Set);
+            PetMenuPanel Create()=>new(tray,controller.Snack!=SnackPhase.None,controller.AutomaticSleep,ToggleSnack,()=>controller.ToggleSit(),SetSleep,OpenLogs,quit,startup.Read,startup.Set,controller.SizePercent,controller.RequestSize);
             if(!tray){statusMenu.Close();menu.Open(petImage,Create);return;}
             menu.Close();var pointer=native.Pointer();if(!pointer.IsAvailable)return;
             statusMenu.Open(Create,w=>
@@ -170,10 +178,18 @@ internal sealed class DesktopSession : IDisposable
             if(now-lastMonitorRead>=TimeSpan.FromMilliseconds(80))
             {lastMonitorRead=now;try{monitors=native.Monitors();}catch{/* retain last valid floors */}}
             var scene=scenes.Read(now,native.Capture,monitors);var pointer=native.Pointer();
+            controller.Density=petWindow.RenderScaling;
             controller.Advance(delta,pointer,native.PrimaryDown(),scene);
-            var bytes=controller.ViewportFrame.Pixels.ToArray();using(var target=bitmap.Lock())
-                for(var y=0;y<336;y++)Marshal.Copy(bytes,y*1344,target.Address+y*target.RowBytes,1344);
-            petImage.InvalidateVisual();native.Move(petHandle,controller.Position-new PointD(96,96));
+            if(displayedRevision!=controller.FrameRevision||displayedDensity!=controller.Density){
+                petImage.Upload(controller.Pixels,controller.Scale,controller.Density);
+                displayedRevision=controller.FrameRevision;displayedDensity=controller.Density;
+            }
+            petImage.Origin=new(96-56*controller.Scale,96-56*controller.Scale+controller.ReleaseOffset);
+            native.Move(petHandle,controller.Position-new PointD(96,96));
+            if(savedSize!=controller.SizePercent){savedSize=controller.SizePercent;sizeChangedAt=now;}
+            if(sizeChangedAt!=TimeSpan.Zero&&now-sizeChangedAt>=TimeSpan.FromMilliseconds(350)){
+                sizeSettings?.Save(savedSize);sizeChangedAt=TimeSpan.Zero;
+            }
             QuartzDesktop.ClickThrough(petHandle,!contextOpen&&!controller.Capturing&&(!pointer.IsAvailable||!controller.Hit(pointer.Position)));
             var snack=controller.Snack==SnackPhase.Chasing&&pointer.IsAvailable;
             if(snack)
@@ -184,7 +200,7 @@ internal sealed class DesktopSession : IDisposable
             else jewelWindow.Hide();
             // Never globally hide or replace the system cursor. The click-through
             // jewel overlay cannot leave other applications with a missing cursor.
-            status.Text=lastError??$"창 정보: {scene.Health} · 이동: {controller.Platform.Phase} · 매달리기: {controller.Perch}";
+            status.Text=lastError??$"창 정보: {scene.Health} · 이동: {controller.Perch} · 매달리기: {controller.Perch}";
         }
         catch(Exception e)
         {timer.Stop();menu.Close();statusMenu.Close();controller.CancelSnack();jewelWindow.Hide();ReportError("동작 처리",e);try{QuartzDesktop.ClickThrough(petHandle,true);}catch{/* Recovery dialog still owns a usable exit. */}}

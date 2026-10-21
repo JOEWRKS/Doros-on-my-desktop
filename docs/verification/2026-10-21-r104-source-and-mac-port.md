@@ -112,3 +112,110 @@ r104 state/input/landing coordinator, continuous-slider/persistence integration,
 native host geometry, final packaging and actual Apple Silicon execution.
 Do not substitute this compile-only output for the requested full port, and do
 not ask the user to repeat the closed Windows memory investigation.
+
+## Connected r104 Apple Silicon test candidate — 2026-10-21
+
+This supersedes the foundation-only **implementation** status above, not the
+native acceptance gate. The normal Mac DesktopSession now uses the r104
+headless coordinator and high-resolution surface, not DesktopPetController's
+legacy 144px renderer.
+
+### Implementation and preservation boundary
+
+- Windows App/Core source remains identical to `3813312` (empty targeted Git
+  diff). The accepted running/release App DLL still has the SHA256 recorded
+  above. No Windows application restart, installer, settings or artwork change.
+- Mac-only PetLoop extraction removes the WPF production factory. Current
+  direct-input controllers, platform/perch runtime, behavior clocks, hunting,
+  pounce, locomotion and expression timing compile from unchanged source.
+  High-resolution pose/recovery methods are extracted into the Mac raster
+  assembly; native display, contact measurement and input capture are adapters.
+- Normal desktop input connects head grab/swing/release, cheek capture/recoil,
+  hanging paws, sitting/sleep, gaze, snacks and precontact landing. The seated
+  cheek reflection keeps its high-resolution capture instead of falling back
+  to a legacy capture. This adapter branch has a specific regression test,
+  not a claim of new Windows behavior.
+- The 100–150% slider queues the latest value for the next tick, preserves the
+  world foot through PetLoop.TryResize, and saves the Mac-only size setting
+  after 350ms inactivity (or shutdown). Busy interaction resize is rejected.
+  The transparent host stays 408 points; the backing bitmap stays at maximum
+  capacity for its display density. Product scale and Retina density stay
+  separate. Density refresh happens before measuring the new extent.
+- One retained active frame, bounded 24-entry sole cache and retained perch
+  blend buffers avoid an unbounded per-size image cache. This is a code/storage
+  property, **not measured native graphics-memory or latency acceptance**.
+
+### Effects
+
+Fixed hanging-paw texture coverage is imported without resampling from the
+hash-checked accepted DLL. All 103 possible 60Hz eating overlay ages are likewise
+exported as occupied rectangles (not full character frames). The runtime already
+quantizes those ages to 60Hz, so this does not change its clock. Banks total
+8,498 compressed bytes; no growing age cache or new artwork.
+
+- Paw bank SHA256:
+  `11E18B62F477CF33C32E91E357002A97C8B72281FB84119A1015C7847240E3B9`.
+- Eating bank SHA256:
+  `C30C4D02A484FF3C4989C17B656A385291D267F846A955CBC136ECDFAF7602CF`.
+- Dynamic image sampling changed from Skia cubic to linear to match the WPF
+  sampling route; the non-60Hz diagnostic eating sample maximum channel error
+  fell from 65 to 28.
+- `parity-06/summary.json`: 70 total samples, 55 byte-identical (45 original
+  non-vector, 5 flutter, 5 runtime-60Hz eating). 15 samples still differ:
+  neck 5 (14–33 channels, max22), drool 5 (92–197 channels, max21), and the old
+  arbitrary 0.18-second eating probe 5 (79–193 channels, max28). That last age
+  is not emitted by the 60Hz coordinator; it still exercises the fallback.
+  The comparison deliberately returns nonzero. Dynamic neck/drool use unchanged
+  paths and timings, but backend boundary coverage remains an open equality
+  gate, not a passed visual equivalence result.
+- Saved neck/drool WPF and portable PNG pairs were inspected. No native screen
+  or complete motion sequence was visually inspected on a Mac.
+
+### Executed checks
+
+All these checks ran on Windows, not an Apple Silicon machine.
+
+- Portable raster/runtime suite: **36 passed**, zero failed/skipped.
+- Mac headless suite: **33 passed**, zero failed/skipped. Includes ordinary menu
+  lifecycle, continuous value callbacks/rejection, 3-size foot anchoring, density
+  transition, whole-loop head grab/swing/release and return to the floor.
+- Same-DLL pose sequence comparison: **237 samples**, zero pose-field differences,
+  across 100/125/150%, gaze, sitting, sleep phase wrap/wake and snack phases.
+  This checks numeric pose values, not native display latency or all interactions.
+- Packager suite: **11 passed** after updating its synthetic publish fixture to
+  require Dororong.Raster.dll. The initial run with the old fixture failed before
+  reaching its intended checks; that failure was corrected rather than ignored.
+- TRX: `artifacts/macos/r104-port-20261021/tests/{raster-final,mac-final}.trx`.
+  The three size-cycle cases were additionally rerun with both world-foot X and
+  Y assertions: `tests/mac-foot-xy.trx`, 3 passed (not added as distinct tests).
+  Pose evidence: `artifacts/macos/r104-port-20261021/runtime-parity-final.json`.
+- Self-contained `osx-arm64` publish with .NET8.0.32 succeeded.
+  Published Raster DLL matches the Windows-hosted test build byte-for-byte:
+  `5F2A86713959D32EF2C71D4B4C8FA42F56FC046CE4D0DF7DA755F198017602B5`.
+  Published Mac DLL:
+  `535D127979E99F3696F3F016E80D7247968F72BF4586677F6593CFA7437F7A12`.
+  Managed source checks do not execute the ARM64 native libraries.
+  Final source cleanup after packaging removed trailing empty lines only; no
+  executable statements changed after the recorded publish.
+
+### Exact deliverable and remaining gates
+
+Deliver **only**:
+`artifacts/macos/r104-test01-20261021/candidate-final/Doro-Mac-arm64-r104-test01.zip`
+
+- 99,162,683 bytes; SHA256
+  `3e32340918f04486799f022caba20d9e91835d4193814c983aa83f0bc37536ba`.
+- 235 files; 18 native code hash checks, resource seals, ZIP CRC/content and Unix
+  executable permissions verified by the local packager.
+- Contains `Doro Mac Test.app`, Korean/English limitations and license notices.
+  Apple Silicon, macOS13+ test prerequisite; the user's actual OS remains unknown.
+- Ad-hoc integrity signature only. No Developer ID/notarization. Not Apple's
+  native codesign verification, Gatekeeper acceptance or a safety guarantee.
+- Earlier `candidate` folder is an intermediate with an older English README;
+  do not distribute it. No signed bundle was edited after signing.
+- **NOT TESTED:** actual Apple Silicon launch/exit/security prompt, native Retina
+  coordinates, window/Dock/Spaces ordering, all interactive sequences, frame
+  pacing, and long-running native/graphics memory.
+- Full r104 Mac parity is **not closed**. Remaining work is actual-Mac validation
+  of this identified candidate and resolution/acceptance of dynamic edge coverage,
+  not another repetition of the concluded Windows memory investigation.

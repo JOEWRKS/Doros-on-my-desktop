@@ -5,6 +5,15 @@
 
 ## 현재 위치 · 2026-10-19
 
+- **r104 Apple Silicon test01 패키지 생성·전체 수락 미완(10월21일 후속):** Mac 기본
+  고해상도 실행·상호작용·연속 슬라이더 연결, 발 고정/밀도 전환/잡기·놓기 회귀 검사.
+  자동 검사80개·자세237표본 동일, 픽셀70표본 중55개 동일. 고정 팔/실제 먹기 효과
+  차이는 수정했으나 동적 목/침 경계 차이와 실제 맥 실행·성능·메모리는 미확인.
+  [확정 후보·검증 경계](docs/verification/2026-10-21-r104-source-and-mac-port.md#connected-r104-apple-silicon-test-candidate--2026-10-21).
+  `candidate-final/Doro-Mac-arm64-r104-test01.zip`만 전달. 다음은 그 후보의 맥 검수와
+  경계 차이 해결·수락. Windows 코드/원화/설치본 유지, 기존 메모리 반복 검사 재개 없음.
+  아래 foundation 연결·패키징 미완은 본 항목으로 대체하며 native gate는 유지한다.
+
 - **r104 최종 소스 푸시 완료·Apple Silicon 전체 이식 미완(10월21일):** 사용자
   푸시·맥 버전 요청과 M1 이상/r104 전체 이식 선택 확인.
   [범위와 필수 이식·검증 순서](docs/verification/2026-10-21-r104-source-and-mac-port.md).
