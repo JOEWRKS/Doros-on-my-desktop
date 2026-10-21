@@ -3,7 +3,8 @@
 ## Mac test02 requested delivery · 2026-10-21
 
 - Publish the existing exact test02 ZIP with matching source and concise tester
-  instructions. Local hash confirmed; public download verification pending.
+  instructions. Completed: matching source `0a6b3c8` pushed/tagged
+  `macos-r104-test02`, public ZIP re-downloaded and SHA256 verified.
 - [Instructions](docs/releases/macos-r104-test02.md). Next is the user's actual
   Apple Silicon run; no native acceptance or new Windows changes are implied.
 

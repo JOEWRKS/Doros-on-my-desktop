@@ -121,6 +121,20 @@ in this host measurement; accepted animation clocks/speeds were not changed.
 
 ## Remaining gates
 
+### Public test02 delivery follow-up — 2026-10-21
+
+At the user's direct-download request, this exact ZIP was published unchanged as
+GitHub release ID419287157 / tag `macos-r104-test02`. Matching existing test02
+source was committed/pushed as `0a6b3c8ca2809209a77bf1c600129082710c2de4` on
+`feature/macos-r104-arm64`; the remote tag resolves to it. This supersedes the
+earlier local-only/no-release checkpoint, not the native verification limits.
+GitHub asset digests and a fresh unauthenticated download both matched
+99,170,711 bytes / SHA256 `07d48b0a779b33a7216183b01867e43c1f53cdbc3a1b1586fa54aba384e5840d`.
+Download copy and API metadata are retained in `artifacts/macos/r104-test02-20261021`.
+No rebuild, animation changes or Windows modifications were made for delivery.
+[Direct ZIP](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/macos-r104-test02/Doro-Mac-arm64-r104-test02.zip)
+and [essential tester instructions](../releases/macos-r104-test02.md).
+
 **NOT TESTED:** actual Apple Silicon launch/security prompts/exit, Retina input,
 windows/Dock/Spaces ordering, interactive transitions, native frame pacing and
 long-running memory. No Mac is attached here. The next step is testing this exact

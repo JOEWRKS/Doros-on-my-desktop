@@ -7,7 +7,12 @@
   Windows release/installation remains untouched. Capturing the existing test02
   source changes for the matching release; no new renderer changes or rebuild.
 - Local SHA256 rechecked: `07D48B0A779B33A7216183B01867E43C1F53CDBC3A1B1586FA54ABA384E5840D`,
-  99,170,711 bytes. Public download verification pending.
+  99,170,711 bytes. GitHub upload digests and fresh unauthenticated direct
+  download matched those exact bytes/hash. Public release ID419287157, tag
+  `macos-r104-test02`, source `0a6b3c8ca2809209a77bf1c600129082710c2de4`;
+  remote tag and branch verified. Source and matching test02 changes pushed
+  separately from the Windows release. No package rebuild or code changes this turn.
+- [Verified direct ZIP](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/macos-r104-test02/Doro-Mac-arm64-r104-test02.zip).
 - [Launch and essential checks](docs/releases/macos-r104-test02.md).
   Native Mac execution, Gatekeeper, Retina input/performance/memory remain unverified.
   This supersedes the earlier no-push/no-release checkpoint only for this delivery.
