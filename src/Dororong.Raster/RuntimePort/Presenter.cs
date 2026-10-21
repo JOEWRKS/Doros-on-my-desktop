@@ -93,7 +93,7 @@ internal partial class DororongPresenter {
   var q=new Matrix(Q(inverse.M11),Q(inverse.M12),Q(inverse.M21),Q(inverse.M22),Q(inverse.OffsetX),Q(inverse.OffsetY));
   var key=(Math.Floor(_hrProgress*224+.5)/224,q,_hrGrab,_hrNear,_hrFar,spread,HighResolutionScale*Density,_hrFace,HighResolutionScale);
   if(_lastKey==key&&_hasFrame)return;
-  _pixels=_hrRaster.RenderRetainedPixels(_hrProgress,inverse,_hrGrab,_hrNear,_hrFar,spread,HighResolutionScale*Density,_hrFace,HighResolutionScale,_pixels,true);
+  _pixels=_hrRaster.RenderOwnedPixels(_hrProgress,inverse,_hrGrab,_hrNear,_hrFar,spread,HighResolutionScale*Density,_hrFace,HighResolutionScale,_pixels,incremental:true);
   _lastKey=key;_hasFrame=true;_spread=spread;FrameRevision++;
  }
  private (FootContact Contact,RectD Bounds)? Measure(byte[] bytes,double translate=0) {
@@ -105,7 +105,17 @@ internal partial class DororongPresenter {
   var ox=-56*HighResolutionScale-_hrRecoil.X;var oy=-56*HighResolutionScale-_hrRecoil.Y+translate;
   return (new(left*pixelScale+ox,(right+1)*pixelScale+ox,(maxY+1)*pixelScale+oy,minY*pixelScale+oy),new(minX*pixelScale+ox,minY*pixelScale+oy,(maxX-minX+1)*pixelScale,(maxY-minY+1)*pixelScale));
  }
- internal (FootContact Contact,RectD Bounds)? MeasurePlatformGeometry()=>_hasFrame?Measure(_pixels,_releaseOffset):null;
+ private (long Revision,int Extent,double Scale,PointD Recoil,double Release)? _geometryKey;
+ private (FootContact Contact,RectD Bounds)? _geometry;
+ internal long GeometryScans {get;private set;}
+ internal (FootContact Contact,RectD Bounds)? MeasurePlatformGeometry(){
+  if(!_hasFrame)return null;
+  // Geometry is read repeatedly by platform, size-anchor and release handling.
+  // Keep only one result; pose offsets can change without a new raster revision.
+  var key=(FrameRevision,Extent,HighResolutionScale,_hrRecoil,_releaseOffset);
+  if(_geometryKey==key)return _geometry;
+  _geometry=Measure(_pixels,_releaseOffset);_geometryKey=key;GeometryScans++;return _geometry;
+ }
  private FootContact? MeasureHighResolutionSole(double spread) {
   var inverse=Inverse();static double Q(double v)=>Math.Round(v,10);
   var q=new Matrix(Q(inverse.M11),Q(inverse.M12),Q(inverse.M21),Q(inverse.M22),Q(inverse.OffsetX),Q(inverse.OffsetY));

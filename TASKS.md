@@ -1,5 +1,71 @@
 # Tasks
 
+## Mac test04 requested direct-download delivery — 2026-10-22
+
+- User requested latest Mac direct download and essential M2 launch/CPU/memory
+  instructions. Publishing the exact test04 ZIP on separate macos-r104-test04
+  prerelease, not replacing Windows or older Mac assets. No rebuild.
+- Local99,175,502bytes/SHA256007775F4237DB6B75C9D914E1637B03AF14EB7AAD3F76C215CFDEB103DFBB51A
+  rechecked. Matching Mac optimizations/tests/probe evidence are captured with this
+  delivery; native M2/graphics/Gatekeeper acceptance remains unverified.
+- [Launch and essential checks](docs/releases/macos-r104-test04.md).
+  Public upload and fresh-download digest confirmation are pending at this checkpoint.
+
+## Mac test04 two-hour host memory soak — 2026-10-21
+
+- User authorized long Windows-host testing of Mac resizing/action transitions,
+  with confirmed-cause fixes only. Added bounded standalone diagnostic and analysis
+  tooling, not product changes. Native Mac/GPU checks remain separate.
+- Driver smoke completed22,500 ticks:928 applied resizes,head/cheek/eating each3,
+  no faults. This qualifies the driver, not long-run memory stability.
+- Actual120-minute wall-clock run PID88972/startUTC13:23:46.3339946Z completed normally:
+  718samples, maximum sample gap11.224s;9,007 applied resizes,head/cheek29each,
+  28 completed meals (last chase canceled at recovery),0faults. Final10minutes
+  without scripted input. Fixed test04 Raster, no existing app input,
+  forced GC/trim, pausing diagnostics, Windows/art/package changes or power actions.
+- [Evidence and bounded follow-up](docs/verification/2026-10-21-mac-r104-host-soak.md).
+  First/last/recovery private medians126.797/126.783/126.809MiB, frame/scratch and
+  cache counts bounded. No sustained accumulation reproduced; no product fix or
+  repeat soak justified. This is only the tested host workload, not all-path/native
+  acceptance. MaxAdvance1.375s is not a latency pass. Follow-up removed on completion.
+  Next: native Mac window/upload/GPU retention and M2 CPU/Retina acceptance.
+
+## Mac dirty-region renderer; test04 candidate — 2026-10-21
+
+- User requested changed-region rendering without image/motion/speed/Windows changes.
+  Internal presenter now reuses unchanged pixels for bounded breathing/gaze changes;
+  other transitions keep full rendering. Original sampling arithmetic verified unchanged.
+  Only fixed metadata/weak identity added, no extra frame/tile cache.
+- 8,640 before/after host samples have exact pixel/position/contact/revision parity.
+  Five-size/two-density boundary/fallback regressions and repeat-buffer checks cover
+  blink/cheek/pose/scale transitions. Raster59/Mac41/package11 tests passed.
+- Host150%/density2 idle tick7.92→3.65ms.3,600 repeated ticks keep the same display/
+  sole buffer capacities; candidate total private peak is higher, so overall memory
+  equality or native leak closure is not claimed.
+- [Evidence, fallback contract and limits](docs/verification/2026-10-21-mac-r104-regions-test04.md).
+  Local test04 ZIP complete (99,175,502 bytes),236files/18native code integrity and
+  ZIP execute bits verified; exact hash in the report. Prior test03 ZIP unchanged.
+  Next: same-M2 CPU/edge/memory check. No Windows edits,
+  active-app interruption, forced GC, installation changes or new public upload.
+
+## Mac CPU redundant work removed; test03 candidate — 2026-10-21
+
+- M2/16GB tester CPU~99.8% feedback prompted a Mac-only update/render audit.
+  Removed repeated same-frame alpha scans, intermediate frame copies, matching-stride
+  row-copy calls and identical native overlay-state setters. No FPS/resolution,
+  motion/timing/quality, Core/Windows/artwork/settings changes.
+- Mac41/Raster46/package11 tests pass;8,640 before/after host samples preserve
+  pixels/coordinates/contact geometry/revision counts. Pose237/vector350 exact;
+  base65/70 with the same5 diagnostic eating differences, not full parity pass.
+- Host150%/density2 idle tick median8.50→7.42ms; total CPU did not improve in every
+  condition. Actual M2 CPU/root-cause closure and native display/input remain open.
+  [Causes, complete measurement limits and candidate](docs/verification/2026-10-21-mac-r104-cpu-test03.md).
+- Built local arm64 test03 (99,171,947 bytes), package236files/18native code seals
+  and ZIP execute bits verified; hash in the linked report. Prior packages/releases
+  preserved, no commit/push. Next: exact
+  candidate on the same M2 for idle/walk/sit CPU and unchanged visual/input behavior.
+  No restart/pause of the user's app, new public upload or Windows soak.
+
 ## Mac r104 test02 direct-download delivery — 2026-10-21
 
 - User requested the Mac tester direct download and essential launch/check steps.

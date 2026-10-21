@@ -76,6 +76,13 @@ internal sealed class QuartzDesktop
         var p=MacSceneMapper.ToCocoaTopLeft(topLeft,PrimaryHeight);
         SendPoint(window,Sel("setFrameTopLeftPoint:"),new(p.X,p.Y));
     }
+    internal void MoveIfChanged(nint window,PointD topLeft,WindowUpdateState state)
+    {
+        // Compare Cocoa coordinates too: a primary-display height change must
+        // still move the window even when Quartz topLeft did not change.
+        var p=MacSceneMapper.ToCocoaTopLeft(topLeft,PrimaryHeight);
+        if(state.PositionChanged(p))SendPoint(window,Sel("setFrameTopLeftPoint:"),new(p.X,p.Y));
+    }
     private static bool Number(nint dict,nint key,out long value)
     {var number=CFDictionaryGetValue(dict,key);value=0;return number!=0&&CFNumberGetInt(number,4,out value);}
     [StructLayout(LayoutKind.Sequential)] internal readonly record struct CGPoint(double X,double Y);

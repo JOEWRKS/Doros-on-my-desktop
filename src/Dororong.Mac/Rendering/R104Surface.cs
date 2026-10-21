@@ -61,10 +61,17 @@ internal sealed class R104Surface : Control, IDisposable
             var previous=bitmap;bitmap=replacement;previous?.Dispose();BitmapAllocations++;
         }
         using(var framebuffer=bitmap.Lock())
-            for(var y=0;y<extent;y++)
-                Marshal.Copy(pixels,y*extent*4,framebuffer.Address+y*framebuffer.RowBytes,extent*4);
+            CopyPixels(pixels,extent,framebuffer.Address,framebuffer.RowBytes);
         size=productScale;density=displayScale;ActiveExtent=extent;lastPose=null;
         InvalidateVisual();
+    }
+
+    internal static void CopyPixels(byte[] source,int extent,nint destination,int stride)
+    {
+        var rowBytes=checked(extent*4);
+        if(stride==rowBytes)Marshal.Copy(source,0,destination,checked(rowBytes*extent));
+        else for(var y=0;y<extent;y++)
+            Marshal.Copy(source,y*rowBytes,destination+y*stride,rowBytes);
     }
 
     internal bool HitOpaque(Point point)

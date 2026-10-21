@@ -70,7 +70,7 @@ public sealed class R104Raster
         var face = new HighResolutionFacePose(pose.Head.Native, pose.EyeX, pose.EyeY, pose.Pull, pose.EyeFollow, pose.HairFollow,
             pose.BodyFrame, pose.MotionFrame, pose.Closed, pose.EffectFrame, pose.MouthAge, pose.DroolAge, pose.Breathing,
             pose.Paw, pose.PawX, pose.PawY, pose.PawAngle, pose.FlutterPhase);
-        return renderer.RenderRetainedPixels(pose.Progress, inverse, pose.Grab, pose.Near, pose.Far, pose.Spread,
-            scale * displayScale, face, scale, reuse, preserveCapacity: true);
+        return renderer.RenderOwnedPixels(pose.Progress, inverse, pose.Grab, pose.Near, pose.Far, pose.Spread,
+            scale * displayScale, face, scale, reuse);
     }
 }

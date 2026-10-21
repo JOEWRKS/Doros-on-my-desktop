@@ -21,9 +21,9 @@
     <Compile Include="../Dororong.App/Controls/HuntingSession.cs" Link="Shared/HuntingSession.cs" />
     <Compile Include="../Dororong.App/Controls/PerchExpressionMotion.cs" Link="Shared/PerchExpressionMotion.cs" />
     <Compile Include="../Dororong.App/Controls/BodyClickTransformSampler.cs" Link="Shared/BodyClickTransformSampler.cs" />
-    <!-- Compile the accepted CPU sampler itself, not a second approximation.
-         Windows does not reference this assembly or its narrow adapters. -->
-    <Compile Include="../Dororong.App/Controls/HighResolutionGrabRaster*.cs" Exclude="../Dororong.App/Controls/HighResolutionGrabRaster.Flutter.cs" Link="Shared/%(Filename)%(Extension)" />
+    <!-- Main sampler is an arithmetic-identical Mac copy with dirty-region
+         clear/loop hooks; other sampling parts stay shared. Windows is untouched. -->
+    <Compile Include="../Dororong.App/Controls/HighResolutionGrabRaster*.cs" Exclude="../Dororong.App/Controls/HighResolutionGrabRaster.cs;../Dororong.App/Controls/HighResolutionGrabRaster.Flutter.cs" Link="Shared/%(Filename)%(Extension)" />
     <EmbeddedResource Include="Assets/r104-fixed-paws.bgra.gz" LogicalName="r104-fixed-paws" />
     <Compile Include="../Dororong.App/Controls/HighResolutionBodyInk.cs" Link="Shared/HighResolutionBodyInk.cs" />
     <Compile Include="../Dororong.App/Controls/HighResolutionClosedInk.cs" Link="Shared/HighResolutionClosedInk.cs" />

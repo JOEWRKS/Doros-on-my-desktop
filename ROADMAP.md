@@ -1,5 +1,52 @@
 # ROADMAP — 도로롱이 내 컴에?!
 
+## Mac test04 direct tester delivery · 2026-10-22
+
+- Latest Mac direct download requested. Publish exact verified test04 ZIP with
+  matching source and [M2 essential checks](docs/releases/macos-r104-test04.md).
+  Rebuild/Windows changes excluded; preserve old releases.
+- Local hash confirmed; public asset/download verification pending at this checkpoint.
+  Next gate remains actual Mac CPU and memory/graphics acceptance, not a repeat host soak.
+
+## Mac test04 host long-run memory investigation · 2026-10-21
+
+- User separately authorized two-hour Windows-host Mac-code repeat testing before
+  native acceptance. Driver qualification and two-hour wall-clock run completed.
+  Product/art/motion/quality/speed and Windows remain unchanged.
+- [Run identity, scope and evaluation](docs/verification/2026-10-21-mac-r104-host-soak.md).
+  718samples/9,007 applied resizes,head/cheek29each,28 complete meals; no sustained
+  accumulation in the tested host workload (private medians~126.8MiB, buffers fixed).
+  No confirmed defect warrants speculative code changes or another identical soak.
+  Universal leak-free/native graphics/latency acceptance is not inferred.
+- Next: native Mac window/GPU/CPU acceptance. Bounded follow-up removed; no restart.
+  This adds an approved host-memory gate, not a restart of old Windows pet soaks.
+
+## Mac dirty-region test04 candidate · 2026-10-21
+
+- Changed-region rendering authorized. Breathing/gaze use bounded recomputation;
+  all other changed poses/scale/effects fall back to original full rendering.
+  Windows, artwork, motion, sampling quality, speed and frame cadence unchanged.
+- Host8,640 pixel/coordinate/revision samples match; retained image storage bounded.
+  Host150%/density2 idle tick7.92→3.65ms, not an M2 performance claim. Total process
+  memory equality and native graphics/long-run behavior remain unverified.
+- [Implementation and evidence](docs/verification/2026-10-21-mac-r104-regions-test04.md).
+  111 host/package tests passed; local arm64 test04 ZIP integrity complete.
+  Next: same-M2 CPU, transition-edge and memory check; no native pass inferred.
+  This supersedes test03 as the next local candidate; old packages/releases remain.
+
+## Mac CPU test03 candidate · 2026-10-21
+
+- Confirmed duplicate geometry scans, intermediate pixel copies and identical native
+  state updates removed without Windows/art/motion/speed/FPS/resolution changes.
+  [Evidence and boundaries](docs/verification/2026-10-21-mac-r104-cpu-test03.md).
+- 98 host/package tests pass; repeated samples preserve pixels/coordinates/timing.
+  Host idle cost falls, but aggregate CPU does not improve in every scenario.
+  test03 local arm64 ZIP and integrity checks complete; M2 CPU99.8% resolution/native
+  acceptance remains open. Prior ZIP/releases preserved; no public upload.
+- Next: the exact test03 candidate on the same M2/display/size for idle/walk/sit.
+  Profile a remaining high-CPU native run before attributing any further cause.
+  No repeated Windows memory tests, new public-release approval or power automation.
+
 ## Mac test02 requested delivery · 2026-10-21
 
 - Publish the existing exact test02 ZIP with matching source and concise tester

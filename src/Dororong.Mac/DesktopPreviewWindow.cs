@@ -29,6 +29,7 @@ internal sealed class DesktopSession : IDisposable
     private readonly Window jewelWindow=Overlay(32);
     private readonly R104Surface petImage=new(){Width=408,Height=408};
     private long displayedRevision=-1;
+    private readonly WindowUpdateState petUpdates=new(),jewelUpdates=new();
     private double displayedDensity;
     private SizeSettings? sizeSettings;
     private int savedSize;
@@ -176,31 +177,37 @@ internal sealed class DesktopSession : IDisposable
         {
             var now=clock.Elapsed;var delta=now-last;last=now;
             if(now-lastMonitorRead>=TimeSpan.FromMilliseconds(80))
-            {lastMonitorRead=now;try{monitors=native.Monitors();}catch{/* retain last valid floors */}}
+            {lastMonitorRead=now;try{
+                var updated=native.Monitors();
+                if(!monitors.SequenceEqual(updated)){petUpdates.InvalidatePosition();jewelUpdates.InvalidatePosition();}
+                monitors=updated;
+            }catch{/* retain last valid floors */}}
             var scene=scenes.Read(now,native.Capture,monitors);var pointer=native.Pointer();
             controller.Density=petWindow.RenderScaling;
             controller.Advance(delta,pointer,native.PrimaryDown(),scene);
             if(displayedRevision!=controller.FrameRevision||displayedDensity!=controller.Density){
+                if(displayedDensity!=controller.Density)petUpdates.InvalidatePosition();
                 petImage.Upload(controller.Pixels,controller.Scale,controller.Density);
                 displayedRevision=controller.FrameRevision;displayedDensity=controller.Density;
             }
             petImage.Origin=new(96-56*controller.Scale,96-56*controller.Scale+controller.ReleaseOffset);
-            native.Move(petHandle,controller.Position-new PointD(96,96));
+            native.MoveIfChanged(petHandle,controller.Position-new PointD(96,96),petUpdates);
             if(savedSize!=controller.SizePercent){savedSize=controller.SizePercent;sizeChangedAt=now;}
             if(sizeChangedAt!=TimeSpan.Zero&&now-sizeChangedAt>=TimeSpan.FromMilliseconds(350)){
                 sizeSettings?.Save(savedSize);sizeChangedAt=TimeSpan.Zero;
             }
-            QuartzDesktop.ClickThrough(petHandle,!contextOpen&&!controller.Capturing&&(!pointer.IsAvailable||!controller.Hit(pointer.Position)));
+            var clickThrough=!contextOpen&&!controller.Capturing&&(!pointer.IsAvailable||!controller.Hit(pointer.Position));
+            if(petUpdates.ClickThroughChanged(clickThrough))QuartzDesktop.ClickThrough(petHandle,clickThrough);
             var snack=controller.Snack==SnackPhase.Chasing&&pointer.IsAvailable;
             if(snack)
             {
-                if(!jewelWindow.IsVisible){jewelWindow.Show();QuartzDesktop.ConfigureWindow(jewelHandle,true);}
-                native.Move(jewelHandle,pointer.Position-new PointD(16,16));
+                if(!jewelWindow.IsVisible){jewelWindow.Show();QuartzDesktop.ConfigureWindow(jewelHandle,true);jewelUpdates.InvalidatePosition();}
+                native.MoveIfChanged(jewelHandle,pointer.Position-new PointD(16,16),jewelUpdates);
             }
-            else jewelWindow.Hide();
+            else if(jewelWindow.IsVisible)jewelWindow.Hide();
             // Never globally hide or replace the system cursor. The click-through
             // jewel overlay cannot leave other applications with a missing cursor.
-            status.Text=lastError??$"창 정보: {scene.Health} · 이동: {controller.Perch} · 매달리기: {controller.Perch}";
+            if(inspection is not null)status.Text=lastError??$"창 정보: {scene.Health} · 이동: {controller.Perch} · 매달리기: {controller.Perch}";
         }
         catch(Exception e)
         {timer.Stop();menu.Close();statusMenu.Close();controller.CancelSnack();jewelWindow.Hide();ReportError("동작 처리",e);try{QuartzDesktop.ClickThrough(petHandle,true);}catch{/* Recovery dialog still owns a usable exit. */}}
