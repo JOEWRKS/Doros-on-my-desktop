@@ -1,5 +1,13 @@
 # ROADMAP — 도로롱이 내 컴에?!
 
+## Windows r104 delivery · 2026-10-21
+
+- Current authorized scope: commit/push the accepted Windows final and provide a
+  direct portable download, without pending Mac changes or overwriting old assets.
+- Package built; 1,535 tests passed, ordinary startup selection and active-desktop
+  lifecycle checked. Remaining: remote source/release and public downloaded hash.
+- [Delivery evidence and explicit limits](docs/verification/2026-10-21-windows-r104-delivery.md).
+
 제품·사용법은 [README](README.md), 실행·검증 기록은 [TASKS](TASKS.md)가 원본이다.
 이 문서는 승인된 방향, 현재 단계와 단계별 완료 조건을 관리한다.
 

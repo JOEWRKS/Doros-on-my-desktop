@@ -60,8 +60,10 @@ public partial class MainWindow : Window
             // production transparent host and source sampler stay unchanged.
             AllowsTransparency=false;Background=new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(41,45,52));
         }
-        // Explicit local test path only. No preference/startup/installer mutation.
-        var highResolution=Environment.GetCommandLineArgs().FirstOrDefault(a=>a.StartsWith("--high-resolution-grab=",StringComparison.Ordinal));
+        // Ship the accepted r104 renderer on ordinary and login launches too.
+        // An explicit scale still wins; the saved size preference is applied below.
+        var highResolution=Environment.GetCommandLineArgs().FirstOrDefault(a=>a.StartsWith("--high-resolution-grab=",StringComparison.Ordinal))
+            ?? "--high-resolution-grab=1.5";
         if(highResolution is not null&&double.TryParse(highResolution.Split('=')[1],System.Globalization.NumberStyles.Float,
             System.Globalization.CultureInfo.InvariantCulture,out var artScale)&&artScale>=1&&artScale<=1.5)
         {

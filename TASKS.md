@@ -1,5 +1,16 @@
 # Tasks
 
+## Windows r104 delivery — 2026-10-21
+
+- User requested final Windows source push and direct binary download; isolated on
+  `release/windows-r104` from accepted `3813312`, excluding pending Mac changes.
+- Ordinary launch now selects the same accepted renderer; no raster/motion/art
+  changes. 1,534 regression cases plus 1 new startup case passed. Portable static
+  checks and active-desktop lifecycle smoke passed; private-desktop close timed
+  out and is not marked passed. GitHub draft digests match; public download
+  verification pending.
+- Evidence/limits: [Windows r104 delivery](docs/verification/2026-10-21-windows-r104-delivery.md).
+
 Direction, current stage and release completion gates live in [ROADMAP](ROADMAP.md).
 This file remains the sole active execution/verification ledger; a finished task
 does not close a roadmap stage with open requirements.

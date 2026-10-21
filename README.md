@@ -1,33 +1,31 @@
 # 도로롱이 내 컴에?! · Doro's on my desktop?!
 
-> **Mac 테스트 브랜치 / Mac test branch** — Apple Silicon(M1+), macOS13+.
-> [test03 ZIP 다운로드](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/macos-test03/Doro-Mac-arm64-test03.zip) · [설치·검사 안내](docs/releases/macos-test03.md).
-> 실제 Mac 실행 미검증, Developer ID·Apple 공증 없음. 첫 실행이 차단될 수 있습니다.
-> Native Mac execution is unverified. No Developer ID/notarization; Gatekeeper may block launch.
-> 아래 Windows 제품과 별도의 테스트판입니다. / Separate from the Windows product below.
+> **Windows r104 수락본 배포 브랜치 / Accepted Windows r104 delivery.**
+> 현재 진행 중인 Mac 이식 변경은 포함하지 않습니다.
 
 니케의 도로롱(Doro) 팬 캐릭터를 바탕으로 만든 Windows 데스크톱 펫.
 A Windows desktop pet based on the NIKKE-derived Dororong (Doro) fan character.
 
 ## 다운로드 · Download
 
-**설치 파일 하나를 받아 실행하면 됩니다. 별도 .NET 설치는 필요 없습니다.**
-**Download and run the installer below. No separate .NET installation is needed.**
+**ZIP 전체를 압축 해제하고 Dororong.exe를 실행하세요. 별도 .NET 설치는 필요 없습니다.**
+**Extract the entire ZIP and run Dororong.exe. No separate .NET installation is needed.**
 
-**[Windows 설치 파일 다운로드 · Download Windows installer](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/v0.1.3/Doros-on-my-desktop-Setup-0.1.3-win-x64.exe)**
+**[Windows r104 바로 다운로드 · Download Windows r104](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/windows-r104/Doros-on-my-desktop-r104-win-x64.zip)**
 
-Windows x64 · v0.1.3 Preview · 약 66MB / About 66MB · 관리자 권한 불필요 / No admin required
+Windows x64 · r104 portable · 약 100MB / About 100MB · 관리자 권한 불필요 / No admin required
 
-설치 마지막 화면에서 실행을 선택하거나 시작 메뉴의 **도로롱이 내 컴에!**에서 실행하세요. 업데이트 전에는 트레이에서 종료하세요.
-Choose launch on the final setup page, or open **도로롱이 내 컴에!** from the Start menu. Exit through the tray before updating.
+기존 앱을 트레이에서 종료한 다음 새 폴더의 Dororong.exe를 실행하세요. EXE만 따로 옮기면 안 됩니다.
+Exit the previous pet, then run Dororong.exe in the extracted folder. Do not move the EXE alone.
+기존 설치판은 자동 교체하지 않습니다. / The older installed copy is not replaced automatically.
 
-[버전 안내·체크섬 · Release notes & checksums](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/v0.1.3)
+[버전 안내·체크섬 · Release notes & checksums](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/tag/windows-r104)
 
 **Code → Download ZIP / Source code는 설치 파일이 아닙니다. / Source-code ZIPs are not installers.**
 
 ## 기능·사용법 · Features & controls
 
-아래 조작은 v0.1.3 기준입니다. / Controls below describe v0.1.3.
+수락한 r104 조작과 100~150% 연속 크기 슬라이더를 포함합니다. / Includes accepted r104 interactions and continuous sizing.
 
 | 조작 · Control | 동작 · Action |
 | --- | --- |

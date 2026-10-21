@@ -1,9 +1,12 @@
-도로롱이 내 컴에?! / Doro's on my desktop?! — 0.1.3 Preview
+도로롱이 내 컴에?! / Doro's on my desktop?! — r104 Windows portable
 
 한국어
 설치본: 시작 메뉴의 '도로롱이 내 컴에!'를 실행하세요.
 포터블: ZIP 전체를 같은 폴더에 풀고 Dororong.exe를 실행하세요.
 EXE만 따로 옮기면 실행되지 않습니다. .NET 런타임은 포함되어 있습니다.
+이 ZIP은 설치 프로그램이 아닙니다. 기존 앱을 트레이에서 종료한 다음 실행하세요.
+일반 실행도 수락한 r104 고해상도 화면을 사용합니다. 처음 크기는 150%, 저장된 크기가 있으면 유지됩니다.
+우클릭 메뉴·트레이의 '크기' 슬라이더로 100~150%를 연속 조절할 수 있습니다.
 
 머리 드래그: 이동 / 볼 드래그: 늘이기 / 가까운 마우스: 추적·도약
 창·작업표시줄 가장자리에서 앞발 준비 동작이 보일 때 놓으면 매달립니다.
@@ -13,13 +16,17 @@ EXE만 따로 옮기면 실행되지 않습니다. .NET 런타임은 포함되�
 'Windows 로그인 시 실행': 자동 실행 켜기/끄기. 기본은 꺼짐입니다.
 자동 실행은 앱 프로세스가 시작된 뒤 20초 기다립니다. 직접 실행하면 기다리지 않으며 대기 중인 자동 실행은 취소됩니다.
 '자동 눕기': 자동 수면 켜기/끄기. 기본은 켜짐이며 재실행 후에도 기억합니다. 앉기·걷기·간식은 유지됩니다.
-제거: Windows 앱 목록에서 '도로롱이 내 컴에?!'를 선택하세요.
+포터블 제거: 자동 실행을 켰다면 먼저 끄고 앱 종료 후 압축을 푼 폴더를 삭제하세요.
+기존 설치판 제거는 Windows 앱 목록에서 진행하며, 이 ZIP 실행은 기존 설치판을 교체하지 않습니다.
 로그는 %LOCALAPPDATA%\JOEWRKS\Dororong\logs에 남으며 자동 전송하지 않습니다.
 
 English
 Installed: launch '도로롱이 내 컴에!' from the Start menu.
 Portable: extract the ENTIRE ZIP into one folder, then run Dororong.exe.
 Do not move the EXE by itself. The .NET runtime is included.
+This is a portable ZIP, not an installer. Exit the previous pet before launch.
+Ordinary launch uses the accepted r104 high-resolution renderer (150% initially; saved size takes precedence).
+The pet/tray size slider adjusts continuously between 100% and 150%.
 
 Drag head: move / Drag cheek: stretch / Nearby pointer: tracking and pouncing
 Release near a window/taskbar edge when the front paws show readiness to hang.
@@ -29,7 +36,8 @@ Pet/tray '간식 주기': chase the jewel, hold it near the mouth to feed. '간�
 'Windows 로그인 시 실행': toggle launch at Windows login (off by default).
 Login launches wait 20 seconds after process startup. Manual launches are immediate and cancel a pending login launch.
 '자동 눕기': toggle automatic sleep (on by default, remembered across restarts). Sitting, walking and snacks are unchanged.
-Uninstall through Windows' app list. Local logs are not uploaded automatically.
+To remove the portable copy, disable its login startup if enabled, exit, then delete its extracted folder.
+Existing installed copies remain separate. Local logs are not uploaded automatically.
 
 Unsigned preview / 코드 서명 없는 미리보기
 Windows x64 only. Windows may display a publisher warning.
