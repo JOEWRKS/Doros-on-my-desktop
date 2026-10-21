@@ -16,7 +16,8 @@ EXE만 따로 옮기면 안 됩니다. .NET 포함, 관리자 권한 불필요.
 ## 검증과 한계
 
 자세한 패키지 검사 결과는
-[배포 검증 기록](https://github.com/JOEWRKS/Doros-on-my-desktop/blob/windows-r104/docs/verification/2026-10-21-windows-r104-delivery.md)에 있습니다.
+[배포 검증 기록](https://github.com/JOEWRKS/Doros-on-my-desktop/blob/release/windows-r104/docs/verification/2026-10-21-windows-r104-delivery.md)에 있습니다.
+회귀 1,534개와 새 실행 검사 1개, 실제 데스크톱 실행·종료를 확인했고 공개 ZIP을 다시 받아 해시를 대조했습니다.
 다른 PC·혼합 DPI·새 사용자 환경 검증은 미완료입니다.
 코드 서명 없는 미리보기이므로 Windows 경고가 나올 수 있습니다. 보안 기능을 끄지 마세요.
 캐릭터·이미지 배포 허락은 미확인이고, 공개는 공식 승인·제휴를 의미하지 않습니다.

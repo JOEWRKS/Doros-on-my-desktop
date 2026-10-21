@@ -54,5 +54,12 @@ No new installer lifecycle test is implied by this portable release. Code signin
 and character-image distribution permission remain unverified; existing rights
 notices remain. Publication is authorized by the current user request, not inferred
 from prior Mac work. GitHub draft asset sizes and SHA256 digests match local files.
-Public URL/download hash verification is pending; the delivery ledger will record
-the independently downloaded result after publication.
+Source commit `99041859b421f23d41ae67ae5a30e163806b7d5a` was pushed to
+`release/windows-r104`; remote branch and `windows-r104` tag both matched it.
+GitHub release ID419275770 is public (unsigned preview, not marked latest;
+old installer assets remain untouched). A fresh unauthenticated download from
+the direct release URL returned 99,561,076 bytes with the same ZIP SHA256 above.
+The downloaded copy is retained as `artifacts/windows-r104/public-download-check.zip`.
+
+[Verified direct ZIP](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/windows-r104/Doros-on-my-desktop-r104-win-x64.zip).
+Subsequent ledger-only commits do not change the tagged source or asset bytes.

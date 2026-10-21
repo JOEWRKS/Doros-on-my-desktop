@@ -4,8 +4,10 @@
 
 - Current authorized scope: commit/push the accepted Windows final and provide a
   direct portable download, without pending Mac changes or overwriting old assets.
-- Package built; 1,535 tests passed, ordinary startup selection and active-desktop
-  lifecycle checked. Remaining: remote source/release and public downloaded hash.
+- Delivery complete: 1,535 tests passed, ordinary startup selection and active-desktop
+  lifecycle checked; source `9904185` pushed and tagged `windows-r104`; direct public
+  ZIP downloaded and hash verified. Other-PC/mixed-DPI/signing limits remain;
+  the private-desktop smoke timeout is explicitly not a pass.
 - [Delivery evidence and explicit limits](docs/verification/2026-10-21-windows-r104-delivery.md).
 
 제품·사용법은 [README](README.md), 실행·검증 기록은 [TASKS](TASKS.md)가 원본이다.

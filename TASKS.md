@@ -7,8 +7,10 @@
 - Ordinary launch now selects the same accepted renderer; no raster/motion/art
   changes. 1,534 regression cases plus 1 new startup case passed. Portable static
   checks and active-desktop lifecycle smoke passed; private-desktop close timed
-  out and is not marked passed. GitHub draft digests match; public download
-  verification pending.
+  out and is not marked passed. GitHub digests and fresh unauthenticated public
+  download match (99,561,076 bytes, SHA256 `27BB7D39...49DB0103`).
+- Source `9904185` pushed on `release/windows-r104`; public `windows-r104` tag
+  resolves to the same commit. Existing main/v0.1.3 and pending Mac work unchanged.
 - Evidence/limits: [Windows r104 delivery](docs/verification/2026-10-21-windows-r104-delivery.md).
 
 Direction, current stage and release completion gates live in [ROADMAP](ROADMAP.md).
