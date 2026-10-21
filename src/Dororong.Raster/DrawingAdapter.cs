@@ -1,9 +1,9 @@
 using System.Runtime.InteropServices;
 using SkiaSharp;
 
-// Only the three small vector overlays (neck, mouth/snack, hanging flutter)
-// use this backend. Their coverage must be compared with WPF separately;
-// compiling the shared sampler does not prove vector or native Mac parity.
+// Narrow vector vocabulary for the r104 overlays. Neck/drool use the software
+// coverage convention of the reference. Non-authored eating fallback stays on
+// Skia; authored eating and hanging paws use their immutable reference banks.
 namespace System.Windows.Media
 {
     internal readonly record struct Color(byte R, byte G, byte B, byte A = 255)
@@ -90,6 +90,10 @@ namespace System.Windows.Media
     internal sealed class DrawingVisual
     {
         internal readonly List<Action<SKCanvas>> Commands = [];
+        internal bool ReferenceCoverage = true;
+        internal readonly Dororong.Raster.MilCoverage.Scratch Coverage = new();
+        internal byte[]? Target;
+        internal int Width, Height;
         internal DrawingContext RenderOpen() { Commands.Clear(); return new(this); }
     }
     internal sealed class DrawingContext(DrawingVisual visual) : IDisposable
@@ -116,18 +120,42 @@ namespace System.Windows.Media
         }
         internal void DrawGeometry(SolidColorBrush? fill, Pen? pen, Geometry geometry) => visual.Commands.Add(c =>
         {
+            if(visual.ReferenceCoverage)
+            {
+                if(fill is not null){using var path=geometry.Path(false);Covered(c,path,fill,null);}
+                if(pen is not null){using var path=geometry.Path(true);Covered(c,path,pen.Brush,pen);}
+                return;
+            }
             if (fill is not null) { using var path = geometry.Path(false); using var p = Paint(fill); c.DrawPath(path, p); }
             if (pen is not null) { using var path = geometry.Path(true); using var p = Paint(pen.Brush, pen); c.DrawPath(path, p); }
         });
         internal void DrawEllipse(SolidColorBrush? fill, Pen? pen, Point center, double rx, double ry) => visual.Commands.Add(c =>
         {
+            if(visual.ReferenceCoverage)
+            {
+                using var path=Dororong.Raster.MilCoverage.Ellipse(center.X,center.Y,rx,ry);
+                if(fill is not null)Covered(c,path,fill,null);
+                if(pen is not null)Covered(c,path,pen.Brush,pen);
+                return;
+            }
             if (fill is not null) { using var p = Paint(fill); c.DrawOval((float)center.X, (float)center.Y, (float)rx, (float)ry, p); }
             if (pen is not null) { using var p = Paint(pen.Brush, pen); c.DrawOval((float)center.X, (float)center.Y, (float)rx, (float)ry, p); }
         });
         internal void DrawLine(Pen pen, Point a, Point b) => visual.Commands.Add(c =>
         {
+            if(visual.ReferenceCoverage){using var path=new SKPath();path.MoveTo((float)a.X,(float)a.Y);path.LineTo((float)b.X,(float)b.Y);Covered(c,path,pen.Brush,pen);return;}
             using var p = Paint(pen.Brush, pen); c.DrawLine((float)a.X, (float)a.Y, (float)b.X, (float)b.Y, p);
         });
+        private void Covered(SKCanvas canvas,SKPath source,SolidColorBrush brush,Pen? pen)
+        {
+            var matrix=canvas.TotalMatrix;
+            if(matrix.SkewX!=0||matrix.SkewY!=0||matrix.ScaleX!=matrix.ScaleY||matrix.ScaleX<=0)
+                throw new NotSupportedException("Reference overlays require their uniform source-resolution scale.");
+            using var path=new SKPath(source);path.Transform(matrix);
+            if(pen is null)Dororong.Raster.MilCoverage.Fill(visual.Target!,visual.Width,visual.Height,path,brush.Color.Native,visual.Coverage);
+            else { using var outline=Dororong.Raster.MilCoverage.Widen(path,pen.Thickness*matrix.ScaleX,pen.StartLineCap==PenLineCap.Round,visual.Coverage);
+                Dororong.Raster.MilCoverage.Fill(visual.Target!,visual.Width,visual.Height,outline,brush.Color.Native,visual.Coverage); }
+        }
         internal void DrawImage(Imaging.BitmapSource source, Rect rect) => visual.Commands.Add(c =>
         {
             var pin = GCHandle.Alloc(source.Bytes, GCHandleType.Pinned);
@@ -193,10 +221,11 @@ namespace System.Windows.Media.Imaging
             {
                 using var surface = SKSurface.Create(new(PixelWidth, PixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul),
                     pin.AddrOfPinnedObject(), PixelWidth * 4) ?? throw new InvalidOperationException("Cannot create raster surface.");
+                visual.Target=Bytes;visual.Width=PixelWidth;visual.Height=PixelHeight;
                 foreach (var command in visual.Commands) command(surface.Canvas);
                 surface.Canvas.Flush();
             }
-            finally { pin.Free(); }
+            finally { visual.Target=null;pin.Free(); }
         }
     }
 }

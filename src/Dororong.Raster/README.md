@@ -36,8 +36,16 @@ Fixed paw textures and the 103 possible 60Hz eating-effect frames are exported
 from the hash-checked accepted DLL by `tools/MacR104FixedEffects`. Only occupied
 eating rectangles are stored; no resize or new artwork is involved. The two
 compressed banks together are under 9KB. Neck/drool remain dynamic paths with
-the original geometry; their edge coverage differs between the raster backends.
+the original geometry and continuous head/age inputs. `MilCoverage` implements
+the reference 28.4 / 8x8 software coverage and smooth-stroke widening, including
+round caps, sharp-turn refinement and inner-rail gap tiles. It does not change
+line widths, art, effect timing or motion. Scratch storage belongs to one overlay
+and follows the largest path, never a growing age/pose/size-keyed cache.
 Non-60Hz eating ages (not emitted by the coordinator) use the dynamic fallback.
+
+`tools/MacVectorCoverage` compares source overlays against the hash-checked r104
+DLL, while `tools/MacR104Parity ... vectors` checks composed images across five
+product sizes and 1x/2x density. See `docs/verification/2026-10-21-r104-vector-coverage.md`.
 
 Runtime geometry uses the same alpha-128 silhouette and lower 2-DIP support band.
 Retina density changes refresh the raster before any geometry read; hit/display

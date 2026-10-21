@@ -1,8 +1,48 @@
 # Tasks
 
+## Mac r104 test02 direct-download delivery — 2026-10-21
+
+- User requested the Mac tester direct download and essential launch/check steps.
+  Publishing the previously verified ZIP unchanged on separate `macos-r104-test02`;
+  Windows release/installation remains untouched. Capturing the existing test02
+  source changes for the matching release; no new renderer changes or rebuild.
+- Local SHA256 rechecked: `07D48B0A779B33A7216183B01867E43C1F53CDBC3A1B1586FA54ABA384E5840D`,
+  99,170,711 bytes. Public download verification pending.
+- [Launch and essential checks](docs/releases/macos-r104-test02.md).
+  Native Mac execution, Gatekeeper, Retina input/performance/memory remain unverified.
+  This supersedes the earlier no-push/no-release checkpoint only for this delivery.
+
+## Windows r104 direct delivery completed separately — 2026-10-21
+
+- User requested final Windows commit/push/download. Isolated clean Windows
+  worktree branch `release/windows-r104`: source `9904185`, tag `windows-r104`.
+- Ordinary launch selects accepted r104 high-resolution mode; no art/motion/Core
+  changes. 1,534 regression + 1 startup tests passed; active-desktop launch/duplicate/
+  exit passed. Private-desktop close timeout remains a failed harness result.
+- Public portable ZIP (99,561,076 bytes) was independently downloaded, SHA256
+  `27BB7D390F6042B4972D152F4B9EE1E2EE8949DF9CEA55BA61AB3A1549DB0103`.
+- [Download](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/windows-r104/Doros-on-my-desktop-r104-win-x64.zip)
+  / [evidence](https://github.com/JOEWRKS/Doros-on-my-desktop/blob/release/windows-r104/docs/verification/2026-10-21-windows-r104-delivery.md).
+- Pending Mac changes here were not committed or pushed. Existing main, old
+  installer assets, installation/settings and PC power state were not changed.
+
 Direction, current stage and release completion gates live in [ROADMAP](ROADMAP.md).
 This file remains the sole active execution/verification ledger; a finished task
 does not close a roadmap stage with open requirements.
+
+## r104 Mac neck/drool coverage corrected; test02 packaged — 2026-10-21
+
+목 연결·침 경계 차이를 WPF 소프트웨어 coverage와 곡선 외곽선 생성 규칙으로 수정했다.
+선 굵기·좌표·시간·원화·동작·속도·슬라이더 및 Windows App/Core는 변경하지 않았다.
+원본 크기4,102표본·5크기/2밀도 합성350프레임이 수락 DLL과 정확히 일치.
+Raster46/Mac headless33/패키저11개 검사 확인. 임시 버퍼 재사용과 원본 버퍼 유지 확인.
+[원인·검증 범위·파일 해시·미확인](docs/verification/2026-10-21-r104-vector-coverage.md).
+`artifacts/macos/r104-test02-20261021/candidate/Doro-Mac-arm64-r104-test02.zip`
+생성,236파일/18네이티브 코드 해시·리소스·ZIP·실행 권한 확인. test01은 보존했다.
+기존70프레임 검사 중65개 동일, 실제 런타임이 쓰지 않는 비정규 먹기5개 차이는 그대로
+기록하고 전체 PASS로 바꾸지 않았다. 실제 맥 실행·상호작용·성능·메모리는 미검증.
+아래 test01의 목/침 차이 미완을 대체하며 전체 Mac 수락은 닫지 않는다.
+다음은 이 정확한 test02의 실제 맥 검수. 소스는 로컬 변경이며 추가 푸시/릴리스 없음.
 
 ## r104 Mac runtime/slider connected; Apple Silicon test01 packaged — 2026-10-21
 

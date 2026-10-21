@@ -14,7 +14,8 @@ internal static class Program
     [STAThread]
     private static int Main(string[] args)
     {
-        if (args.Length != 2) throw new ArgumentException("Usage: MacR104Parity ACCEPTED_APP_DLL NEW_OUTPUT_DIRECTORY");
+        if (args.Length is <2 or >3 || (args.Length==3 && args[2]!="vectors")) throw new ArgumentException("Usage: MacR104Parity ACCEPTED_APP_DLL NEW_OUTPUT_DIRECTORY [vectors]");
+        var vectors=args.Length==3;
         var path = Path.GetFullPath(args[0]); var output = Path.GetFullPath(args[1]);
         var hash = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
         if (hash != AcceptedHash) throw new InvalidOperationException("Not the accepted r104 assembly.");
@@ -44,7 +45,25 @@ internal static class Program
             ("eat-runtime-60hz", new() { Closed = true, MouthAge = 11/60d }, true),
             ("drool", new() { DroolAge = .7 }, true)
         };
+        if(vectors)
+        {
+            var extended=new List<(string Name,RasterPose Pose,bool Vector)>();
+            var flags=BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Static;
+            var gazeType=assembly.GetType("Dororong.App.Controls.HuntGazePose",true)!;
+            var headTransform=assembly.GetType("Dororong.App.Controls.HuntRenderer",true)!.GetMethod("HeadTransform",flags)!;
+            foreach(var frame in new[]{16,25,40,60,125,140,155})
+            foreach(var angle in new[]{-20d,-4.583662361046586,0,20})
+            {
+                var gaze=Activator.CreateInstance(gazeType,Hidden,null,[0d,0d,angle*Math.PI/180],null)!;
+                var head=(Matrix)headTransform.Invoke(null,[frame,gaze])!;
+                extended.Add(($"neck-{frame}-{angle}",new(){BodyFrame=frame,Head=new(head.M11,head.M12,head.M21,head.M22,head.OffsetX,head.OffsetY)},true));
+            }
+            foreach(var age in new[]{0d,.7,Math.PI/8,3*Math.PI/8,1.234567,10.233,10000.123})
+                extended.Add(($"drool-{age:R}",new(){DroolAge=age},true));
+            tests=extended.ToArray();
+        }
         var results = new List<object>(); var failures = 0; var vectorDifferences = 0;
+        foreach(var density in vectors?new[]{1d,2}:new[]{1d})
         foreach (var scale in new[] { 1d, 1.125, 1.25, 1.375, 1.5 })
         foreach (var (name, pose, vector) in tests)
         {
@@ -56,9 +75,9 @@ internal static class Program
                     pose.BodyFrame,pose.MotionFrame,pose.Closed,pose.EffectFrame,pose.MouthAge,pose.DroolAge,pose.Breathing,
                     pose.Paw,pose.PawX,pose.PawY,pose.PawAngle,pose.FlutterPhase], null)!;
             var expected = (byte[])render.Invoke(source,
-                [pose.Progress,forward,pose.Grab,pose.Near,pose.Far,pose.Spread,scale,face,scale,null,true])!;
-            var actual = portable.Render(pose, scale);
-            var count = R104Raster.Extent(scale); count *= count * 4;
+                [pose.Progress,forward,pose.Grab,pose.Near,pose.Far,pose.Spread,scale*density,face,scale,null,true])!;
+            var actual = portable.Render(pose, scale,displayScale:density);
+            var count = R104Raster.Extent(scale,density); count *= count * 4;
             var changed = 0; var max = 0; long absolute = 0;
             for (var i=0;i<count;i++)
             {
@@ -69,19 +88,20 @@ internal static class Program
             if (changed > 0) { if(vector)vectorDifferences++; else failures++; }
             if (vector && scale == 1.5)
             {
-                SavePixels(Path.Combine(output,name+"-wpf.png"),expected,R104Raster.Extent(scale));
-                SavePixels(Path.Combine(output,name+"-portable.png"),actual,R104Raster.Extent(scale));
+                SavePixels(Path.Combine(output,name+$"-{density}x-wpf.png"),expected,R104Raster.Extent(scale,density));
+                SavePixels(Path.Combine(output,name+$"-{density}x-portable.png"),actual,R104Raster.Extent(scale,density));
             }
-            results.Add(new { name, scale, vector, changedChannels=changed, maxError=max,
+            results.Add(new { name, scale, density, vector, changedChannels=changed, maxError=max,
                 meanAbsoluteError=absolute/(double)count, expectedSha256=Convert.ToHexString(SHA256.HashData(expected.AsSpan(0,count))),
                 actualSha256=Convert.ToHexString(SHA256.HashData(actual.AsSpan(0,count))) });
-            Console.WriteLine($"{name} {scale}: changed={changed} max={max} vector={vector}");
+            if(!vectors||changed>0)Console.WriteLine($"{name} {scale} density={density}: changed={changed} max={max} vector={vector}");
         }
         File.WriteAllText(Path.Combine(output,"summary.json"), JsonSerializer.Serialize(new
         {
             acceptedDll=path, hash, sourcePixelFailures=failures, vectorDifferingFrames=vectorDifferences,
             nativeMacExecution="NOT_TESTED", hostIntegration="CONNECTED_NOT_NATIVE_VERIFIED", results
         },new JsonSerializerOptions { WriteIndented=true }));
+        Console.WriteLine($"{results.Count} frames; source failures={failures}; vector differences={vectorDifferences}");
         // A vector mismatch is an open parity gate, not a green overall run.
         return failures > 0 ? 1 : vectorDifferences > 0 ? 2 : 0;
     }

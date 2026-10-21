@@ -286,7 +286,7 @@ def build(publish, output, signer, notices, nuget):
         shutil.copyfile(file, macos/file.name)
     info = plistlib.loads((ROOT/"src/Dororong.Mac/Packaging/Info.plist").read_bytes())
     info.update(CFBundleName="Doro Mac Test", CFBundleDisplayName="도로롱이 내 컴에?! — Mac 테스트",
-                CFBundleVersion="104.1", CFBundleIconFile="Dororong.icns",
+                CFBundleVersion="104.2", CFBundleIconFile="Dororong.icns",
                 CFBundleInfoDictionaryVersion="6.0", LSMinimumSystemVersion="13.0")
     (bundle/"Contents/Info.plist").write_bytes(plistlib.dumps(info))
     (resources/"Dororong.icns").write_bytes(ico_to_icns((ROOT/"src/Dororong.App/Assets/dororong.ico").read_bytes()))
@@ -294,6 +294,7 @@ def build(publish, output, signer, notices, nuget):
     licenses = resources/"Licenses"
     licenses.mkdir()
     shutil.copyfile(ROOT/"LICENSE", licenses/"Dororong-code-MIT.txt")
+    shutil.copyfile(ROOT/"src/Dororong.Raster/THIRD-PARTY-WPF.txt", licenses/"WPF-coverage-MIT.txt")
     shutil.copyfile(ROOT/"src/Dororong.App/Assets/Fonts/OFL-Pretendard.txt", licenses/"Pretendard-OFL.txt")
     for name in ("Avalonia-LICENSE.txt", "MicroCom-LICENSE.txt"):
         shutil.copyfile(notices/name, licenses/name)
@@ -321,7 +322,7 @@ def build(publish, output, signer, notices, nuget):
     # is modified after this point. Manifest/report live outside it.
     manifest = {p.relative_to(tree).as_posix(): sha(p.read_bytes()) for p in sorted(tree.rglob("*")) if p.is_file()}
     (tree/"FILE-HASHES.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
-    archive = output/"Doro-Mac-arm64-r104-test01.zip"
+    archive = output/"Doro-Mac-arm64-r104-test02.zip"
     write_zip(tree, archive)
     count = verify_zip(archive, tree)
     digest = sha(archive.read_bytes())

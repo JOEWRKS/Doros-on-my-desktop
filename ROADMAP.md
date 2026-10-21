@@ -1,9 +1,33 @@
 # ROADMAP — 도로롱이 내 컴에?!
 
+## Mac test02 requested delivery · 2026-10-21
+
+- Publish the existing exact test02 ZIP with matching source and concise tester
+  instructions. Local hash confirmed; public download verification pending.
+- [Instructions](docs/releases/macos-r104-test02.md). Next is the user's actual
+  Apple Silicon run; no native acceptance or new Windows changes are implied.
+
+## Windows r104 requested delivery completed · 2026-10-21
+
+- Separate Windows release branch/tag pushed (`release/windows-r104`, `windows-r104`,
+  source `9904185`); public portable download hash verified. See TASKS Windows
+  delivery entry. Pending Mac work remains isolated and unpushed.
+- Accepted art/motion/speed preserved; ordinary-launch mode connected. 1,535 tests
+  and active-desktop lifecycle passed; private-desktop timeout and other-PC/signing
+  limits remain explicitly unverified. No repeat soak or installation changes.
+
 제품·사용법은 [README](README.md), 실행·검증 기록은 [TASKS](TASKS.md)가 원본이다.
 이 문서는 승인된 방향, 현재 단계와 단계별 완료 조건을 관리한다.
 
 ## 현재 위치 · 2026-10-19
+
+- **r104 Apple Silicon test02 · 목/침 경계 수정(10월21일):** WPF와 다른 coverage/
+  곡선 외곽선 생성 원인을 수정, 원본4,102표본 및5크기·2밀도350프레임 동일 확인.
+  [검증·패키지·남은 조건](docs/verification/2026-10-21-r104-vector-coverage.md).
+  Windows/원화/수락 동작·속도/슬라이더 변경 없음. test02 ZIP 생성·무결성 확인.
+  아래 test01의 동적 목/침 경계 차이 미완은 이 결과로 대체. 실제 맥 실행·성능·메모리와
+  사용자 수락은 아직 미완, 비정규 먹기 진단 fallback 차이도 전체 통과로 숨기지 않음.
+  다음은 정확한 test02의 실제 맥 검수. 종료된 Windows 메모리 검사/전원 자동화 재개 없음.
 
 - **r104 Apple Silicon test01 패키지 생성·전체 수락 미완(10월21일 후속):** Mac 기본
   고해상도 실행·상호작용·연속 슬라이더 연결, 발 고정/밀도 전환/잡기·놓기 회귀 검사.

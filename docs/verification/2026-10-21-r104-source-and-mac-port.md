@@ -219,3 +219,13 @@ Deliver **only**:
 - Full r104 Mac parity is **not closed**. Remaining work is actual-Mac validation
   of this identified candidate and resolution/acceptance of dynamic edge coverage,
   not another repetition of the concluded Windows memory investigation.
+
+## Test02 follow-up — 2026-10-21
+
+The neck/drool edge-coverage limitation above is superseded by the
+[test02 correction and evidence](2026-10-21-r104-vector-coverage.md): 4,102 source
+cases and 350 composed frames match the accepted DLL. The new deliverable is
+`artifacts/macos/r104-test02-20261021/candidate/Doro-Mac-arm64-r104-test02.zip`.
+The earlier test01 artifact facts remain historical, not the current delivery
+recommendation. Native Mac execution/performance acceptance and the diagnostic
+non-60Hz eating fallback limitation remain explicitly open.

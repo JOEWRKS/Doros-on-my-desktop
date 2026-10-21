@@ -37,6 +37,7 @@ internal static class HighResolutionSnackEffects
         if(Dororong.Raster.FixedEating.Copy(eatingAge,bytes)){
             for(var i=0;i<bytes.Length;i++)pixels[i]=bytes[i];return;
         }
+        visual.ReferenceCoverage=eatingAge<0;
         using(var dc=visual.RenderOpen()){
             dc.PushTransform(new ScaleTransform(225d/96,225d/96));
             if(eatingAge>=0){

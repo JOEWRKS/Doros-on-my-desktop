@@ -1,4 +1,4 @@
-도로롱이 내 컴에?! — Mac r104 이식 테스트 01
+도로롱이 내 컴에?! — Mac r104 이식 테스트 02
 
 Apple Silicon(M1 이상), macOS 13 이상용 테스트 묶음입니다.
 실제 Mac에서 아직 실행 검증하지 않았습니다. 정식 Mac 지원/안전 보증이 아닙니다.
@@ -7,7 +7,8 @@ Apple Silicon(M1 이상), macOS 13 이상용 테스트 묶음입니다.
 Dock을 발판으로 쓰지 않고 화면 맨 아래에서 걷습니다.
 Dock보다 앞쪽(z-order)에 표시하며 일반 창 걸치기는 유지합니다.
 미확인: 실제 Apple Silicon 실행·Retina 조작·창 순서·성능·장시간 메모리.
-남은 차이: 목 연결과 침 벡터의 경계 픽셀은 WPF와 Skia에서 일부 다릅니다.
+목 연결·침 효과의 경계 계산을 수정하고 r104와 원본 크기 및 배율별 픽셀을 비교했습니다.
+실제 실행에 쓰이지 않는 비정규 먹기 시점의 진단용 대체 렌더에는 경계 차이가 남습니다.
 전체 픽셀 동일 또는 Mac 전체 동작 통과를 주장하는 빌드가 아닙니다.
 Intel/Windows용이 아닙니다. .NET·Rosetta·터미널 명령 설치는 필요하지 않습니다.
 
@@ -77,8 +78,10 @@ This r104 port tester walks at the physical screen bottom, in front of Dock (z-o
 Dock's top edge. Ordinary window support/hanging remains. Please test window-mode
 transitions, overlays and Dock orientation/auto-hide; native layering is unverified.
 The r104 high-resolution renderer, interaction coordinator and continuous size
-slider are connected. Neck/drool edge coverage differs from WPF in sampled pixels;
-this is not an all-pixel-equivalent or native-Mac-accepted release.
+slider are connected. Test02 corrects neck/drool software coverage and compares
+source and scaled frames against the accepted r104 DLL. Non-60Hz eating ages
+(diagnostic fallback, not emitted by the runtime) still differ. This is not an
+all-possible-frame-equivalent or native-Mac-accepted release.
 No Developer ID or Apple notarization; ad-hoc integrity
 only. Native execution and Gatekeeper acceptance are UNVERIFIED. Follow Apple's
 per-app guidance only if you trust the source; never disable OS protections.

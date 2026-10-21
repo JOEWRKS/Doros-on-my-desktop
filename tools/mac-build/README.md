@@ -7,8 +7,9 @@ the included README describes the first-launch security boundary and recovery.
 The r104 port tester opens the pet and menu-bar icon only; diagnostic controls require an
 explicit developer flag. Its floor is the screen bottom, visually in front of Dock;
 Dock is no longer a support/perch. The r104 high-resolution runtime and continuous
-slider are connected. Neck/drool edge coverage and native execution remain open
-parity gates; see the dated port verification record. Existing packages are not overwritten.
+slider are connected. Test02 corrects the neck/drool software coverage; native
+execution remains an open gate. See the dated vector verification record.
+Existing packages are not overwritten.
 macOS13 is this full-feature tester's minimum, not a verified global support claim.
 
 ## Build on Windows
