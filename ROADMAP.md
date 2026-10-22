@@ -1,5 +1,13 @@
 # ROADMAP — 도로롱이 내 컴에?!
 
+## Mac test07 tester delivery · 2026-10-22
+
+- User-authorized test07 prerelease is public; exact candidate ZIP was independently
+  downloaded without authentication and its hash matched. [Delivery/steps](docs/releases/macos-r104-test07.md).
+- Supersedes local-only status below, not native acceptance. Next: affected Mac's
+  upper-screen head drag and window-edge support after clamshell transition only.
+  No repeat generic soak requested; Windows release unchanged.
+
 ## Mac screen-transition hardening / test07 · 2026-10-22
 
 - User authorized combinatorial host testing before another native diagnostic.

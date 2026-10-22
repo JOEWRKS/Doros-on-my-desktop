@@ -1,5 +1,18 @@
 # Tasks
 
+## Mac test07 public delivery — 2026-10-22
+
+- User requested a direct tester download. Published existing ZIP unchanged as
+  prerelease `macos-r104-test07`, release420446432, source
+  `bbb7d9850482a632fc2b526b6dcce8cc06bba140`.
+- [Download and targeted tester steps](docs/releases/macos-r104-test07.md).
+  Anonymous re-download matches SHA2560A9856E687B55963863931F5342E6188896227983494417505E5C58AFED1D071,
+  99,189,064bytes. SHA sidecar and packaging verification uploaded too.
+- Windows release419275770 ZIP digest remains27bb7d390f6042b4972d152f4b9ee1e2ee8949df9cea55ba61ab3a1549db0103.
+  No app restart, new rendering/soak test or Windows modification.
+- Supersedes local-only delivery status below. Native top drag and clamshell
+  ordinary-window support remain NOT_TESTED; those are the only requested rechecks.
+
 ## Mac topology combinations / test07 — 2026-10-22
 
 - Authorized combination testing reproduced stale topology in both scene caches:
