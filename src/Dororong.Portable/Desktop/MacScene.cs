@@ -64,26 +64,41 @@ public sealed class SceneCache(bool background=false)
     private TimeSpan success,highWater;
     private bool failed;
     private Task<DesktopScene?>? pending;
+    private DesktopMonitor[] topology=[];
+    private long topologyVersion,pendingVersion;
+    private bool initialized;
     public SceneSnapshot Read(TimeSpan now,Func<TimeSpan,DesktopScene?> capture,IReadOnlyList<DesktopMonitor> fallback)
     {
         now=highWater=now>highWater?now:highWater;var fresh=false;
+        // Monitor enumeration is independent of the slower window query. Never
+        // combine an old desktop's window coordinates with a new primary origin.
+        // Retain one in-flight task, but reject its result across a topology epoch.
+        if(fallback.Count>0&&!topology.SequenceEqual(fallback))
+        {
+            topology=fallback.ToArray();topologyVersion++;
+            scene=null;failed=false;attempt=null;
+        }
         void Accept(DesktopScene? next)
         {
+            if(next is not null&&topology.Length>0&&!next.Monitors.SequenceEqual(topology))next=null;
             failed=next is null;
             if(next is not null){scene=next;success=next.CapturedAt;fresh=true;}
         }
         DesktopScene? Capture(TimeSpan time){try{return capture(time);}catch{return null;}}
-        if(pending is {IsCompleted:true}){Accept(pending.GetAwaiter().GetResult());pending=null;}
+        if(pending is {IsCompleted:true}){
+            var completed=pending.GetAwaiter().GetResult();pending=null;
+            if(pendingVersion==topologyVersion)Accept(completed);
+        }
         if(pending is null&&(attempt is null||now-attempt.Value>=TimeSpan.FromMilliseconds(80)))
         {
-            var initial=attempt is null;
+            var initial=!initialized;initialized=true;
             attempt=now;DesktopScene? next;
-            if(background&&!initial){var requested=now;pending=Task.Run(()=>Capture(requested));}
+            if(background&&!initial){var requested=now;pendingVersion=topologyVersion;pending=Task.Run(()=>Capture(requested));}
             else{next=Capture(now);Accept(next);}
         }
         if(scene is null||now-success>=TimeSpan.FromMilliseconds(500))
         {
-            var monitors=fallback.Count>0?fallback:scene?.Monitors??[];
+            var monitors=topology.Length>0?topology:scene?.Monitors??[];
             return new(new(0,now,monitors,[]),SceneHealth.FloorFallback);
         }
         return new(scene,fresh?SceneHealth.Fresh:failed?SceneHealth.Unavailable:SceneHealth.Cached);

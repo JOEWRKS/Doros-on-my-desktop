@@ -1,5 +1,80 @@
 # Tasks
 
+## Mac topology combinations / test07 — 2026-10-22
+
+- Authorized combination testing reproduced stale topology in both scene caches:
+ 19 cache and108 controller cases failed before the fix. Old asynchronous results
+  now cannot revive removed displays; downstream coordinates invalidate immediately.
+- [Exact matrices, before/after evidence and native limits](docs/verification/2026-10-22-mac-topology-test07.md).
+  Mac180 host tests, Portable98 full plus final42 scoped tests, package11 pass.
+  2880 stable-layout frame/position/geometry rows match frozen accepted host.
+- Local test07 ARM64 ZIP ready; no art/render/physics/Windows source changes,
+  public upload, app interruption or repeat soak. Prior popup fix retained.
+- Native upper cutoff remains unreproduced. Actual clamshell symptom resolution
+  and Mac execution are NOT_TESTED. Next: those two native checks only; optional
+  bounded boundary log if still failing, then fix evidenced native cause.
+
+## Mac upper-screen / clamshell investigation — 2026-10-22
+
+- Authorized investigation executed. Actual controller host tests reach internal
+  screen top and acquire ordinary windows on three external-only coordinate
+  layouts. These do not reproduce native placement/lid-close failure.
+- [Investigation, diagnostic candidate, evidence and open causes](docs/verification/2026-10-22-mac-display-boundary.md).
+  No confirmed root cause yet; no speculative motion/native constraint changes.
+- Added opt-in90second bounded native position/window-geometry log and launcher;
+  local test06-diagnostic ZIP ready. Mac57/package11 tests pass; frozen original
+  Core/Portable/Raster binaries retained; Windows untouched. No public upload.
+- At that point both bugs remained OPEN. Follow-up combination testing and local
+  test07 cache repairs are recorded above; reported native symptoms still open.
+
+## M2 tester stability / display-boundary feedback — 2026-10-22
+
+- Relayed report: M2 8core/16GB, reported Tahoe26.6.2/internal1470x956; ~3hour
+  general trial, ~5hour memory around200MB. No visible motion/size artifacts,
+  stable Dock floor, sleep-OFF persistence and singleton behavior reported.
+- [Full observations, provenance and failures](docs/verification/2026-10-22-m2-tester-feedback.md).
+  Exact build/metric traces unknown; not universal leak-free or test05 acceptance.
+- Open: upper-fifth movement cutoff and external-monitor/clamshell window mounting.
+  Source paths reviewed read-only; cause not confirmed. No product/runtime change.
+  Follow-up authorized and investigated above; native evidence still required.
+
+## Mac popup theme fix / local test05 — 2026-10-22
+
+- Authorized popup ownership fix implemented; parent supplies theme before opening
+  and is released on close/dispose. Stale posted focus guarded. Slider/controller,
+  rendering/motion/artwork and Windows unchanged.
+- Mac50 and package11 tests pass. Both menu hosts in Light/Dark verify headless
+  pointer drag, keyboard range, three close/reopen cycles and cleanup/reanchoring.
+  [Full evidence / failed attempts / native limits](docs/verification/2026-10-22-mac-popup-test05.md).
+- Local test05 ZIP99,175,856bytes/SHA256F4BCE5888EEA8CE5F2FDB6280B304C939052B7B4755CFBD0D616BB57688AC08F.
+  Original test04 Core/Portable/Raster DLLs reused exactly; host tests rerun with them.
+  ARM64 loading on Windows aborted, not passed;396 host/ARM64 IL bodies/resources match.
+- Next: actual M2 popup/tray slider and close/reopen check. Native execution/input,
+  Retina/Gatekeeper remain unverified. No public upload/commit, app interruption or soak.
+
+## Mac character-menu missing slider diagnosis — 2026-10-22
+
+- User screenshot lacks slider under size100%. Added isolated Light/Dark and
+  direct-window/actual-popup diagnostic. Missing logical/style parent reproduced:
+  original popup lacks theme/template, test-only parent connection restores slider.
+- [Evidence and native boundary](docs/verification/2026-10-22-mac-slider-visibility.md).
+  Diagnostic4pass/2fail is defect evidence, not product acceptance; headless whole
+  panel collapse is not pixel-exact native reproduction. No product/build changes.
+  Follow-up implemented in test05 above; native gate remains open.
+
+## Windows size-label diagnosis — 2026-10-22
+
+- User clarified Windows `크기` label appears cut off. Reproduced with accepted
+  r104 DLL and standalone text: Normal12/Display Pretendard merges/drops the
+  apparent lower stroke; size subclass misses implicit MenuItem SemiBold style.
+  Measured title has no clip; same text using Ideal formatting renders clearly.
+- [Evidence and limits](docs/verification/2026-10-22-windows-size-label.md).
+  No product change/restart/release. Full user menu/DPI remains unverified.
+  Follow-up authorized: implemented in the existing Windows release worktree only.
+  Its same-named verification document records19 scoped tests,20 five-DPI/state
+  render comparisons and the local candidate ZIP. Outside-title pixels unchanged;
+  actual popup/monitor transitions/user acceptance remain unverified. Mac unchanged.
+
 ## Mac test04 requested direct-download delivery — 2026-10-22
 
 - User requested latest Mac direct download and essential M2 launch/CPU/memory

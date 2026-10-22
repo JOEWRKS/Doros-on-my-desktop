@@ -14,6 +14,8 @@ internal sealed class R104DesktopController : IDisposable {
  private readonly PetLoop loop;
  private readonly PetPlatformRuntime platforms;
  private readonly SceneFeed feed=new();
+ private readonly DesktopSceneSource sceneSource;
+ private DesktopMonitor[] topology=[];
  private EventHandler? tick;
  private TimeSpan elapsed;
  private PointerSample pointer;
@@ -40,7 +42,8 @@ internal sealed class R104DesktopController : IDisposable {
  internal R104DesktopController(PointD initial,IRandomSource random,int size=100) {
   Position=initial;presenter.SetArtSize(size);
   presenter.RenderDesktop(new PetBrain(BehaviorTuning.Default,random,initial).Current,Dororong.App.Interaction.DirectInteractionSnapshot.None);
-  platforms=new(new DesktopSceneSource(feed),_=>new(default,default,1,1),presenter.MeasurePlatformGeometry,presenter.ApplyPlatformPose,
+  sceneSource=new DesktopSceneSource(feed);
+  platforms=new(sceneSource,_=>new(default,default,1,1),presenter.MeasurePlatformGeometry,presenter.ApplyPlatformPose,
    ()=>feed.Scene?.Monitors??[],presenter.MeasureEdgePerchContact,presenter.ApplyEdgePerch);
   var host=new PetLoopHost(()=>feed.Scene?.Monitors.FirstOrDefault()?.Bounds??new(0,0,1920,1080),
    ()=>new(144*Scale,144*Scale),()=>new(4,4),()=>MenuOpen?PointerSample.Unavailable:pointer,()=>primary,
@@ -56,6 +59,9 @@ internal sealed class R104DesktopController : IDisposable {
   loop.Faulted+=(_,e)=>Faulted?.Invoke(e);
  }
  internal void Advance(TimeSpan delta,PointerSample sample,bool down,SceneSnapshot scene) {
+  if(!topology.SequenceEqual(scene.Scene.Monitors)){
+   topology=scene.Scene.Monitors.ToArray();sceneSource.InvalidateSynchronousCache();
+  }
   feed.Scene=scene.Health==SceneHealth.Unavailable?null:scene.Scene;pointer=sample;primary=down;
   if(!started){loop.Start();started=true;}
   if(pendingSize is {} size&&loop.TryResize(()=>presenter.SetArtSize(size)))pendingSize=null;

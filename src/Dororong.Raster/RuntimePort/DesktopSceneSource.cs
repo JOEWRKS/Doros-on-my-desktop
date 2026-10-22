@@ -16,6 +16,14 @@ internal sealed class DesktopSceneSource(IDesktopSceneNative native, bool backgr
     private Task<CaptureResult>? pending;
     private DesktopScene? lastOwnedSnapshot;
     internal string? LastFailure { get; private set; }
+    // Mac DesktopSession has already detected a display coordinate-space change.
+    // Its feed is synchronous (the native query is cached upstream). Do not let
+    // this second 80ms cache re-publish obsolete monitor/window geometry.
+    internal void InvalidateSynchronousCache()
+    {
+        if(background)throw new InvalidOperationException("Cannot discard an asynchronous scene query.");
+        scene=null;lastAttempt=null;lastOwnedSnapshot=null;failed=false;LastFailure=null;
+    }
     // Caller supplies Stopwatch elapsed time on the UI thread. Clamp accidental rollback.
     internal SceneRead Read(TimeSpan now)
     {

@@ -55,8 +55,11 @@ internal sealed class DesktopSession : IDisposable
     internal bool HasVisibleOverlay=>petWindow.IsVisible||jewelWindow.IsVisible;
     private Window? errorWindow;
     private readonly Action quit;
-    internal DesktopSession(bool diagnostics,Action exitApplication)
+    private readonly bool boundaryDiagnostics;
+    private BoundaryDiagnostic? boundaryLog;
+    internal DesktopSession(bool diagnostics,Action exitApplication,bool boundaryDiagnostics=false)
     {
+        this.boundaryDiagnostics=boundaryDiagnostics;
         quit=()=>{if(disposed)return;Dispose();exitApplication();};
         if(diagnostics)
         {
@@ -89,7 +92,7 @@ internal sealed class DesktopSession : IDisposable
     {
             if(disposed)return;
             if(sizeChangedAt!=TimeSpan.Zero){try{sizeSettings?.Save(savedSize);}catch(Exception e){ReportError("크기 저장",e);}}
-            disposed=true;timer.Stop();timer.Tick-=Tick;menu.Dispose();statusMenu.Dispose();statusItem?.Dispose();statusItem=null;controller?.Dispose();
+            disposed=true;timer.Stop();timer.Tick-=Tick;boundaryLog?.Dispose();menu.Dispose();statusMenu.Dispose();statusItem?.Dispose();statusItem=null;controller?.Dispose();
             jewelWindow.Content=null;petWindow.Close();jewelWindow.Close();petImage.Dispose();jewel.Dispose();
             inspection?.Close();errorWindow?.Close();
     }
@@ -114,6 +117,7 @@ internal sealed class DesktopSession : IDisposable
             petHandle=Handle(petWindow);jewelHandle=Handle(jewelWindow);
             QuartzDesktop.ConfigureWindow(petHandle,false);QuartzDesktop.ConfigureWindow(jewelHandle,true);
             native.Move(petHandle,controller.Position-new PointD(96,96));last=clock.Elapsed;timer.Start();
+            if(boundaryDiagnostics)boundaryLog=new(Path.Combine(dataDirectory,"Logs",$"boundary-{DateTime.UtcNow:yyyyMMdd-HHmmss}-{Environment.ProcessId}.jsonl"));
             using var head=typeof(DesktopSession).Assembly.GetManifestResourceStream("Dororong.head")!;using var bytes=new MemoryStream();head.CopyTo(bytes);
             try{statusItem=new StatusItem(bytes.ToArray(),()=>Dispatcher.UIThread.Post(()=>{if(!disposed)ShowMenu(true);}),e=>ReportError("메뉴 막대",e));}
             catch(Exception e){ReportError("메뉴 막대",e);}
@@ -192,6 +196,18 @@ internal sealed class DesktopSession : IDisposable
             }
             petImage.Origin=new(96-56*controller.Scale,96-56*controller.Scale+controller.ReleaseOffset);
             native.MoveIfChanged(petHandle,controller.Position-new PointD(96,96),petUpdates);
+            boundaryLog?.Sample(now,()=>new {
+                placement=native.PlacementEvidence(petHandle),requestedQuartz=controller.Position-new PointD(96,96),
+                controller.Position,geometry=controller.Geometry is {} g?new{g.Contact,g.Bounds}:null,
+                controller.Capturing,controller.Scale,controller.Density,
+                pointer=pointer.IsAvailable?(PointD?)pointer.Position:null,
+                sceneHealth=scene.Health.ToString(),captureStatus=native.CaptureStatus,
+                currentMonitors=monitors,sceneMonitors=scene.Scene.Monitors,
+                sceneAgeSeconds=(now-scene.Scene.CapturedAt).TotalSeconds,
+                windowCount=scene.Scene.Windows.Count,
+                windows=scene.Scene.Windows.Take(512).Select(w=>new{w.Bounds,w.ZOrder,w.CanSupport,w.CanOcclude,w.Taskbar}).ToArray(),
+                platform=controller.Platform
+            });
             if(savedSize!=controller.SizePercent){savedSize=controller.SizePercent;sizeChangedAt=now;}
             if(sizeChangedAt!=TimeSpan.Zero&&now-sizeChangedAt>=TimeSpan.FromMilliseconds(350)){
                 sizeSettings?.Save(savedSize);sizeChangedAt=TimeSpan.Zero;

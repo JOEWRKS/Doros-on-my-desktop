@@ -14,6 +14,9 @@ internal sealed class QuartzDesktop
     private const string CF="/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation";
     private const string ObjC="/usr/lib/libobjc.A.dylib";
     private readonly MacSceneMapper mapper=new();
+    private string captureStatus="NotRead";
+    internal string CaptureStatus=>Volatile.Read(ref captureStatus);
+    private DesktopScene? CaptureFailed(string reason){Volatile.Write(ref captureStatus,reason);return null;}
     internal QuartzDesktop(){if(!OperatingSystem.IsMacOS())throw new PlatformNotSupportedException("Quartz requires macOS.");}
     internal PointerSample Pointer()
     {
@@ -32,23 +35,25 @@ internal sealed class QuartzDesktop
     internal DesktopScene? Capture(TimeSpan now)
     {
         using var pool=new Pool();
-        var displays=Monitors();var list=CGWindowListCopyWindowInfo(1|16,0); // on-screen, excluding desktop elements
-        if(list==0)return null;
+        IReadOnlyList<DesktopMonitor> displays;
+        try{displays=Monitors();}catch{Volatile.Write(ref captureStatus,"DisplayUnavailable");throw;}
+        var list=CGWindowListCopyWindowInfo(1|16,0); // on-screen, excluding desktop elements
+        if(list==0)return CaptureFailed("WindowListUnavailable");
         using var keys=new Keys("kCGWindowNumber","kCGWindowOwnerPID","kCGWindowBounds","kCGWindowLayer","kCGWindowAlpha");
         try
         {
-            var count=CFArrayGetCount(list);if(count<0||count>10000)return null;
+            var count=CFArrayGetCount(list);if(count<0||count>10000)return CaptureFailed("InvalidWindowCount");
             var rows=new List<MacWindowRow>();var dockPids=new Dictionary<uint,bool>();
             for(nint i=0;i<count;i++)
             {
                 var entry=CFArrayGetValueAtIndex(list,i);
-                if(!Number(entry,keys[0],out var id)||!Number(entry,keys[1],out var pid)||!Number(entry,keys[3],out var layer))return null;
-                if(pid<=0||pid>uint.MaxValue||layer<int.MinValue||layer>int.MaxValue)return null;
+                if(!Number(entry,keys[0],out var id)||!Number(entry,keys[1],out var pid)||!Number(entry,keys[3],out var layer))return CaptureFailed("MissingWindowIdentityOrLayer");
+                if(pid<=0||pid>uint.MaxValue||layer<int.MinValue||layer>int.MaxValue)return CaptureFailed("InvalidWindowIdentityOrLayer");
                 if(pid==Environment.ProcessId)continue;
                 var bound=CFDictionaryGetValue(entry,keys[2]);
-                if(bound==0||!CGRectMakeWithDictionaryRepresentation(bound,out var rect))return null;
+                if(bound==0||!CGRectMakeWithDictionaryRepresentation(bound,out var rect))return CaptureFailed("InvalidWindowBounds");
                 var alphaRef=CFDictionaryGetValue(entry,keys[4]);double alpha=1;
-                if(alphaRef!=0&&!CFNumberGetDouble(alphaRef,6,out alpha))return null;
+                if(alphaRef!=0&&!CFNumberGetDouble(alphaRef,6,out alpha))return CaptureFailed("InvalidWindowAlpha");
                 if(!dockPids.TryGetValue((uint)pid,out var dock))
                 {
                     var app=SendPid(objc_getClass("NSRunningApplication"),Sel("runningApplicationWithProcessIdentifier:"),(int)pid);
@@ -58,9 +63,30 @@ internal sealed class QuartzDesktop
                 }
                 rows.Add(new(id,(uint)pid,new(rect.X,rect.Y,rect.Width,rect.Height),(int)layer,alpha,true,dock));
             }
-            return mapper.Build(now,displays,rows,(uint)Environment.ProcessId,CGWindowLevelForKey(7),CGWindowLevelForKey(11));
+            var scene=mapper.Build(now,displays,rows,(uint)Environment.ProcessId,CGWindowLevelForKey(7),CGWindowLevelForKey(11));
+            Volatile.Write(ref captureStatus,"Success");return scene;
         }
+        catch(Exception e){Volatile.Write(ref captureStatus,e.GetType().Name);throw;}
         finally{CFRelease(list);}
+    }
+    // Opt-in boundary diagnosis only. Never substitute requested placement for
+    // actual AppKit readback, and never query titles, images or accessibility.
+    internal object PlacementEvidence(nint window)
+    {
+        static CGRect Rect(nint receiver,string selector)
+        {
+            if(RuntimeInformation.ProcessArchitecture==Architecture.X64){SendRectStret(out var r,receiver,Sel(selector));return r;}
+            return SendRect(receiver,Sel(selector));
+        }
+        var frame=Rect(window,"frame");var height=PrimaryHeight;
+        var screens=Send(objc_getClass("NSScreen"),Sel("screens"));
+        var first=Send(screens,Sel("firstObject"));
+        var cocoaPrimary=first==0?default:Rect(first,"frame");
+        return new {
+            primaryHeight=height, cocoaPrimary=new RectD(cocoaPrimary.X,cocoaPrimary.Y,cocoaPrimary.Width,cocoaPrimary.Height),
+            actualQuartz=new RectD(frame.X,height-frame.Y-frame.Height,frame.Width,frame.Height),
+            styleMask=(long)Send(window,Sel("styleMask"))
+        };
     }
     internal static nint Sel(string name)=>sel_registerName(name);
     internal static void ConfigureWindow(nint window,bool clickThrough)
@@ -122,4 +148,6 @@ internal sealed class QuartzDesktop
     [DllImport(ObjC,EntryPoint="objc_msgSend")] private static extern void SendBool(nint receiver,nint selector,[MarshalAs(UnmanagedType.I1)]bool value);
     [DllImport(ObjC,EntryPoint="objc_msgSend")] private static extern void SendInt(nint receiver,nint selector,nint value);
     [DllImport(ObjC,EntryPoint="objc_msgSend")] private static extern void SendPoint(nint receiver,nint selector,CGPoint point);
+    [DllImport(ObjC,EntryPoint="objc_msgSend")] private static extern CGRect SendRect(nint receiver,nint selector);
+    [DllImport(ObjC,EntryPoint="objc_msgSend_stret")] private static extern void SendRectStret(out CGRect result,nint receiver,nint selector);
 }

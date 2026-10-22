@@ -100,7 +100,7 @@ def write_zip(tree, output):
             rel = file.relative_to(tree).as_posix()
             isdir = file.is_dir()
             data = b"" if isdir else file.read_bytes()
-            executable = not isdir and bool(macho_cpus(data))
+            executable = not isdir and (bool(macho_cpus(data)) or file.name == "화면 경계 진단.command")
             mode = (stat.S_IFDIR | 0o755) if isdir else (stat.S_IFREG | (0o755 if executable else 0o644))
             info = zipfile.ZipInfo(rel+("/" if isdir else ""))
             info.create_system = 3
@@ -127,7 +127,7 @@ def verify_zip(path, tree):
             mode = entry.external_attr >> 16
             if entry.create_system != 3 or not stat.S_ISREG(mode):
                 raise ValueError("Invalid ZIP platform/mode")
-            if macho_cpus(data) and mode & 0o111 != 0o111:
+            if (macho_cpus(data) or rel.name == "화면 경계 진단.command") and mode & 0o111 != 0o111:
                 raise ValueError("Lost execute permission")
             if data != tree.joinpath(*rel.parts).read_bytes():
                 raise ValueError("ZIP payload mismatch")
@@ -286,7 +286,7 @@ def build(publish, output, signer, notices, nuget):
         shutil.copyfile(file, macos/file.name)
     info = plistlib.loads((ROOT/"src/Dororong.Mac/Packaging/Info.plist").read_bytes())
     info.update(CFBundleName="Doro Mac Test", CFBundleDisplayName="도로롱이 내 컴에?! — Mac 테스트",
-                CFBundleVersion="104.4", CFBundleIconFile="Dororong.icns",
+                CFBundleVersion="104.7", CFBundleIconFile="Dororong.icns",
                 CFBundleInfoDictionaryVersion="6.0", LSMinimumSystemVersion="13.0")
     (bundle/"Contents/Info.plist").write_bytes(plistlib.dumps(info))
     (resources/"Dororong.icns").write_bytes(ico_to_icns((ROOT/"src/Dororong.App/Assets/dororong.ico").read_bytes()))
@@ -308,6 +308,7 @@ def build(publish, output, signer, notices, nuget):
             shutil.copyfile(p, licenses/(package+"-"+p.name))
     shutil.copyfile(ROOT/"tools/mac-build/TESTER-README.txt", tree/"먼저 읽어주세요.txt")
     shutil.copyfile(ROOT/"tools/mac-build/TESTER-README.txt", resources/"TESTER-README.txt")
+    shutil.copyfile(ROOT/"tools/mac-build/boundary-diagnostic.command", tree/"화면 경계 진단.command")
     logs = output/"verification"
     logs.mkdir()
     run_signer(signer, ["sign", "--timestamp-url", "none", str(bundle)], logs/"adhoc-sign.log")
@@ -322,7 +323,7 @@ def build(publish, output, signer, notices, nuget):
     # is modified after this point. Manifest/report live outside it.
     manifest = {p.relative_to(tree).as_posix(): sha(p.read_bytes()) for p in sorted(tree.rglob("*")) if p.is_file()}
     (tree/"FILE-HASHES.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
-    archive = output/"Doro-Mac-arm64-r104-test04.zip"
+    archive = output/"Doro-Mac-arm64-r104-test07.zip"
     write_zip(tree, archive)
     count = verify_zip(archive, tree)
     digest = sha(archive.read_bytes())

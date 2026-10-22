@@ -20,11 +20,13 @@ internal static class Program
     internal static bool MotionPreview { get; private set; }
     internal static bool DesktopPreview { get; private set; }
     internal static bool DesktopMode { get; private set; }
+    internal static bool BoundaryDiagnostics { get; private set; }
     [STAThread] public static int Main(string[] args)
     {
         MotionPreview = args.Contains("--motion-preview");
         DesktopPreview = args.Contains("--desktop-preview");
-        DesktopMode = DesktopPreview || LaunchesPet(args,MacLoginService.IsBundledApp());
+        BoundaryDiagnostics = args.Contains("--boundary-diagnostics");
+        DesktopMode = DesktopPreview || BoundaryDiagnostics || LaunchesPet(args,MacLoginService.IsBundledApp());
         if(DesktopMode&&!OperatingSystem.IsMacOS())
         {Console.WriteLine("--desktop-preview requires macOS; use --motion-preview on Windows.");return 2;}
         if (!args.Contains("--preview") && !MotionPreview && !DesktopMode)
@@ -63,7 +65,7 @@ public sealed class ProbeApp : Application
                 DesktopSession? session=null;
                 desktop.Startup+=(_,_)=>
                 {
-                    session=new DesktopSession(Program.DesktopPreview,()=>desktop.Shutdown());
+                    session=new DesktopSession(Program.DesktopPreview,()=>desktop.Shutdown(),Program.BoundaryDiagnostics);
                     session.Start();
                 };
                 desktop.Exit+=(_,_)=>session?.Dispose();

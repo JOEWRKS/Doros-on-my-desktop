@@ -69,12 +69,14 @@ class PackageTests(unittest.TestCase):
             exe.parent.mkdir(parents=True)
             exe.write_bytes(b"\xcf\xfa\xed\xfe"+struct.pack("<I", pack.ARM64))
             (tree/"먼저 읽어주세요.txt").write_text("테스트", encoding="utf-8")
+            (tree/"화면 경계 진단.command").write_text("#!/bin/bash\nexit 0\n", encoding="utf-8")
             archive = root/"test.zip"
             pack.write_zip(tree, archive)
-            self.assertEqual(pack.verify_zip(archive, tree), 2)
+            self.assertEqual(pack.verify_zip(archive, tree), 3)
             with zipfile.ZipFile(archive) as z:
                 info = z.getinfo(pack.APP+"/Contents/MacOS/Dororong.Mac")
                 self.assertEqual(info.external_attr >> 16, stat.S_IFREG | 0o755)
+                self.assertEqual(z.getinfo("화면 경계 진단.command").external_attr >> 16, stat.S_IFREG | 0o755)
             with self.assertRaises(FileExistsError):
                 pack.write_zip(tree, archive)
 

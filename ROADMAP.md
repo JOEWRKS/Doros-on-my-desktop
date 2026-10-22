@@ -1,5 +1,55 @@
 # ROADMAP — 도로롱이 내 컴에?!
 
+## Mac screen-transition hardening / test07 · 2026-10-22
+
+- User authorized combinatorial host testing before another native diagnostic.
+  Reproduced two stale-topology caches and fixed their transition invalidation;
+  delayed old queries cannot restore removed displays. [Evidence](docs/verification/2026-10-22-mac-topology-test07.md).
+- Host checks: Mac180, final transition42, package11;2880 unchanged stable-layout
+  frame/coordinate rows. Local test07 ARM64 app ready; Windows/art/physics untouched.
+- Not all possible OS states/native success: upper-screen cutoff not reproduced,
+  and the tester's clamshell failure is not yet proved resolved. Next is actual
+  affected-Mac top drag and clamshell window-edge recheck, not a generic soak.
+  Optional90second native log remains available if needed; no public upload.
+
+## Mac display-boundary investigation / native evidence gate · 2026-10-22
+
+- Upper-screen/clamshell investigation authorized; controller's synthetic internal
+  top drag and three external-only window-perch layouts pass. Native cause is NOT
+  established. No speculative movement/perch change or Windows change.
+- [Bounded test06 diagnostic and limits](docs/verification/2026-10-22-mac-display-boundary.md).
+  Local ARM64 ZIP with opt-in90second readback logging; Mac57/package11 host tests.
+- Follow-up authorized combination testing/test07 is recorded above. Native symptom
+  acceptance remains open. No soak, automation, interruption or public release.
+
+## M2 native feedback triage · 2026-10-22
+
+- Tester reports stable animation/100–150% size/Dock floor, saved sleep setting,
+  singleton and ~200MB at~5hours. [Evidence limits](docs/verification/2026-10-22-m2-tester-feedback.md).
+- Exact build not identified; do not clear test05/native-all-paths or universal
+  memory/CPU gates. Next priority proposed: upper-screen drag restriction and
+  clamshell external-monitor window support, not repeated generic memory soaks.
+- Follow-up investigation authorized; current evidence/status is recorded above.
+
+## Mac popup slider visibility defect · 2026-10-22
+
+- Character popup missing logical/theme parent reproduced in host diagnostic;
+  direct-window tests had missed this route. [Evidence](docs/verification/2026-10-22-mac-slider-visibility.md).
+- Authorized repair completed locally: popup theme parent and cleanup,50 Mac host
+  tests/11 package tests; both routes' pointer/keyboard/close/reopen checks covered.
+  [test05 candidate and limits](docs/verification/2026-10-22-mac-popup-test05.md).
+- Original test04 renderer/simulation binaries reused; Windows/art/motion unchanged.
+  Next: actual M2 verification. Local ZIP ready; no public upload or native pass.
+
+## Windows size-label report · 2026-10-22
+
+- Diagnosis reproduces the small `크기` glyph defect independently of menu
+  clipping; derived size row lacks other items' weight style and uses Normal12/
+  Display formatting. [Evidence](docs/verification/2026-10-22-windows-size-label.md).
+- Follow-up authorized and implemented in the Windows release worktree: title-local
+  formatting,19 targeted tests,20 DPI/state render comparisons and local ZIP ready.
+  Mac untouched; next is actual user popup confirmation, not a broad motion retest.
+
 ## Mac test04 direct tester delivery · 2026-10-22
 
 - Latest Mac direct download requested. Publish exact verified test04 ZIP with
