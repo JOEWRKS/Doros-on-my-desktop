@@ -49,6 +49,7 @@ public sealed class SnackSession
     private double snatchScale = 1;
     public bool Active => phase != SnackPhase.None;
     public SnackPose Current { get; private set; }
+    public bool MealCompleted { get; private set; }
 
     public void Begin(FacingDirection direction)
     {
@@ -58,6 +59,7 @@ public sealed class SnackSession
 
     public void Cancel()
     {
+        MealCompleted = false;
         phase = SnackPhase.None; lastPointer = null;
         age = biteTime = cooldown = distance = runAmount = jumpDistance = jumpTravel = 0; jumpAge = -1;
         offerRecognized = false;
@@ -70,6 +72,7 @@ public sealed class SnackSession
 
     public SnackPose Advance(TimeSpan elapsed, PointerSample pointer, PointD mouth, bool supported, double chaseScale = 1)
     {
+        MealCompleted = false;
         if (!Active) return Current;
         // A lock/resume or lost input must not leave a runaway chase/cursor.
         if (!pointer.IsAvailable || !Finite(pointer.Position) || !Finite(mouth) ||
@@ -162,11 +165,11 @@ public sealed class SnackSession
         {
             // Losing the supporting window must never make it laugh in air.
             if (!supported) { phase = SnackPhase.Eating; age = EatingSeconds; }
-            else if (age >= ChuckleSeconds) { Cancel(); return Current; }
+            else if (age >= ChuckleSeconds) { Cancel(); MealCompleted = true; return Current; }
         }
         else if (phase == SnackPhase.Happy && age >= HappySeconds)
         { phase = SnackPhase.Settling; age = 0; }
-        else if (phase == SnackPhase.Settling && age >= SettleSeconds) { Cancel(); return Current; }
+        else if (phase == SnackPhase.Settling && age >= SettleSeconds) { Cancel(); MealCompleted = true; return Current; }
         var flight = (jumpAge - JumpPrepareSeconds) / JumpFlightSeconds;
         if(jumpAge>=0)
         {

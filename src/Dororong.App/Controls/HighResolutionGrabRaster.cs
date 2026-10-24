@@ -194,6 +194,7 @@ internal sealed partial class HighResolutionGrabRaster
         var face=facePose??HighResolutionFacePose.Neutral;
         var stomp=new StompWarp(face,inkScale);
         var chuckle=new ChuckleWarp(face,inkScale);
+        var stretch=new StretchWarp(face);
         var facePin=SurroundingPullRenderer.HeadFacePin(Center,grab);
         var faceInverse=face.Head;
         faceInverse.Invert();
@@ -231,7 +232,7 @@ internal sealed partial class HighResolutionGrabRaster
                 var p=transform?.Transform(corner)??corner;left=Math.Min(left,p.X);right=Math.Max(right,p.X);topBound=Math.Min(topBound,p.Y);bottom=Math.Max(bottom,p.Y);
             }
         }
-        Bounds(posedBody??body,posedBody is null?375:posedSize,posedBody is null?32:posedOffset,margin:stomp.Active?Math.Max(6,face.StompReach+2):face.Breathing>0?1:0);
+        Bounds(posedBody??body,posedBody is null?375:posedSize,posedBody is null?32:posedOffset,margin:stretch.Active?12:stomp.Active?Math.Max(6,face.StompReach+2):face.Breathing>0?1:0);
         Bounds(activeHead,225,0,face.Head,face.Pull!=0||face.EyeFollow!=0||face.HairFollow!=0?14:2);
         if(effect is not null)Bounds(effect,225,0,face.Head);
         if(snack is not null)Bounds(snack,225,0,face.Head);
@@ -277,7 +278,7 @@ internal sealed partial class HighResolutionGrabRaster
             // Bounded cubic is constant whenever every central tap in this
             // pixel's footprint is constant. This skips interior work only;
             // a varying contour always retains the full 8x8 coverage path.
-            if(coverage==8&&posedBody is null&&neck is null&&effect is null&&snack is null&&flutter is null){
+            if(coverage==8&&!stretch.Active&&posedBody is null&&neck is null&&effect is null&&snack is null&&flutter is null){
                 var p0=inverse.Transform(new Point(px/scale-80,py/scale-80));
                 var p1=inverse.Transform(new Point((px+1)/scale-80,py/scale-80));
                 var p2=inverse.Transform(new Point(px/scale-80,(py+1)/scale-80));
@@ -329,6 +330,7 @@ internal sealed partial class HighResolutionGrabRaster
                 // only behind an independently raised head.
                 var bodyY=face.Head.M12>0&&uv.X>=18&&uv.X<29&&uv.Y>=57&&uv.Y<66.5?66.5:uv.Y;
                 var bodyX=uv.X;
+                if(stretch.Active){var source=stretch.Source(bodyX,bodyY);bodyX=source.X;bodyY=source.Y;}
                 if(chuckle.Active){var source=chuckle.BodySource(bodyX,bodyY);bodyX=source.X;bodyY=source.Y;}
                 if(stomp.Active){var source=stomp.Source(bodyX,bodyY);bodyX=source.X;bodyY=source.Y;}
                 if(face.Breathing>0&&bodyX>=50&&bodyX<84&&bodyY>=49&&bodyY<74){

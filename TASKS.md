@@ -1,5 +1,53 @@
 # Tasks
 
+## Current ambient-motion version source delivery — 2026-10-24
+
+- User declined the smoother-sit candidate and explicitly requested commit/push
+  of the current version. Retain existing0.40s grooming entry and running PID52280.
+- Current App/Core hashes match the packaged/tested version below. Rechecked
+  saved TRX counters: Core339/339 and Windows related72/72; no redundant retest,
+  full-suite, nativeMac or long-soak claim. App remains responsive.
+- Deliver source/tests/spec/evidence and IdleActivityProbe on existing
+  `feature/macos-r104-arm64`; fetched remote divergence0/0 before delivery.
+  Exclude unaccepted GroomSitPreview tool and generated binaries/artifacts.
+- No app replacement/restart, settings/installer/public release change or main merge.
+  Current-version selection supersedes the pending preference decision below;
+  it is not additional measured manual verification of every motion.
+
+## Grooming sit timing comparison only — 2026-10-24
+
+- User requested a smoother sitting preview before application. Created isolated
+  `tools/GroomSitPreview` using the current packaged renderer, without editing
+  product code, artwork, settings or replacing the running app.
+- Side-by-side: current0.40s cubic easing versus proposed0.70s quintic easing.
+  Same seated pose path; later grooming timing shifts0.30s, its speed unchanged.
+- Evidence: `artifacts/groom-sit-comparison-20261024/` contains144 frames at60Hz,
+  timing samples, full-color APNG and GIF preview. Selected entry/settled/raised-paw
+  frames visually inspected; not a full live-runtime or user-acceptance claim.
+- PID52280 remained responsive; packaged App SHA256 remains5B2A091B6843D1FC8B22C25028761BA1CBFC7B23D16F675B007080BDDCE6264B.
+  Preview only, NOT_APPLIED. User subsequently declined this change and chose
+  the current version for commit/push; no further preview/application work remains.
+
+## Wake stretch / jewel begging / grooming — 2026-10-24
+
+- User chose motion suggestions3/5/6. Implement in Windows high-resolution host,
+  preserve accepted artwork/motions/preferences; no commit/push or release request.
+- [Conditions and priority](docs/specs/2026-10-24-idle-activities.md): wake stretch,
+  occasional post-meal begging, seated three-wipe grooming. Core opt-in keeps other
+  hosts unchanged. Existing60-second question/180-second sleep retain precedence.
+- [Final bounded evidence](docs/verification/2026-10-24-idle-activities.md): Core339/339,
+  final Windows RID related72/72;3,258 generated frame checks, selected visual
+  sequence review,3size production-host anchoring, bounded buffer identity reuse.
+  Existing396 raster/sole samples equal the accepted package exactly.
+- Found/fixed new stretch inverse convergence causing dark contour bunching.
+  Final95,475-point residual/Jacobian checks and visual sheets verify the correction.
+  An obsolete broad initial-build run was stopped after690passes; aborted overall,
+  not a full-suite pass. No forcedGC/trim or existing pet termination.
+- Fresh candidate packaged, exact tested App/Core hashes verified. User confirmed
+  tray exit “00”; launched PID52280 at20:53:10KST,150%/sleepOFF retained.
+- User acceptance remains pending; nativeMac/long-duration total-memory not claimed.
+  No commit/push/installer/public release change. Next: review the three new motions.
+
 ## Accepted DORO? version source delivery — 2026-10-24
 
 - User explicitly requests commit/push and update of the currently accepted version.

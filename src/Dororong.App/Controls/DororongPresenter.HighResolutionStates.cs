@@ -15,7 +15,8 @@ public partial class DororongPresenter
         else if(frame is >=706 and <=770)frame=HighResolutionLocomotion.Sleep((frame-706)/64d*(1-u));
         if(body>=0){var start=SnackRenderer.RecoveryAge(HuntPose.At(body/60d).Amount);body=(int)Math.Round((start+(2.6-start)*u)*60);}
         var a=captured.Head;var head=new Matrix(a.M11+(1-a.M11)*u,a.M12*(1-u),a.M21*(1-u),a.M22+(1-a.M22)*u,a.OffsetX*(1-u),a.OffsetY*(1-u));
-        captured=captured with {ChuckleCover=captured.ChuckleCover*(1-u),ChuckleBob=captured.ChuckleBob*(1-u)};
+        captured=captured with {ChuckleCover=captured.ChuckleCover*(1-u),ChuckleBob=captured.ChuckleBob*(1-u),
+            Stretch=captured.Stretch*(1-u),StretchShake=captured.StretchShake*(1-u),GroomSweep=captured.GroomSweep*(1-u)};
         return captured with {Head=head,MotionFrame=frame,BodyFrame=body,EyeX=captured.EyeX*(1-u),EyeY=captured.EyeY*(1-u),Breathing=captured.Breathing*(1-u),StompLift=captured.StompLift*(1-u),StompReach=captured.StompReach*(1-u),StompCrouch=captured.StompCrouch*(1-u),EffectFrame=frame is >=706 and <=770?HighResolutionLocomotion.SleepEffect(frame):-1};
     }
     private void HighResolutionMotion(int frame,bool closed=false,int effect=-1){
@@ -60,6 +61,7 @@ public partial class DororongPresenter
                 _hrFace=_hrFace with {Breathing=GetBreathingAmount(phase)};
             }
         }
+        ApplyIdleActivity(pet);
         if(_showDoroQuestion && pet.DoroQuestionPhase is { } questionPhase){
             var head=_hrFace.Head;
             head.RotateAt(DoroQuestionMotion.HeadRoll(questionPhase)*180/Math.PI,43,66);

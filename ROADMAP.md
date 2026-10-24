@@ -1,5 +1,34 @@
 # ROADMAP — 도로롱이 내 컴에?!
 
+## Current ambient-motion source delivery · 2026-10-24
+
+- User chose to retain the current version and requested commit/push. Existing
+ 0.40s grooming entry remains; the0.70s preview is declined, not applied.
+- Deliver bounded Windows implementation/tests/evidence on the existing feature
+  branch. Current responsive app and stored settings remain untouched. See TASKS.
+- No public release/installer update, main merge or nativeMac delivery requested.
+  This decision supersedes pending visual-preference review below, without adding
+  unmeasured manual, full-suite or long-duration-memory test claims.
+
+## Grooming sit preview · 2026-10-24
+
+- Requested comparison only: current0.40s entry versus0.70s smoother-start/end
+  candidate using identical seated artwork. GIF/APNG prepared in
+  `artifacts/groom-sit-comparison-20261024/`; bounded evidence in TASKS.
+- Product and running pet unchanged. User declined the candidate and requested
+  delivery of the current version. Preview closed without application.
+
+## Three selected ambient motions · 2026-10-24
+
+- Approved concepts3/5/6: waking stretch, occasional post-jewel begging, idle
+  grooming. [Bounded conditions](docs/specs/2026-10-24-idle-activities.md).
+- Implemented and candidate launched after normal user exit. [Evidence](docs/verification/2026-10-24-idle-activities.md):
+  final Core339/339, Windows related72/72,3,258 generated frame checks and visual
+  sequence review; existing396samples identical, platform/buffer checks complete.
+- Preserve accepted art/motions/settings; no additional hunger or persistent state.
+- Remaining: user visual review. NativeMac
+  is not opted in/tested; no commit/push/public release implied by this request.
+
 ## Accepted DORO? source delivery · 2026-10-24
 
 - Explicit request: commit/push and update the accepted version. Preserve accepted

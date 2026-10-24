@@ -29,6 +29,8 @@ internal sealed partial class HighResolutionGrabRaster
         private readonly Matrix armInverse;
         private readonly double inkWidth;
         private readonly double roundBlend,armScaleX,armScaleY;
+        private readonly Matrix groomInverse;
+        private readonly bool grooming;
         internal bool Active=>cover>1e-9;
         internal ChuckleWarp(HighResolutionFacePose face,double bodyScale=1){
             cover=face.ChuckleCover;bob=face.ChuckleBob;
@@ -41,6 +43,12 @@ internal sealed partial class HighResolutionGrabRaster
             // Keep its narrow tip, long outside edge and descending inner line.
             armScaleX=.75+.25*cover;armScaleY=.6+.4*cover;
             roundBlend=Smooth(cover/.3);
+            groomInverse=Matrix.Identity;
+            grooming=face.GroomSweep!=0;
+            if(grooming){
+                var groom=Matrix.Identity;groom.RotateAt(18*face.GroomSweep,33,74);
+                groomInverse=groom;groomInverse.Invert();
+            }
         }
         private static double Mask(double x,double y)=>Smooth((y-68)/2)*(1-Smooth((x-29)/3));
         internal Point BodySource(double x,double y){
@@ -75,6 +83,7 @@ internal sealed partial class HighResolutionGrabRaster
         }
         internal void Overlay(float[] body,double x,double y,Span<double> pixel,Span<double> scratch){
             if(!Active||(x>=34&&y>=77))return;
+            if(grooming){var point=groomInverse.Transform(new Point(x,y));x=point.X;y=point.Y;}
             var p=armInverse.Transform(new Point(x,y));
             var mask=p.Y>88||p.X<12?0:Mask(p.X,p.Y);
             scratch.Clear();

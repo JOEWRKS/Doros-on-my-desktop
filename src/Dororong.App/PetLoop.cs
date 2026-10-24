@@ -85,7 +85,7 @@ internal sealed class PetLoop : IDisposable
         : this(
             CreateProductionRuntime(window, presenter, input),
             initialPosition => new PetBrain(
-                BehaviorTuning.Default with {DoroQuestionDelay=TimeSpan.FromMinutes(1)},
+                BehaviorTuning.Default with {DoroQuestionDelay=TimeSpan.FromMinutes(1),IdleActivitiesEnabled=true},
                 new SeededRandomSource(),
                 initialPosition))
     {
@@ -598,7 +598,11 @@ internal sealed class PetLoop : IDisposable
         _host.ShowSnackCursor?.Invoke(pointer, pose.CarriesJewel);
         _host.MaintainWindowLayer?.Invoke(elapsed);
         _primaryWasDown = _host.IsPrimaryButtonDown();
-        if (!pose.Active) { platforms?.Reset(proposed); brain.ResumeAfterPlay(_snapshot.Facing); }
+        if (!pose.Active) {
+            platforms?.Reset(proposed); brain.ResumeAfterPlay(_snapshot.Facing);
+            if (_snack.MealCompleted) brain.NotifyMealCompleted();
+            _snapshot=brain.Current;
+        }
     }
 
     private double _snapshotSnackLift;

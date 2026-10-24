@@ -11,4 +11,6 @@ public readonly record struct PetSnapshot(
     PointD? GrabOffset)
 {
     public double? DoroQuestionPhase { get; init; }
+    public IdleActivity IdleActivity { get; init; }
+    public bool IdleActivityPending { get; init; }
 }

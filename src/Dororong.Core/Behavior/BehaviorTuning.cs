@@ -17,6 +17,7 @@ public sealed record BehaviorTuning
     public TimeSpan SleepDelay { get; init; } = TimeSpan.FromMinutes(3);
     // Hosts opt in only when they implement the accompanying question presentation.
     public TimeSpan? DoroQuestionDelay { get; init; }
+    public bool IdleActivitiesEnabled { get; init; }
     public double NearEnterDistance { get; init; } = 150;
     public double NearExitDistance { get; init; } = 210;
     public double StartleReactionDistance { get; init; } = 220;

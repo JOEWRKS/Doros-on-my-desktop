@@ -80,6 +80,13 @@ public partial class DororongPresenter
     private bool UpdateHuntingCore(PetSnapshot snapshot, DirectInteractionSnapshot direct,
         PointerSample pointer, TimeSpan elapsed, bool pressed, bool pounceEnabled)
     {
+        if (snapshot.IdleActivity.Kind != IdleActivityKind.None || snapshot.IdleActivityPending) {
+            _huntAwaitingPress=false;_huntNear=false;_huntTracking=false;
+            _huntSession.Reset();_pounce.Reset();_huntFrame=156;_huntVisualFrame=156;_huntRecoveryAge=2.6;
+            _huntPointer=pointer.IsAvailable ? new((pointer.Position.X-snapshot.Position.X)/HighResolutionScale,
+                (pointer.Position.Y-snapshot.Position.Y)/HighResolutionScale) : null;
+            return false;
+        }
         // Physical button polling can precede routed MouseDown. Preserve the
         // displayed preparation pose until that event classifies/captures it.
         // Do not turn a still-unclassified cheek press into an upright reset.

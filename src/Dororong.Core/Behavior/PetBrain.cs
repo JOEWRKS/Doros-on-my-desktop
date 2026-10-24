@@ -27,7 +27,7 @@ public sealed partial class PetBrain
         if (AutomaticSleepEnabled == enabled) return;
         AutomaticSleepEnabled = enabled;
         ResetInactivity();
-        if (!enabled && _state == PetState.Sleep) StartIdle();
+        if (!enabled && _state == PetState.Sleep) { StartIdle(); QueueWakeStretch(); }
     }
 
     public PetBrain(BehaviorTuning tuning, IRandomSource random, PointD initialPosition)
@@ -59,7 +59,9 @@ public sealed partial class PetBrain
         GetPhase(),
         IsDirectInteractionPending: _pressPosition.HasValue,
         GrabOffset: _grabOffset)
-        {DoroQuestionPhase=_askingDoro ? FinitePhase(DoroQuestionDuration) : null};
+        {DoroQuestionPhase=_askingDoro ? FinitePhase(DoroQuestionDuration) : null,
+         IdleActivity=new(_idleActivity,_idleActivity==IdleActivityKind.None?0:_stateElapsed.TotalSeconds),
+         IdleActivityPending=_pendingIdleActivity!=IdleActivityKind.None};
 
     public PetSnapshot ApplyPlatformPosition(PointD position)
     {
@@ -88,7 +90,9 @@ public sealed partial class PetBrain
             NormalizePosition(input.WorkArea, input.PetSize);
         }
 
+        var wasSleeping = _state == PetState.Sleep;
         var handledDirectInteraction = ProcessDirectInteraction(input);
+        if (wasSleeping && _state != PetState.Sleep) QueueWakeStretch();
 
         var petCenter = _position + new PointD(input.PetSize.Width / 2, input.PetSize.Height / 2);
         var reaction = _pointerReactionDetector.Update(
@@ -117,6 +121,7 @@ public sealed partial class PetBrain
                 {
                     ResetInactivity();
                     StartIdle();
+                    QueueWakeStretch();
                 }
                 var dx = input.TrackingFacingOverride is { } lockedFacing
                     ? lockedFacing == FacingDirection.Left ? -9 : 9
@@ -166,6 +171,7 @@ public sealed partial class PetBrain
                 continue;
             }
             if(TryStartDoroWander()) continue;
+            if(TryStartIdleActivity()) continue;
 
             var untilStateBoundary = _stateDuration - _stateElapsed;
             var untilSleepBoundary = CanEnterSleep()
@@ -186,6 +192,7 @@ public sealed partial class PetBrain
 
             _stateElapsed += consumed;
             _inactivity += consumed;
+            if (_state != PetState.Sleep) _groomRemaining -= consumed;
             remaining -= consumed;
 
             if (TryStartSleep())
@@ -216,6 +223,7 @@ public sealed partial class PetBrain
 
     private void AdvanceAutonomousState()
     {
+        if (_idleActivity != IdleActivityKind.None) { _idleActivity=IdleActivityKind.None; StartIdle(); return; }
         if(_doroWander && _state==PetState.Walk){
             _doroWander=false;StartIdle();_askingDoro=true;_stateDuration=DoroQuestionDuration;return;
         }
@@ -354,6 +362,7 @@ public sealed partial class PetBrain
     public void ResumeAfterPlay(FacingDirection facing)
     {
         ResetInactivity();
+        _pendingIdleActivity=IdleActivityKind.None;
         ClearDirectInteraction();
         _facing = facing;
         _heading = new PointD(facing == FacingDirection.Right ? 1 : -1,0);
@@ -383,6 +392,7 @@ public sealed partial class PetBrain
 
     private void StartSleep()
     {
+        CancelIdleActivity();
         _doroWander=false;_askingDoro=false;
         _state = PetState.Sleep;
         _stateElapsed = TimeSpan.Zero;
@@ -408,6 +418,10 @@ public sealed partial class PetBrain
 
     private void ResetInactivity()
     {
+        // A wake stretch may wait for the initiating click/drag to finish;
+        // other ambient work is canceled immediately by real interaction.
+        CancelIdleActivity(clearPending:_pendingIdleActivity!=IdleActivityKind.Stretch);
+        _groomRemaining=TimeSpan.FromSeconds(45);
         _inactivity = TimeSpan.Zero;
         _nextDoroAt=_tuning.DoroQuestionDelay ?? TimeSpan.MaxValue;
         _doroWander=false;

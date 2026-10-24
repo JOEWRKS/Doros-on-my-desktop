@@ -17,6 +17,7 @@ public sealed partial class PetBrain
         // Interval starts at the wander trigger, not after the walk/question ends.
         // Never replay a backlog when another action has deferred the trigger.
         _nextDoroAt=_inactivity+_tuning.DoroQuestionDelay!.Value;
+        CancelIdleActivity();
         _doroWander=true;
         // Reuse the existing authored gait, speed, walk duration and surface physics.
         StartWalk();return true;
