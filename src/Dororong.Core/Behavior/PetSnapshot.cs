@@ -8,4 +8,7 @@ public readonly record struct PetSnapshot(
     FacingDirection Facing,
     double Phase,
     bool IsDirectInteractionPending,
-    PointD? GrabOffset);
+    PointD? GrabOffset)
+{
+    public double? DoroQuestionPhase { get; init; }
+}

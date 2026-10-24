@@ -85,7 +85,7 @@ internal sealed class PetLoop : IDisposable
         : this(
             CreateProductionRuntime(window, presenter, input),
             initialPosition => new PetBrain(
-                BehaviorTuning.Default,
+                BehaviorTuning.Default with {DoroQuestionDelay=TimeSpan.FromMinutes(1)},
                 new SeededRandomSource(),
                 initialPosition))
     {
@@ -121,6 +121,7 @@ internal sealed class PetLoop : IDisposable
     internal bool TryResize(Action resize)
     {
         if (!CanResize) return false;
+        _brain!.NotifyActivity();_snapshot=_brain.Current;
         var before = _host.MeasureSizeAnchor?.Invoke();
         resize();
         _host.SetWindowPosition(_snapshot.Position); // Resize native viewport before measuring.
@@ -148,6 +149,7 @@ internal sealed class PetLoop : IDisposable
             _snapshot.IsDirectInteractionPending || _directInteractionController.Current.Target != DirectInteractionTarget.None)
             return;
         _sitRequested = true;
+        _brain?.NotifyActivity();
         _host.SetSittingRequested?.Invoke(true);
     }
 

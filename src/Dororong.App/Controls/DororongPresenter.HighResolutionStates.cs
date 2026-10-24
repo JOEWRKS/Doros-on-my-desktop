@@ -60,6 +60,11 @@ public partial class DororongPresenter
                 _hrFace=_hrFace with {Breathing=GetBreathingAmount(phase)};
             }
         }
+        if(_showDoroQuestion && pet.DoroQuestionPhase is { } questionPhase){
+            var head=_hrFace.Head;
+            head.RotateAt(DoroQuestionMotion.HeadRoll(questionPhase)*180/Math.PI,43,66);
+            _hrFace=_hrFace with {Head=head};
+        }
         if(!_snackPose.Active)return;
         var pose=_snackPose;_hrFacing=pet.Facing;_hrForward=GrabTransform(0,0,HighResolutionScale);
         if(pose.Phase==SnackPhase.Angry){

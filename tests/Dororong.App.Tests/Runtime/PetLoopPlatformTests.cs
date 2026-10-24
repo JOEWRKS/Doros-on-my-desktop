@@ -244,7 +244,7 @@ public partial class PetLoopPlatformTests
         internal PetSnapshot Core;internal DirectInteractionSnapshot Direct;internal PlatformPose? LastPose;internal Exception? Fault;
         internal SnackPose Snack;
         private TimeSpan elapsed;private EventHandler? tick;
-        internal Harness(Func<IReadOnlyList<DesktopMonitor>>? fallback=null,bool realPresenter=false,bool refuseLegacyArea=false,bool platformEnabled=true,bool walking=false,bool perchEnabled=false,double readbackStep=0,bool snackPresentation=false,double highResolutionScale=0,bool huntingPresentation=false)
+        internal Harness(Func<IReadOnlyList<DesktopMonitor>>? fallback=null,bool realPresenter=false,bool refuseLegacyArea=false,bool platformEnabled=true,bool walking=false,bool perchEnabled=false,double readbackStep=0,bool snackPresentation=false,double highResolutionScale=0,bool huntingPresentation=false,bool doroQuestion=false)
         {
             if(realPresenter)Presenter=new DororongPresenter{Width=144,Height=144};
             if(highResolutionScale>0){Presenter!.HighResolutionGrabEnabled=true;Presenter.HighResolutionScale=highResolutionScale;
@@ -279,7 +279,7 @@ public partial class PetLoopPlatformTests
                     SetLocomotionBlocked=snackPresentation ? value=>Presenter!.SetLocomotionBlocked(value) : null
                 };
             Loop=new(new(()=>elapsed,()=>{},()=>{}),new(h=>tick+=h,h=>tick-=h,()=>{},()=>{}),host,
-                _=>new(BehaviorTuning.Default with {IdleMin=walking?TimeSpan.FromMilliseconds(100):TimeSpan.FromMinutes(10),IdleMax=walking?TimeSpan.FromMilliseconds(100):TimeSpan.FromMinutes(10),IdleToWalkProbability=1},new SeededRandomSource(1),new(100,100)));
+                _=>new(BehaviorTuning.Default with {IdleMin=walking?TimeSpan.FromMilliseconds(100):TimeSpan.FromMinutes(10),IdleMax=walking?TimeSpan.FromMilliseconds(100):TimeSpan.FromMinutes(10),IdleToWalkProbability=1,DoroQuestionDelay=doroQuestion?TimeSpan.FromMinutes(1):null},new SeededRandomSource(1),new(100,100)));
             Loop.Faulted+=(_,e)=>Fault=e;
         }
         internal void Start(){Loop.Start();Assert.Null(Fault);}

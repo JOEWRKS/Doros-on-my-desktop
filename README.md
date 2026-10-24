@@ -45,6 +45,8 @@ Walking, breathing, blinking and sleeping are automatic. Uninstall through Windo
 **자동 눕기**를 끄면 자동 수면만 멈춥니다. 기본은 켜짐. 앉기·걷기·간식은 유지되며 설정은 재실행 후에도 기억합니다.
 Turn off **자동 눕기 (Auto sleep)** to disable automatic sleep only (on by default). Sitting, walking and snacks remain available; the choice persists across restarts.
 
+현재 Windows 소스에서는 도로롱과 1분 동안 상호작용하지 않으면 잠깐 걷고 앞쪽으로 고개를 갸웃하며 `DORO?` 말풍선을 표시합니다. 자동 눕기OFF면 이후에도 1분 간격으로 반복하고, ON이면 1·2분 반응 후 총3분에 질문 대신 잠듭니다. PC 전체 키보드 유휴 시간이 아닌 도로롱 상호작용 기준입니다. 기존 배포본·Mac 테스트 앱에 새 반응이 적용됐다는 뜻은 아닙니다.
+
 **v0.1.3:** 새 메뉴·머리 아이콘, 관절 기반 앉기·일어서기, 머리 선명도와 창·작업표시줄 표시 개선.
 **v0.1.3:** refreshed menus and head icons, articulated sit/rise, sharper head rendering and improved window/taskbar behavior.
 

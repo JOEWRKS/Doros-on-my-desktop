@@ -10,11 +10,11 @@ public partial class PetLoopPlatformTests
         using var h = new Harness(platformEnabled: false);
         h.Loop.SetAutomaticSleepEnabled(false);
         h.Start();
-        for (var i = 0; i < 1400; i++) { h.Tick(80); Assert.NotEqual(PetState.Sleep, h.Core.State); }
+        for (var i = 0; i < 2400; i++) { h.Tick(80); Assert.NotEqual(PetState.Sleep, h.Core.State); }
         h.Loop.SetAutomaticSleepEnabled(true);
         h.Tick(80);
         Assert.NotEqual(PetState.Sleep, h.Core.State);
-        for (var i = 0; i < 1400; i++) h.Tick(80);
+        for (var i = 0; i < 2400; i++) h.Tick(80);
         Assert.Equal(PetState.Sleep, h.Core.State);
         var position = h.Position;
         h.Loop.SetAutomaticSleepEnabled(false);

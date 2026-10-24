@@ -14,7 +14,9 @@ public sealed record BehaviorTuning
     public TimeSpan CuriousDuration { get; init; } = TimeSpan.FromSeconds(1.6);
     public TimeSpan StartledDuration { get; init; } = TimeSpan.FromSeconds(0.75);
     public TimeSpan ClickReactionDuration { get; init; } = TimeSpan.FromSeconds(0.5);
-    public TimeSpan SleepDelay { get; init; } = TimeSpan.FromSeconds(90);
+    public TimeSpan SleepDelay { get; init; } = TimeSpan.FromMinutes(3);
+    // Hosts opt in only when they implement the accompanying question presentation.
+    public TimeSpan? DoroQuestionDelay { get; init; }
     public double NearEnterDistance { get; init; } = 150;
     public double NearExitDistance { get; init; } = 210;
     public double StartleReactionDistance { get; init; } = 220;

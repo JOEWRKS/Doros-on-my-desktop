@@ -294,7 +294,9 @@ public partial class DororongPresenter : UserControl
 
     internal void Render(PetSnapshot snapshot, DirectInteractionSnapshot directInteraction, TimeSpan elapsed)
     {
-        if (RenderHighResolutionGrab(snapshot, directInteraction, elapsed)) return;
+        _showDoroQuestion=CanShowDoroQuestion(snapshot,directInteraction);
+        if (RenderHighResolutionGrab(snapshot, directInteraction, elapsed)){UpdateDoroBubble(snapshot);return;}
+        UpdateDoroBubble(snapshot);
         _perchReadiness.Restore();
         RenderPose(snapshot, directInteraction, elapsed);
         var image = _bodyPullPresentation?.VisibleImage ?? _cheekPullPresentation?.VisibleImage ?? DororongImage;

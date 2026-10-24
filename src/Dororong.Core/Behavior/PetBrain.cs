@@ -2,7 +2,7 @@ using Dororong.Core.Geometry;
 
 namespace Dororong.Core.Behavior;
 
-public sealed class PetBrain
+public sealed partial class PetBrain
 {
     private readonly BehaviorTuning _tuning;
     private readonly IRandomSource _random;
@@ -39,8 +39,10 @@ public sealed class PetBrain
         ValidatePositiveDuration(tuning.CuriousDuration, nameof(tuning.CuriousDuration));
         ValidatePositiveDuration(tuning.StartledDuration, nameof(tuning.StartledDuration));
         ValidatePositiveDuration(tuning.ClickReactionDuration, nameof(tuning.ClickReactionDuration));
+        if(tuning.DoroQuestionDelay is { } questionDelay) ValidatePositiveDuration(questionDelay,nameof(tuning.DoroQuestionDelay));
 
         _tuning = tuning;
+        _nextDoroAt=tuning.DoroQuestionDelay ?? TimeSpan.MaxValue;
         _random = random;
         _pointerReactionDetector = new PointerReactionDetector(tuning);
         _state = PetState.Idle;
@@ -56,7 +58,8 @@ public sealed class PetBrain
         _facing,
         GetPhase(),
         IsDirectInteractionPending: _pressPosition.HasValue,
-        GrabOffset: _grabOffset);
+        GrabOffset: _grabOffset)
+        {DoroQuestionPhase=_askingDoro ? FinitePhase(DoroQuestionDuration) : null};
 
     public PetSnapshot ApplyPlatformPosition(PointD position)
     {
@@ -99,6 +102,10 @@ public sealed class PetBrain
         // Direct presses, carry and release above remain operational.
         if (input.SuspendAutonomousMotion)
         {
+            // Snack/hunting attention cancels the question; a platform outage or
+            // airborne suspension alone merely pauses autonomous clocks.
+            if(input.TrackPointerFacing || input.SuppressPointerReactions && input.LocalInteractionActive)
+                ResetInactivity();
             if (input.TrackPointerFacing && !handledDirectInteraction && !_pressPosition.HasValue &&
                 !input.LocalInteractionActive && _state is PetState.Idle or PetState.Walk or PetState.Sleep &&
                 (input.TrackingFacingOverride is not null ||
@@ -158,12 +165,15 @@ public sealed class PetBrain
             {
                 continue;
             }
+            if(TryStartDoroWander()) continue;
 
             var untilStateBoundary = _stateDuration - _stateElapsed;
             var untilSleepBoundary = CanEnterSleep()
                 ? _tuning.SleepDelay - _inactivity
                 : TimeSpan.MaxValue;
             var consumed = Min(remaining, untilStateBoundary, untilSleepBoundary);
+            if(CanStartDoroWander())
+                consumed=consumed < _nextDoroAt-_inactivity ? consumed : _nextDoroAt-_inactivity;
 
             if (_state == PetState.Walk && !input.SuspendAutonomousMotion)
             {
@@ -182,6 +192,7 @@ public sealed class PetBrain
             {
                 continue;
             }
+            if(TryStartDoroWander()) continue;
 
             if (_stateElapsed >= _stateDuration)
             {
@@ -205,6 +216,10 @@ public sealed class PetBrain
 
     private void AdvanceAutonomousState()
     {
+        if(_doroWander && _state==PetState.Walk){
+            _doroWander=false;StartIdle();_askingDoro=true;_stateDuration=DoroQuestionDuration;return;
+        }
+        if(_askingDoro){_askingDoro=false;StartIdle();return;}
         if (_state == PetState.Idle)
         {
             if (_random.NextUnit() < _tuning.IdleToWalkProbability)
@@ -338,6 +353,7 @@ public sealed class PetBrain
 
     public void ResumeAfterPlay(FacingDirection facing)
     {
+        ResetInactivity();
         ClearDirectInteraction();
         _facing = facing;
         _heading = new PointD(facing == FacingDirection.Right ? 1 : -1,0);
@@ -367,6 +383,7 @@ public sealed class PetBrain
 
     private void StartSleep()
     {
+        _doroWander=false;_askingDoro=false;
         _state = PetState.Sleep;
         _stateElapsed = TimeSpan.Zero;
         _stateDuration = TimeSpan.MaxValue;
@@ -384,11 +401,17 @@ public sealed class PetBrain
     }
 
     private bool CanEnterSleep() =>
-        AutomaticSleepEnabled && _state == PetState.Idle && !_pressPosition.HasValue;
+        AutomaticSleepEnabled && !_pressPosition.HasValue &&
+        (_tuning.DoroQuestionDelay is not null
+            ? _state is PetState.Idle or PetState.Walk
+            : _state == PetState.Idle && !_askingDoro);
 
     private void ResetInactivity()
     {
         _inactivity = TimeSpan.Zero;
+        _nextDoroAt=_tuning.DoroQuestionDelay ?? TimeSpan.MaxValue;
+        _doroWander=false;
+        if(_askingDoro){_askingDoro=false;StartIdle();}
     }
 
     private void StartIdle()

@@ -1,5 +1,66 @@
 # ROADMAP — 도로롱이 내 컴에?!
 
+## Accepted DORO? source delivery · 2026-10-24
+
+- Explicit request: commit/push and update the accepted version. Preserve accepted
+  front tilt/lower bubble, minute repetition, sleep policy and stored preferences.
+- Existing running PID38372 already matches the final tested App/Core binaries;
+  local accepted version applied, retain it without restart. Reuse existing tests.
+- Deliver on existing feature branch, no main merge or installer/public-release
+  replacement. NativeMac question UI and live timing measurement are not new claims.
+
+## Lower question bubble · 2026-10-24
+
+- User-directed position-only adjustment:8 scaledDIP downward; preserve accepted
+  front tilt, other artwork/motions and60-second repeat/180-second sleep logic.
+- Renderer10/10 and six size/direction detail images checked. Core unchanged.
+  [Evidence](docs/verification/2026-10-24-doro-minute-repeat.md).
+- User explicitly accepted the lower position: “ㅇㅇ 이 위치면 됨. 통과”. Position
+  adjustment complete; preserve it and await a separately requested change. No public
+  release, unrelated rework or nativeMac verification is implied.
+- Lower candidate launched after user exit, PID38372 at19:43:44KST;
+  exact-path response confirmed and settings retained.
+
+## Accepted tilt / one-minute repeat · 2026-10-24
+
+- Frontward tilt accepted. Latest requested schedule:60-second first/repeat;
+  sleepOFF keeps repeating, sleepON takes precedence at180seconds. Preserve art,
+  motion speed, bubble and saved preferences.
+- [Evidence](docs/verification/2026-10-24-doro-minute-repeat.md): Core331 and Windows19
+  pass, including repeated scheduling/deadline/option/reset boundaries. No renderer
+  changes or repeat of unrelated completed verification.
+- Implementation/automated checks complete; normal-use cadence acceptance pending.
+  NativeMac question presentation remains outside this Windows delivery.
+- Minute-repeat candidate launched PID49632 at19:39:18KST, exact-path responding;
+  stored150%/sleepOFF preserved. No installer/public release/commit/push change.
+- Next: review new timing in normal use. Earlier90-second single-use policy below
+  is historical, superseded by this explicit user change.
+
+## 90-second DORO? / 180-second sleep · 2026-10-24
+
+- Frontward candidate subsequently accepted; new minute-repeat schedule above
+  supersedes the earlier cadence. Preserve previous implementation/test history.
+
+- Follow-up direction correction: frontward, away from the body, per user request.
+  Only roll sign reversed;20 focused tests and both-facing visual samples checked.
+  Forward candidate packaged; earlier direction superseded, user acceptance pending.
+- After user tray exit, forward candidate launched PID46244 at19:31:01KST;
+  exact-path response confirmed, existing settings retained.
+
+- User-approved scope: at90seconds without pet interaction, use the accepted walk,
+  then head tilt with `DORO?`; change default sleep to180seconds. Preserve other art,
+  motions, speed, platform behavior and stored preferences.
+- [Implementation/evidence](docs/verification/2026-10-24-doro-question-and-sleep.md):
+  one question per inactivity period, interaction resets, sleepOFF independent.
+  Core327 and Windows341 tests pass; whole150% question sequences reviewed in both
+  directions, with100/125% detail comparisons. Separate candidate packaged.
+- Windows implementation/automated verification complete; new visual acceptance
+  remains pending. Mac question UI is not ported or natively verified by this work.
+- Candidate launched PID38564 at15:55:26KST after confirming no existing pet;
+  exact-path alive/responding. Stored150%/automatic sleepOFF left unchanged.
+- Next: normal-use review of the new reaction. No new public release/commit/push,
+  repeat soak, or further motion feature is authorized by this entry.
+
 ## Current-version source delivery · 2026-10-24
 
 - Explicit request: commit/push the accumulated current source and launch the tested

@@ -1,5 +1,75 @@
 # Tasks
 
+## Accepted DORO? version source delivery — 2026-10-24
+
+- User explicitly requests commit/push and update of the currently accepted version.
+  Scope: accepted frontward question tilt/lower bubble and requested60-second repeat,
+  sleepOFF repeat / sleepON180-second sleep, related tests/spec/evidence.
+- Current PID38372 is already the accepted lower-bubble candidate. App/Core hashes
+  equal final tested binaries; preserve this running instance,150%/sleepOFF settings.
+  Local accepted version already applied; no unnecessary restart/build/visual retest.
+- Reused evidence: Core331/331, host19/19, final position renderer10/10. These are
+  separate runs, not a new complete-suite or nativeMac verification claim.
+- Delivery uses existing `feature/macos-r104-arm64`; pre-delivery fetch shows0/0
+  divergence. No installer/public-release asset replacement or main merge.
+
+## DORO? bubble slightly lower — 2026-10-24
+
+- User requests only a lower bubble. Changed top4→12 scaledDIP, preserving x,
+  bubble shape, accepted character motion and minute-repeat/sleep behavior.
+- [Evidence](docs/verification/2026-10-24-doro-minute-repeat.md): renderer10/10,
+  six size/direction detail comparisons reviewed; no character overlap observed.
+  Core binary identical to minute candidate. Fresh lower-bubble candidate packaged;
+  user acceptance was pending at launch, no repeated timing/soak or nativeMac claim.
+- After user tray exit, launched lower candidate PID38372 at19:43:44KST;
+  exact-path responding, stored150%/sleepOFF retained.
+- User then explicitly accepted the position: “ㅇㅇ 이 위치면 됨. 통과”.
+  Lower bubble position is now the accepted baseline; no further position edits
+  or repeated verification needed. This does not extend to nativeMac or new timing evidence.
+
+## Accepted front tilt; one-minute repeat / three-minute sleep — 2026-10-24
+
+- User explicitly accepted the frontward tilt. Preserve it; replace90-second
+  one-shot with60-second recurring behavior. Auto sleepOFF repeats indefinitely;
+  ON reacts at60/120seconds and sleeps at180seconds, with sleep taking priority.
+- [Implementation and bounded evidence](docs/verification/2026-10-24-doro-minute-repeat.md):
+  Core331/331, Windows19/19;10 simulated repetitions without duration-added drift,
+  interaction reset, option changes and deadline precedence checked. Render unchanged.
+- Candidate packaged separately; user real-time cadence and nativeMac remain
+  unverified. Supersedes earlier90-second/once-per-inactivity conditions below.
+- No existing pet at launch. Announced start then PID49632 at19:39:18KST;
+  exact-path alive/responding,150%/automatic sleepOFF retained.
+- Next: normal-use review of the new cadence; no further artwork/motion changes.
+
+## DORO? after 90 seconds / default sleep after 3 minutes — 2026-10-24
+
+- Subsequent user “통과” accepts the frontward candidate's visual direction.
+  Its90-second one-shot scheduling is superseded by the one-minute entry above.
+
+- Follow-up: user requests frontward tilt, away from the body. Negated only the
+  question head-roll sign; timing, magnitude, bubble and other motions unchanged.
+  Focused Core10/render10 passed; both-facing transition/detail frames reviewed.
+  Fresh `candidate-doro-question-forward-20261024` packaged; earlier bodyward tilt
+  superseded, new user acceptance pending. Details in the same verification file.
+- User confirmed tray exit; no existing pet found. Forward candidate launched
+  PID46244 at19:31:01KST, exact-path alive/responding; stored150%/sleepOFF retained.
+
+- User requested 180-second default sleep and a 90-second inactive wander/head-tilt
+  `DORO?` reaction. Implemented in the current Windows high-resolution presenter;
+  once per inactivity period, canceled/rearmed by pet interaction, sleepOFF retained.
+- [Conditions, verification and candidate](docs/verification/2026-10-24-doro-question-and-sleep.md):
+  final Core327/327 and Windows341/341. 1,086 question frames automatically checked;
+  both full150% sequences and six size/direction detail comparisons visually reviewed.
+- Preserved accepted artwork, other motions, gait speed and platform behavior.
+  One retained pass-through vector bubble; no per-frame/size bitmap cache added.
+- Separate ZIP candidate built and App/Core hashes matched tested output. No new
+  commit/push, installer update or public release. Actual-user appearance acceptance,
+  native-Mac question presentation and real-monitor timing remain unverified.
+- No existing pet at launch; announced candidate start at15:55:26KST, PID38564.
+  Exact-path alive/responding confirmed;150%/automatic sleepOFF retained.
+- Next: inspect the new Windows behavior in normal use; no repeated memory soak or
+  unrelated accepted-motion rework is required by this bounded feature.
+
 ## Current-version source delivery — 2026-10-24
 
 - User explicitly requested committing/pushing the current version and launching it.
