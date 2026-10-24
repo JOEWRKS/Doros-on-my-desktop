@@ -8,6 +8,9 @@
   local accepted version applied, retain it without restart. Reuse existing tests.
 - Deliver on existing feature branch, no main merge or installer/public-release
   replacement. NativeMac question UI and live timing measurement are not new claims.
+- Completed: source commit `cfa75e6` pushed and exact remote hash confirmed.
+  Local running accepted version retained unchanged; no additional work required
+  for this bounded delivery. Await a separately requested change/release action.
 
 ## Lower question bubble · 2026-10-24
 
