@@ -176,14 +176,16 @@ public partial class PetLoopPlatformTests
     });
 
     [Fact]
-    public void Temporary_scene_failure_freezes_then_expiry_releases_to_the_retained_monitor_floor() => Controls.CheekProductTests.Sta(() =>
+    public void Temporary_scene_failure_and_expiry_preserve_perch_until_confirmed_loss() => Controls.CheekProductTests.Sta(() =>
     {
         using var h = AttachedHarness(advanceTicks: 10);
         var attached = h.Position; h.Native.Fail = true;
         h.Tick(80); Assert.Equal(attached, h.Position); Assert.Equal(EdgePerchPhase.Attached, h.Platforms.PerchPhase);
-        var expiryTicks = 0;
-        while (h.Platforms.PerchPhase != EdgePerchPhase.None && expiryTicks++ < 7) h.Tick(80);
-        Assert.InRange(expiryTicks, 5, 7);
+        for(var i=0;i<15;i++)h.Tick(80);
+        Assert.Equal(attached,h.Position);Assert.Equal(EdgePerchPhase.Attached,h.Platforms.PerchPhase);
+        h.Native.Fail=false;h.Tick(80);
+        Assert.Equal(attached,h.Position);Assert.Equal(EdgePerchPhase.Attached,h.Platforms.PerchPhase);
+        h.Native.Scene=Scene(windows:false);h.Tick(80);
         Assert.Equal(EdgePerchPhase.None, h.Platforms.PerchPhase);
         Assert.Equal(PlatformPhase.Falling, h.LastPose?.Phase);
         Assert.True(h.Position.Y > attached.Y);

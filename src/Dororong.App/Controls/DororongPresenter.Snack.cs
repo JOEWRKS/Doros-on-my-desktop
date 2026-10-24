@@ -23,6 +23,7 @@ public partial class DororongPresenter
             ResetHunting();
             _postBodyClickIdleFacing = _postCheekIdleFacing = _postHeadLandingIdleFacing = null;
         }
+        if (_snackPose.Phase == SnackPhase.Angry && pose.Phase == SnackPhase.Chasing) _snackRecoveryAge = 2.6;
         _snackPose = pose; _snackPointer = pointer;
     }
 
@@ -100,11 +101,11 @@ internal sealed class SnackRenderer
     }
     internal BitmapSource Render(SnackPose pose, HuntGazePose gaze, double entryRecoveryAge=2.6)
     {
-        if(pose.Phase==SnackPhase.Happy)
+        if(pose.Phase is SnackPhase.Happy or SnackPhase.Angry)
         {
             // Same single-sampled head and hidden neck backing as accepted
             // upright tracking. No body scaling, foot movement or mouth redraw.
-            var happyGaze=new HuntGazePose(0,0,HappyRoll(pose.Age));
+            var happyGaze=new HuntGazePose(0,0,pose.Phase==SnackPhase.Angry?SnackAngerMotion.Roll(pose.Age,pose.WithdrawalStreak):HappyRoll(pose.Age));
             HeadTransform=HuntRenderer.HeadTransform(156,happyGaze);
             return hunt.Render(156,happyGaze,closed:true);
         }

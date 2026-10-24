@@ -286,7 +286,7 @@ def build(publish, output, signer, notices, nuget):
         shutil.copyfile(file, macos/file.name)
     info = plistlib.loads((ROOT/"src/Dororong.Mac/Packaging/Info.plist").read_bytes())
     info.update(CFBundleName="Doro Mac Test", CFBundleDisplayName="도로롱이 내 컴에?! — Mac 테스트",
-                CFBundleVersion="104.7", CFBundleIconFile="Dororong.icns",
+                CFBundleVersion="104.9", CFBundleIconFile="Dororong.icns",
                 CFBundleInfoDictionaryVersion="6.0", LSMinimumSystemVersion="13.0")
     (bundle/"Contents/Info.plist").write_bytes(plistlib.dumps(info))
     (resources/"Dororong.icns").write_bytes(ico_to_icns((ROOT/"src/Dororong.App/Assets/dororong.ico").read_bytes()))
@@ -323,7 +323,7 @@ def build(publish, output, signer, notices, nuget):
     # is modified after this point. Manifest/report live outside it.
     manifest = {p.relative_to(tree).as_posix(): sha(p.read_bytes()) for p in sorted(tree.rglob("*")) if p.is_file()}
     (tree/"FILE-HASHES.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
-    archive = output/"Doro-Mac-arm64-r104-test07.zip"
+    archive = output/"Doro-Mac-arm64-r104-test09.zip"
     write_zip(tree, archive)
     count = verify_zip(archive, tree)
     digest = sha(archive.read_bytes())

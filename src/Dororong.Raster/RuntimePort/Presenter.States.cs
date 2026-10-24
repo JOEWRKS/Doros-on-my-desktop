@@ -16,7 +16,8 @@ internal partial class DororongPresenter
         else if(frame is >=706 and <=770)frame=HighResolutionLocomotion.Sleep((frame-706)/64d*(1-u));
         if(body>=0){var start=SnackRenderer.RecoveryAge(HuntPose.At(body/60d).Amount);body=(int)Math.Round((start+(2.6-start)*u)*60);}
         var a=captured.Head;var head=new Matrix(a.M11+(1-a.M11)*u,a.M12*(1-u),a.M21*(1-u),a.M22+(1-a.M22)*u,a.OffsetX*(1-u),a.OffsetY*(1-u));
-        return captured with {Head=head,MotionFrame=frame,BodyFrame=body,EyeX=captured.EyeX*(1-u),EyeY=captured.EyeY*(1-u),Breathing=captured.Breathing*(1-u),EffectFrame=frame is >=706 and <=770?HighResolutionLocomotion.SleepEffect(frame):-1};
+        captured=captured with {ChuckleCover=captured.ChuckleCover*(1-u),ChuckleBob=captured.ChuckleBob*(1-u)};
+        return captured with {Head=head,MotionFrame=frame,BodyFrame=body,EyeX=captured.EyeX*(1-u),EyeY=captured.EyeY*(1-u),Breathing=captured.Breathing*(1-u),StompLift=captured.StompLift*(1-u),StompReach=captured.StompReach*(1-u),StompCrouch=captured.StompCrouch*(1-u),EffectFrame=frame is >=706 and <=770?HighResolutionLocomotion.SleepEffect(frame):-1};
     }
     private void HighResolutionMotion(int frame,bool closed=false,int effect=-1){
         var matrix=Matrix.Identity;
@@ -62,7 +63,11 @@ internal partial class DororongPresenter
         }
         if(!_snackPose.Active)return;
         var pose=_snackPose;_hrFacing=pet.Facing;_hrForward=GrabTransform(0,0,HighResolutionScale);
-        if(pose.Phase==SnackPhase.Happy){
+        if(pose.Phase==SnackPhase.Angry){
+            _hrFace=HighResolutionGrabRaster.SnackReaction(pose.Age,pose.WithdrawalStreak);
+        }else if(pose.Phase==SnackPhase.Chuckling){
+            _hrFace=HighResolutionGrabRaster.SnackChuckle(pose.Age);
+        }else if(pose.Phase==SnackPhase.Happy){
             var head=HuntRenderer.HeadTransform(156,new(0,0,SnackRenderer.HappyRoll(pose.Age)));
             _hrFace=HighResolutionFacePose.Neutral with {Head=head,Closed=true};
         }else{
@@ -74,6 +79,8 @@ internal partial class DororongPresenter
                 HighResolutionMotion(HighResolutionLocomotion.Run(pose.RunAmount,pose.Distance));
             else HighResolutionMotion(-1,pose.Phase==SnackPhase.Eating||pose.Phase==SnackPhase.Settling&&pose.Age<.16);
             if(pose.Phase==SnackPhase.Eating)_hrFace=_hrFace with {MouthAge=Math.Round(pose.Age*60)/60};
+            else if(pose.Phase==SnackPhase.Snatching&&pose.Age>=SnackSession.SnatchPrepareSeconds)
+                _hrFace=_hrFace with {MouthAge=.35};
             else if(pose.Phase==SnackPhase.Chasing)_hrFace=_hrFace with {DroolAge=Math.Round(pose.Age*60)/60};
         }
         _snackHead=_hrFace.Head;

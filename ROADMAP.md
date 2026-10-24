@@ -1,5 +1,338 @@
 # ROADMAP — 도로롱이 내 컴에?!
 
+## Current-version source delivery · 2026-10-24
+
+- Explicit request: commit/push the accumulated current source and launch the tested
+  Windows candidate. Use the existing feature branch; no main merge or release
+  asset replacement is implied. Preserve accepted appearance/motion/preferences.
+- Candidate App/Core hashes match the previously tested380/380 output. Complete
+  after remote commit identity and same-path live process are confirmed.
+- Native-Mac acceptance and exact historic capture-trigger attribution remain
+  outside this source-delivery verification; no new user test is requested.
+
+## Unexpected Windows platform drop · 2026-10-24
+
+- Scope: independently diagnose/correct reported spontaneous/capture-associated
+  drop while preserving accepted arc-paw appearance, motions, timing and settings.
+- [Evidence](docs/verification/2026-10-24-unexpected-platform-drop.md): corrected
+  failure-expiry-as-owner-loss and confirmed zero-alpha occluder handling. Retain
+  existing support during unknown metadata, preserve confirmed real loss behavior.
+- 380regressions passed; separate candidate applied through normal app close/start,
+  PID1084,04:50:21KST,150%/automatic sleepOFF unchanged. Core binary unchanged.
+- Limited completion: reproduced causes fixed/applied; exact historical trigger
+  and actual clipboard-capture interaction are not retrospectively verified.
+- Next: no requested user reproduction, repeated broad checks or automatic monitor.
+  Preserve this correction and accepted visuals; public release/Mac work remain
+  outside this task's completion claim.
+
+## Round outer silhouette after rejected corner smoothing · 2026-10-24
+
+- PID27332 explicitly rejected. Tangent smoothing was insufficient; actual target
+  is a visibly rounded outer sweep, preserving overall arm size and motion.
+- [Evidence](docs/verification/2026-10-24-snack-elliptical-paw.md): elliptical outer
+  contour, unchanged attachment/crease/motion, five-size checks,109-frame visual
+  review and right-facing comparison. Separate candidate launched PID5000,
+  startup confirmed at03:54:15KST.
+- User explicitly accepted the arc-paw candidate: “ㅇㅇ 통과”. This correction is
+  complete; preserve its rounded forepaw and chuckle motion as the baseline.
+- Next: await a separately approved change; no repeated checks of this accepted
+  correction. Native-Mac verification/public release are not implied by acceptance.
+
+## Accepted arm / smooth curvature · 2026-10-24
+
+- User accepts arm shape; only angular curvature remains in scope. Preserve
+  anchors, size, other reactions and timing. Five visible joins now share tangents.
+- [Verification](docs/verification/2026-10-24-snack-smooth-paw-curves.md): five-size
+  tests, full150% sequence review and archived motion/pixel preservation checked.
+- User requested further rounding after PID33696: broader tip/lower turn, with
+  bounded local changes and unchanged motion. Follow-up tests/frame review passed;
+  separate rounder candidate launched PID27332 at03:46:05KST.
+- Superseded by explicit rejection and elliptical follow-up above; not accepted.
+
+## Upright forepaw / continuous connection · 2026-10-24
+
+- Current authority is the latest upright red trace, followed by explicit rejection
+  of its unnatural lower arm/torso joint. Prior sideways shape is rejected.
+- [Evidence](docs/verification/2026-10-24-snack-upright-trace-and-joint.md): corrected
+  curve junction, two-image transition and backing/alpha issues; preserved earlier
+  reactions and timing. Final frame/raster checks and before/after review recorded.
+- Corrected candidate launched PID12124 at00:52:25KST, startup confirmed. User later
+  accepted arm shape but requested smoother bends; follow-up above supersedes the
+  pending general-shape acceptance. No actual Mac, broad
+  performance/memory or public-release completion claim.
+
+## User-drawn folded forepaw · 2026-10-24
+
+- Subsequently rejected; upright trace/connection follow-up above is current.
+
+- Latest red-outline drawing replaces the rejected ball-shaped hand/narrow wrist.
+  Scope: horizontal tip and broad curved arm into chest, preserve other art/motion.
+- [Evidence](docs/verification/2026-10-24-snack-folded-chuckle-paw.md): corrected shape,
+  transition/feet/eye checks, five-size render and bounded raster verification;
+  Windows candidate packaged. Immediate launch authorized by current user request.
+- Launched PID39200 at00:09:55KST; startup confirmed. Next: actual user acceptance
+  of the new silhouette. NativeMac
+  and long-run memory acceptance are not inferred from these targeted checks.
+
+## Round chuckle forepaw · 2026-10-23
+
+- Subsequent red drawing rejects this candidate; folded-paw section above is current.
+
+- User rejected the pointed chuckle hand; approved rounded mouth-cover pad and natural
+  arm connection correction only. Existing motion/art/quality/speed remain protected.
+- [Evidence](docs/verification/2026-10-23-snack-round-chuckle-paw.md): geometry corrected,
+  full raise/hold/lower sequence reviewed, preservation and focused tests recorded.
+- Separate tested candidate launched after user readiness(PID72040), startup confirmed.
+  Next: actual user acceptance. No nativeMac or broad memory campaign; earlier
+  chuckle shape is rejected, not accepted by passing tests.
+
+## Sixth-snatch landing chuckle · 2026-10-23
+
+- Forepaw appearance subsequently rejected; round-paw correction above is current.
+
+- User accepted continuous second stamping, then requests mouth-cover shudders after
+  sixth catch/eat and landing. Preserve all accepted earlier motion/art/quality/speed.
+- [Evidence and remaining boundary](docs/verification/2026-10-23-snack-post-snatch-chuckle.md):
+  inspected video24–27s, implemented support-gated reaction and fixed discovered arm
+  connection/alpha seams. Automated render/core/preservation evidence recorded.
+- Final WPF runtime13/13/new render5/5 and retained/full raster10/10 complete;
+  separate tested candidate launched after authorized exit(PID71060), startup confirmed.
+  Next: actual user appearance acceptance of new chuckle. No nativeMac/long-memory
+  pass or public-release scope inferred.
+
+## Second uninterrupted motion · 2026-10-23
+
+- Latest authority rejects whole-clip looping. Extend active stamping continuously at
+  original cadence; one preparation and one final recovery, with other reactions preserved.
+- [Evidence](docs/verification/2026-10-23-snack-continuous-second.md): implementation and
+  targeted regression and final no-reset checks complete; candidate launched(PID69584),
+  startup confirmed. Subsequently user explicitly accepted (“통과야”). New landing
+  chuckle above is separate and does not reopen the accepted second-motion timing.
+
+## Restore second cadence / refine stamping ink · 2026-10-23
+
+- Whole-cycle repetition was subsequently rejected. Continuous-motion entry above
+  supersedes that timing target; ink refinement remains unchanged.
+
+- User accepts other escalation motions, rejects second slowdown. Preserve original
+  two-beat cadence and repeat for longer; refine ink without changing accepted large arm.
+- [Correction and evidence](docs/verification/2026-10-23-snack-original-tempo-ink.md):
+  waveform/pixel/runtime regression and five-size saved-frame review complete. Actual
+  second reaction and perceived outline sharpness remain next. Candidate packaged and
+  launched after authorized close(PID5680), startup confirmed but appearance not inferred.
+  No native Mac or long-memory claim; no new broad testing scope.
+
+## Withdrawal escalation · 2026-10-23
+
+- User accepted the large arm/clean outline below and requests second longer,
+  3/4/5 strikes, sixth fast jump/catch. Preserve accepted geometry/face/art.
+- [Evidence](docs/verification/2026-10-23-snack-escalation.md): implementation, host tests,
+  repeated-hit pixel checks and separate Windows packaging complete. Native Mac and
+  actual desktop timing/long-memory remain unverified; no expanded pass claimed.
+- Candidate launched after authorized close (PID44512); startup confirmed. Next:
+  obtain actual user acceptance of the new reactions, not inferred from startup.
+  No extra broad memory campaign or public release is authorized by this change.
+
+## Third stamp large size + clean outline · 2026-10-23
+
+- Latest authority: preserve earlier large forepaw, retain clean ink. The small-arm
+  goal below was an assistant misinterpretation, now superseded.
+- [Evidence](docs/verification/2026-10-23-snack-large-clean-outline.md): large trajectory
+  and silhouette restored;330 archived-frame alpha comparisons unchanged, first two
+  reactions unchanged;45 focused host checks and saved-frame inspection complete.
+- Separate candidate packaged/hash matched and launched(PID67896); startup confirmed.
+  User subsequently accepted this appearance; new escalation above is next. Native Mac/live desktop timing/long memory
+  are not inferred.
+
+## Third stamp no elongation · 2026-10-23
+
+- Superseded by the user's clarification above: arm SIZE was accepted, stretched
+  ink was not. This historical target must not be treated as current authorization.
+
+- Latest user rejects stretched forepaw outline. Replace the old2.5x preparation
+  scale with original-size shoulder rotation; retain first two reactions/face/timing.
+- [Evidence](docs/verification/2026-10-23-snack-rigid-outline.md):40focused checks and
+  actual-loop saved-frame inspection complete. Candidate packaged/launched(PID68324),
+  startup confirmed. Next: user's appearance acceptance. Prior seam-only acceptance
+  is not assumed.
+
+## Third stamp shoulder follow-up · 2026-10-23
+
+- Latest user screenshot rejects the body contour again. Prior saved-frame judgment
+  was insufficient; motion/face acceptance is retained, not extended to this seam.
+- [Focused correction and runtime-route evidence](docs/verification/2026-10-23-snack-joint-followup.md):
+  local join replacement; full-display comparison plus explicit kink regression.
+  Final39 functional checks/package complete; candidate PID51768 launched and startup
+  confirmed. Next is user's visual acceptance, not another broad memory test.
+  Native Mac/actual desktop timing/long memory are not inferred from saved host frames.
+
+## Third stamp body-contour repair · 2026-10-23
+
+- Motion feel now accepted; body contour is not. Keep pivot/angle/timing and repair shoulder
+  compositing only. [Evidence](docs/verification/2026-10-23-snack-shoulder-contour.md).
+- Full55-frame visual inspection and5-size275-frame checks replace sparse keyframes for
+  this seam. Final checks/package/authorized launch complete(PID68476); user appearance
+  acceptance remains next.
+  Native Mac and long-memory validation are not inferred from host proofs.
+
+## Third reaction fixed-axis rotation · 2026-10-23
+
+- Latest drawing supersedes the extended/sheared third foreleg. Target: rigid foreleg
+  swinging twice around a fixed shoulder; accepted second motion/face retained.
+- [Implementation and host proofs](docs/verification/2026-10-23-snack-pivot-stamp.md) complete;
+  separate candidate packaged/launched(PID64812); next is actual user acceptance.
+  Native Mac, real screen timing and long-memory acceptance are not inferred.
+
+## Second small stamp / third extended front slap · 2026-10-23
+
+- Latest user decision: accepted small stamp becomes second reaction; third reaches the
+  leading forepaw out in front and hits twice, per supplied drawing. Accepted faces retained.
+- [Implementation and evidence](docs/verification/2026-10-23-snack-front-slap.md): host checks,
+  5-size/enlarged proof, packaging and authorized launch done(PID50704). Next: user acceptance.
+  Native Mac and long-memory results are not inferred from host checks.
+
+## Third withdrawal forward stamp · 2026-10-23
+
+- User authorized launch; PID61928 started19:59:34 KST and startup confirmed. Launch step
+  below is complete; next remains actual user acceptance of forward/down two-hit motion.
+
+- User clarified/rejected the vertical-only candidate. Current target is one forepaw
+  extended forward, then two forward/down hits synchronized with a small pre-pounce-like bow.
+  Accepted face and first/second reactions remain unchanged; no jump/world translation.
+- [Implementation and host/saved-frame evidence](docs/verification/2026-10-23-snack-forward-stomp.md)
+  complete. Separate Windows candidate prepared; next is authorized launch and actual user
+  motion acceptance. Native Mac and long-memory behavior remain unverified, not claimed passed.
+
+## Third withdrawal forepaw stamp · 2026-10-23
+
+- Launch completed on user go-ahead, PID5316 at19:44:09 KST. This supersedes the launch
+  pending step below; next is user's actual third-withdrawal stamp acceptance.
+
+- Clean-wrinkles expression accepted by user; prior pending appearance notes now historical.
+- User requested third reaction's head shake replaced by a planted one-forepaw stamp.
+  Two lifts/downstrokes implemented, stationary head/body position, exact planted endpoints;
+  first/second reaction, .5s offer and .9s total reaction unchanged.
+- [Host/code-input and saved-frame evidence](docs/verification/2026-10-23-snack-stomp.md) complete.
+  Next: close existing pet and launch separate Windows candidate for actual motion acceptance.
+  Native Mac, actual mouse and long memory remain unverified; no repeated logs/soak required.
+
+## Far brow / bridge fold correction · 2026-10-23
+
+- Clean-wrinkles candidate launched at user's request (PID57304). Startup confirmed;
+  next remains user's three-withdrawal appearance check, not further automatic testing.
+
+- Current user clarification: restore muzzle wrinkle feeling without disconnected noisy dots.
+  Two separated continuous curves implemented; annotated bridge/omega/timing unchanged.
+  Clean-wrinkles saved renders and targeted checks complete; actual appearance acceptance next.
+  This supersedes the empty muzzle/no-dots candidate, not the earlier bridge annotation.
+
+- Latest user change: remove ellipsis-like mouth hatches. Four strokes removed and contaminated
+  mouth-fill donor corrected; bridge guides/omega/motion preserved. No-dots local candidate ready
+  after host/render checks; actual appearance acceptance still next.
+
+- Current authority is user's red-circle/blue-guide annotation. Previous short-line fix targeted
+  the wrong stroke. Red connector removed, old bridge folds replaced at blue guides; annotated
+  candidate is now latest. Saved-render/host checks done; user appearance acceptance remains next.
+
+- Latest follow-up: screen-left added fold half-length; screen-right added fold↘45°.
+  Two-curve-only correction and saved render checked; local fold-angle candidate awaits acceptance.
+
+- Latest user feedback rejects duplicated far brow and asymmetric long bridge line.
+  [Correction/evidence](docs/verification/2026-10-23-snack-brow-bridge-correction.md): authored
+  far brow retained without overlay; shortened near connector; two short bridge folds added.
+- Host checks and saved5-size enlargement complete; actual appearance acceptance remains next.
+  Timing/physics/assets and installed app unchanged. No native Mac acceptance claimed.
+
+## Enlarged scrunched reference refinement · 2026-10-23
+
+- Latest user close-up supersedes the third reaction's thin zigzag/hatches. Near lower-lid
+  pinch, nose/cheek folds and clenched omega implemented; first two stages/timing unchanged.
+- [Saved rendering and code-input evidence](docs/verification/2026-10-23-snack-scrunch-refinement.md)
+  completed on host, including exact dirty/full comparisons and unchanged far-eye/hair seam.
+- Next: new local Windows candidate actual interaction/visual acceptance. Native Mac remains
+  unverified; no logs/soak, installation/settings/public release changes required here.
+
+## Reference anger and third-withdrawal escalation · 2026-10-23
+
+- User's two images replace the prior squeezed-eye expression only. Open eyes/brows/one
+  vein at1–2 withdrawals; two veins/scrunched mouth from3. Existing .5s/.9s timing preserved.
+- [Evidence and scope](docs/verification/2026-10-23-snack-reference-expressions.md): code-input
+  controller checks,400 dirty/full frames, five-size saved inspection completed.
+- New Windows candidate prepared separately. Next: user closes prior app, then short actual
+  withdrawal/appearance acceptance. Actual Mac and long native memory remain unverified;
+  no repeated logs/soak, new public release or other idle features are part of this change.
+
+## Jewel withdrawal reaction candidate · 2026-10-23
+
+- User authorized .5s pre-eating dwell, interrupted offer→brief anger→chase recovery.
+  [Local implementation and evidence](docs/verification/2026-10-23-snack-withdrawal-reaction.md).
+- Core/shared Windows+Mac reaction is connected; host regression and five-size render
+  checks passed. After user closed old pet, Windows candidate launched at17:48 KST
+  (PID27292); startup confirmed, actual interaction acceptance pending.
+- Next: short actual candidate interaction/visual acceptance; native Mac remains
+  unverified. No new logging/soak requirement, public release or idle/weight scope expansion.
+
+
+## Mac test09 public tester handoff · 2026-10-22
+
+- User authorized direct download delivery. [test09 prerelease](docs/releases/macos-r104-test09.md)
+  now public; anonymous download size/SHA256 match the already-checked local candidate.
+- Local-only status below is superseded for binary delivery only. Native M2 landing,
+  external/clamshell and long native memory remain unverified; no new logs/repeated
+  actions requested. No source push, Windows edits, or further monitoring started.
+
+## Mac test09 landing wait candidate · 2026-10-22
+
+- User declined further logs; previous log-acquisition next step is superseded.
+- [Confirmed host bottleneck and bounded fix](docs/verification/2026-10-22-mac-test09-landing-cost.md):
+  parallelize only expensive columns of the currently required sole row, preserving
+  exact sampling/physics. Host changed-spread mean time improved19.5–35.0%;2,880
+  pixel/position/geometry/state comparisons unchanged. Failed optimizations removed.
+- Local arm64 test09 handoff; native M2 hitch elimination, external/clamshell and
+  long native memory remain unverified. Total CPU improvement is not claimed.
+- No additional logs/repeated user actions requested. Do not mark native acceptance
+  complete from host results or resume old monitoring/shutdown automations.
+
+## Mac test08 partial native feedback · 2026-10-22
+
+- User reports upward movement works; landing/spread stutter persists. Record
+  partial user feedback, not universal/native trace pass. External still untested.
+- Resent log attachments are exact copies of test07-era schema1 inputs, not new
+  stage timings. Next: identify current session output from existing terminal/path
+  before investigating landing cost; no repeated geometry test or speculative speed change.
+
+## Mac test08 native-placement repair candidate · 2026-10-22
+
+- Confirmed placement mismatch addressed with owned-overlay constraint override;
+  test08 built locally. [Implementation/evidence/limits](docs/verification/2026-10-22-mac-test08-native-placement.md).
+- Launch instructions and runtime now distinguish app lookup, app launch, fresh
+  diagnostic start and verified end; no repeated blind retry instruction.
+- Host284/package11/launcher10scenarios and2880 golden rows pass, NOT native Mac.
+  Next is targeted native top/release placement acceptance; separate rendering
+  delays need stage evidence. Windows/accepted art/physics unchanged.
+- JOENESS failure-report analysis delegated to the user-specified existing thread;
+  no JOENESS edits here. No new public release, arbitrary app restart or soak.
+
+## Mac native placement cause identified / report delivered · 2026-10-22
+
+- [Two-log analysis and guidance failure report](docs/verification/2026-10-22-mac-boundary-analysis-and-guidance-incident.md)
+  supersedes the missing-log gate below. Native actual window top clamps atY33
+  in37samples while model/requested coordinates continue upward; seven falling
+  samples also remain clamped. Fix the Mac placement layer, not physics speed/art.
+- Additional cadence/fallback delay remains unresolved; no frame-time cause or
+  universal performance pass inferred. External/clamshell remains NOT_TESTED.
+- Next: placement repair with matching render/input coordinates, robust diagnostic
+  launcher status/path handling, and targeted native validation. No repeat geometry
+  recording requested; this turn delivered analysis, not an implemented repair.
+
+## Mac test07 native acceptance still blocked · 2026-10-22
+
+- Upper-screen restriction persists per user; falling stutter newly reported.
+  External/clamshell NOT_TESTED. [Follow-up](docs/verification/2026-10-22-mac-test07-native-followup.md).
+- Next: bounded native requested/actual placement evidence on internal screen,
+  plus identify stutter phase; existing half-second geometry log cannot certify
+  frame timing. Do not repeat host matrices or alter accepted motion speculatively.
+
 ## Mac test07 tester delivery · 2026-10-22
 
 - User-authorized test07 prerelease is public; exact candidate ZIP was independently

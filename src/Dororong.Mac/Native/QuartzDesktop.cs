@@ -91,6 +91,7 @@ internal sealed class QuartzDesktop
     internal static nint Sel(string name)=>sel_registerName(name);
     internal static void ConfigureWindow(nint window,bool clickThrough)
     {
+        OverlayFramePolicy.Configure(window);
         SendBool(window,Sel("setIgnoresMouseEvents:"),clickThrough);
         SendBool(window,Sel("setHidesOnDeactivate:"),false);
         SendInt(window,Sel("setLevel:"),CGWindowLevelForKey(7)+1);

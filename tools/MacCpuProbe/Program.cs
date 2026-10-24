@@ -11,6 +11,7 @@ using Dororong.Portable.Desktop;
 // Same deterministic host workload for an immutable test02 or a new build.
 // This does not simulate native Quartz cost or claim Apple Silicon performance.
 if(args.Length>=3&&args[2]=="soak") { HostSoak.Run(args);return; }
+if(args.Length==3&&args[2]=="landing") { LandingProbe.Run(args);return; }
 if(args.Length is <2 or >3 || args.Length==3&&args[2]!="memory")throw new ArgumentException("Mac assembly directory, fresh JSON output and optional memory mode required.");
 var directory=Path.GetFullPath(args[0]);var output=Path.GetFullPath(args[1]);
 if(File.Exists(output))throw new IOException("Fresh output required.");

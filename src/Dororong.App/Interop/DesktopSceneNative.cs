@@ -226,6 +226,13 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
             string.Equals(processFileName,"Dororong.exe",StringComparison.OrdinalIgnoreCase);
         var gamingOverlay=IsNvidiaGamingOverlay(handle,className,processFileName) ||
             IsDiscordGamingOverlay(handle,className,processFileName);
+        // WS_VISIBLE also remains set on fully transparent helper/capture/HUD
+        // windows. Only a successful global-alpha query with LWA_ALPHA proves
+        // invisibility; color-key-only, per-pixel/unknown and alpha>0 stay physical.
+        var zeroOpacity=!excluded && visible && !minimized &&
+            Api.GetLayeredWindowAttributes(handle,out _,out var alpha,out var layerFlags) &&
+            (layerFlags & 2)!=0 && alpha==0;
+        var nonphysical=gamingOverlay || zeroOpacity;
         var transientMenu = className == "#32768" ||
             (!excluded && visible && !minimized && className == "Chrome_WidgetWin_1" && IsChromiumMenuStyle(className,
                 NativeMethods.GetWindowLongPtr(handle,-16).ToInt64(),
@@ -253,14 +260,14 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
         if (!Api.IsWindow(handle)) return null;
         if (Api.GetWindowThreadProcessId(handle,out var finalPid)==0 || finalPid!=pid)
             throw Failure("OwnerChanged");
-        var support=!gamingOverlay&&!transientMenu&&className!="tooltips_class32";
+        var support=!nonphysical&&!transientMenu&&className!="tooltips_class32";
         var horizontal=taskbar&&bounds.Width>bounds.Height;
         if(old is not null&&old.ProcessId==pid&&old.Bounds==bounds&&old.Visible==visible&&old.Minimized==minimized&&
             old.Cloaked==cloaked&&old.Excluded==excluded&&old.CanSupport==support&&old.Taskbar==taskbar&&
-            old.HorizontalTaskbar==horizontal&&old.ClassName==className&&old.CanOcclude==!gamingOverlay&&old.IsTransientMenu==transientMenu)
+            old.HorizontalTaskbar==horizontal&&old.ClassName==className&&old.CanOcclude==!nonphysical&&old.IsTransientMenu==transientMenu)
             return old;
         return new(handle.ToInt64(),pid,bounds,visible,minimized,cloaked,excluded,support,taskbar,horizontal,className)
-            { CanOcclude=!gamingOverlay, IsTransientMenu=transientMenu };
+            { CanOcclude=!nonphysical, IsTransientMenu=transientMenu };
     }
 
     internal static bool IsChromiumMenuStyle(string className,long style,long extendedStyle)
@@ -399,6 +406,7 @@ internal sealed class DesktopMetadataReader : IDesktopMetadataReader
         [DllImport("user32.dll")] [return:MarshalAs(UnmanagedType.Bool)] internal static extern bool IsWindow(nint handle);
         [DllImport("user32.dll")] [return:MarshalAs(UnmanagedType.Bool)] internal static extern bool IsWindowVisible(nint handle);
         [DllImport("user32.dll")] [return:MarshalAs(UnmanagedType.Bool)] internal static extern bool IsIconic(nint handle);
+        [DllImport("user32.dll")] [return:MarshalAs(UnmanagedType.Bool)] internal static extern bool GetLayeredWindowAttributes(nint handle,out uint key,out byte alpha,out uint flags);
         [DllImport("user32.dll",SetLastError=true)] internal static extern uint GetWindowThreadProcessId(nint handle,out uint pid);
         [DllImport("user32.dll",EntryPoint="GetClassNameW",CharSet=CharSet.Unicode,SetLastError=true)] internal static extern int GetClassName(nint handle,StringBuilder name,int size);
         [DllImport("user32.dll",SetLastError=true)] [return:MarshalAs(UnmanagedType.Bool)] internal static extern bool GetWindowRect(nint handle,out Rect rectangle);

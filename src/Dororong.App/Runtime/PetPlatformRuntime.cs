@@ -121,7 +121,14 @@ internal sealed class PetPlatformRuntime
             catch { /* A retained monitor floor is preferable to an unbounded fall. */ }
             _scene=map.ToLogicalScene(new(0,elapsed,_physicalMonitors,[]));
             _mappedPhysicalScene=_mappedLogicalScene=null;_mappedSceneMap=null;
-            _reliable=_physicalMonitors.Length>0;
+            // No window metadata is not evidence that an existing HWND support
+            // disappeared. The old fallback made a 500ms acquisition outage a
+            // reliable empty desktop, dropping stationary pets to the floor.
+            // Keep the owner's motion state until a successful scene confirms
+            // its geometry/loss. Monitor-only startup/free fall still has a floor.
+            _reliable=_physicalMonitors.Length>0 &&
+                _motion.Current.Support is not { Handle: not 0 } &&
+                _perch is not { Current.Phase: not EdgePerchPhase.None };
         }
         else
         {
@@ -179,9 +186,14 @@ internal sealed class PetPlatformRuntime
         position=displayed;_presentationDelta=delta;
         var perch=_perch;
         if(perch is null || perch.Current.Phase == EdgePerchPhase.None) return false;
-        var sceneReliable=_sceneHealth != SceneReadHealth.TemporarilyUnavailable;
+        var sceneReliable=_sceneHealth is SceneReadHealth.Fresh or SceneReadHealth.Cached;
         var surfaces=_scene is null ? Array.Empty<PerchSurface>() : BuildPerchSurfaces();
         var monitors=_scene?.Monitors ?? Array.Empty<DesktopMonitor>();
+        // Independent monitor enumeration may confirm the owner's monitor was
+        // unplugged even while HWND acquisition fails. Do not retain an off-screen
+        // perch in that case; an unavailable/empty monitor read proves nothing.
+        if(_sceneHealth==SceneReadHealth.Expired && monitors.Count>0 &&
+            !monitors.Any(m=>m.Id==perch.Current.MonitorId)) sceneReliable=true;
         var pose=perch.Advance(delta,displayed,surfaces,monitors,sceneReliable);
         if(pose.Phase==EdgePerchPhase.None)
         {

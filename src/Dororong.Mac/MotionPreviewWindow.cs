@@ -126,7 +126,7 @@ internal sealed class MotionPreviewWindow : Window
         pet.RenderTransform=new ScaleTransform(facing==FacingDirection.Left?-1:1,1);
         pet.RenderTransformOrigin=RelativePoint.Center;
         Canvas.SetLeft(pet,Math.Round(x));Canvas.SetTop(pet,Math.Round(y+lift));pet.InvalidateVisual();
-        jewel.IsVisible=snack.Active&&snack.Current.Phase==SnackPhase.Chasing&&pointer.HasValue;
+        jewel.IsVisible=snack.Current.CarriesJewel&&pointer.HasValue;
         if(pointer is { } point){Canvas.SetLeft(jewel,point.X-11);Canvas.SetTop(jewel,point.Y-11);}
     }
 }

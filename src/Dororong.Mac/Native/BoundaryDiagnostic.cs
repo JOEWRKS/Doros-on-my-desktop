@@ -14,6 +14,7 @@ internal sealed class BoundaryDiagnostic : IDisposable
     internal string Path { get; }
     internal Task Completion { get; }
     internal string? Failure { get; private set; }
+    internal bool IsRecording=>!closed&&Failure is null;
     internal BoundaryDiagnostic(string path)
     {
         Path=path;
@@ -22,13 +23,19 @@ internal sealed class BoundaryDiagnostic : IDisposable
                 Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path)!);
                 await using var stream=new FileStream(path,FileMode.CreateNew,FileAccess.Write,FileShare.Read);
                 await using var writer=new StreamWriter(stream);
-                await writer.WriteLineAsync(JsonSerializer.Serialize(new{kind="start",schema=1,utc=DateTimeOffset.UtcNow,
-                    durationSeconds=90,intervalSeconds=.5,scope="native placement and window geometry only; not CPU/memory acceptance"}));
+                await writer.WriteLineAsync(JsonSerializer.Serialize(new{kind="start",schema=2,build="r104-test09",pid=Environment.ProcessId,utc=DateTimeOffset.UtcNow,
+                    durationSeconds=90,intervalSeconds=.5,scope="placement, geometry and handler timing maxima; not GPU or CPU/memory acceptance"}));
+                await writer.FlushAsync();
                 await foreach(var item in queue.Reader.ReadAllAsync()){
                     await writer.WriteLineAsync(JsonSerializer.Serialize(item));await writer.FlushAsync();
                 }
                 await writer.WriteLineAsync(JsonSerializer.Serialize(new{kind="end",reason=endReason,samples,dropped}));
-            }catch(Exception e){Failure=e.GetType().Name;}
+            }catch(Exception e){
+                Failure=e.GetType().Name;
+                // LaunchServices otherwise hides this failure from the command window.
+                // Do not include exception messages (which can contain private data).
+                Console.Error.WriteLine($"boundary-error: log-write {Failure}");
+            }
         });
     }
     private string endReason="disposed-before-deadline";

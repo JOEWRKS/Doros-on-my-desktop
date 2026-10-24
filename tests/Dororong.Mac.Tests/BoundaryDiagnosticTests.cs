@@ -5,6 +5,35 @@ namespace Dororong.Mac.Tests;
 
 public sealed class BoundaryDiagnosticTests
 {
+    [Fact] public async Task WriteFailureStopsRecordingWithoutOverwritingExistingFile()
+    {
+        var path=System.IO.Path.Combine(System.IO.Path.GetTempPath(),"doro-boundary-"+Guid.NewGuid()+".jsonl");
+        await File.WriteAllTextAsync(path,"existing evidence");
+        try{
+            using var log=new BoundaryDiagnostic(path);
+            await log.Completion.WaitAsync(TimeSpan.FromSeconds(10));
+            Assert.NotNull(log.Failure);Assert.False(log.IsRecording);
+            Assert.Equal("existing evidence",await File.ReadAllTextAsync(path));
+            log.Sample(TimeSpan.Zero,()=>throw new Exception("Must not sample failed writer"));
+        }finally{File.Delete(path);}
+    }
+    [Theory]
+    [InlineData("--boundary-session=f70a60ef-649a-444f-bbd3-665cf082b8fe","f70a60ef-649a-444f-bbd3-665cf082b8fe")]
+    [InlineData("--boundary-session=../../other",null)]
+    [InlineData("--boundary-session=",null)]
+    [InlineData("--other=value",null)]
+    public void SessionArgumentCannotEscapeLogDirectory(string argument,string? expected)
+        =>Assert.Equal(expected,Program.ParseBoundarySession([argument]));
+    [Fact] public void TimingSeparatesHandlerWorkFromBetweenHandlerWaitAndResets()
+    {
+        var t=new BoundaryFrameTimings();
+        t.Record(16,1,2,3,4,12);t.Record(112,2,50,4,1,60);
+        var s=t.Take();Assert.Equal(2,s.Frames);Assert.Equal(112,s.MaxIntervalMs);
+        Assert.Equal(50,s.MaxControllerMs);Assert.Equal(4,s.MaxMoveMs);
+        Assert.Equal(60,s.MaxHandlerMs);Assert.Equal(100,s.MaxBetweenHandlersMs);
+        Assert.Equal(0,t.Take().Frames);
+        t.Record(65,1,1,1,1,5);Assert.Equal(5,t.Take().MaxBetweenHandlersMs);
+    }
     [Fact] public async Task StopsAtNinetySecondsAndDoesNotReadEveryFrame()
     {
         var path=System.IO.Path.Combine(System.IO.Path.GetTempPath(),"doro-boundary-"+Guid.NewGuid()+".jsonl");

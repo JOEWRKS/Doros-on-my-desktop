@@ -46,9 +46,9 @@ public sealed class SnackRenderer
             !double.IsFinite(pose.JumpAge)||pose.JumpAge < -1||!double.IsFinite(entryRecoveryAge)||entryRecoveryAge<0||entryRecoveryAge>2.6)
             throw new ArgumentOutOfRangeException(nameof(pose));
         if(!pose.Active){HeadTransform=Affine.Identity;return MotionRenderer.Standing();}
-        if(pose.Phase==SnackPhase.Happy)
+        if(pose.Phase is SnackPhase.Happy or SnackPhase.Angry)
         {
-            var gaze=new HuntGazePose(0,0,HappyRoll(pose.Age));
+            var gaze=new HuntGazePose(0,0,pose.Phase==SnackPhase.Angry?SnackAngerMotion.Roll(pose.Age,pose.WithdrawalStreak):HappyRoll(pose.Age));
             HeadTransform=TrackingRenderer.HeadTransform(gaze);
             return tracking.Render(gaze,closed:true);
         }

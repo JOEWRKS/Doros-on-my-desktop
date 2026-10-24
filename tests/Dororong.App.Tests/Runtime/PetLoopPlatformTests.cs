@@ -145,13 +145,21 @@ public partial class PetLoopPlatformTests
     }
 
     [Fact]
-    public void Expired_null_scene_retains_monitor_floor_and_eventually_lands()
+    public void Expired_metadata_does_not_confirm_support_loss_and_recovery_moves_owner_once()
     {
         using var h=new Harness(); h.Start(); h.Tick(); h.Native.Fail=true;
         h.Tick(80); Assert.Equal(new PointD(100,100),h.Position);
         for(var i=0;i<60;i++) h.Tick(80);
-        Assert.Equal(new PointD(100,500),h.Position);
+        Assert.Equal(new PointD(100,100),h.Position);
         Assert.Equal(h.Position,h.Core.Position);
+        h.Native.Fail=false;h.Native.Scene=Scene(120,170);h.Tick(80);
+        Assert.Equal(new PointD(120,70),h.Position);
+        h.Tick();Assert.Equal(new PointD(120,70),h.Position);
+        // A successfully observed disappearance is still a real loss of support.
+        h.Native.Scene=Scene(windows:false);h.Tick(80);
+        Assert.Equal(PlatformPhase.Falling,h.LastPose?.Phase);
+        for(var i=0;i<60;i++)h.Tick(80);
+        Assert.Equal(new PointD(120,500),h.Position);
     }
 
     [Fact]

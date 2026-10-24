@@ -544,7 +544,7 @@ internal sealed class PetLoop : IDisposable
         var platforms = _host.Platforms;
         if (platforms is not null)
         {
-            pointer = platforms.BeginFrame(elapsed, displayed, pointer, false);
+            pointer = platforms.BeginFrame(elapsed, displayed, pointer, _snack.Current.Phase==SnackPhase.Snatching);
             displayed = platforms.FramePosition;
         }
         var mouth = displayed + (_host.GetSnackMouth?.Invoke() ?? new PointD(54,84));
@@ -552,11 +552,13 @@ internal sealed class PetLoop : IDisposable
             _host.GetSnackChaseScale?.Invoke() ?? 1);
         var size = _host.GetPetSize();
         var area = platforms?.GetMovementArea(displayed, platforms.Contact, size) ?? _host.GetWorkArea();
-        var proposed = area.ClampTopLeft(displayed + new PointD(pose.DeltaX,0), size);
+        var snatching=pose.SnatchMouth is not null;
+        var desired=pose.SnatchMouth is {} destination?displayed+destination-mouth:displayed+new PointD(pose.DeltaX,0);
+        var proposed = area.ClampTopLeft(desired, size);
         PlatformPose? support = null;
         if (platforms is not null)
         {
-            support = platforms.Advance(elapsed, delta, displayed, proposed, platforms.Contact, false, pose.Lift,76);
+            support = platforms.Advance(elapsed, delta, displayed, proposed, platforms.Contact, snatching, pose.Lift,76);
             proposed = support.Value.Position;
         }
         else proposed = proposed with { Y = proposed.Y + pose.Lift - _snapshotSnackLift };
@@ -570,7 +572,10 @@ internal sealed class PetLoop : IDisposable
         if(platforms is not null)_host.BeginPlatformFrame?.Invoke();
         _host.Render(_snapshot, DirectInteractionSnapshot.None, delta);
         platforms?.AfterRender(support, platforms.Contact.SoleY);
-        _host.ShowSnackCursor?.Invoke(pointer, pose.Phase == SnackPhase.Chasing);
+        if(snatching&&_snack.ConfirmSnatch(_host.GetWindowPosition()+(_host.GetSnackMouth?.Invoke()??new PointD(54,84)),pointer)){
+            pose=_snack.Current;_host.PresentSnack?.Invoke(pose,pointer);
+        }
+        _host.ShowSnackCursor?.Invoke(pointer, pose.CarriesJewel);
         _host.MaintainWindowLayer?.Invoke(elapsed);
         _primaryWasDown = _host.IsPrimaryButtonDown();
         if (!pose.Active) { platforms?.Reset(proposed); brain.ResumeAfterPlay(_snapshot.Facing); }

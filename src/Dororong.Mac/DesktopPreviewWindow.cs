@@ -57,9 +57,12 @@ internal sealed class DesktopSession : IDisposable
     private readonly Action quit;
     private readonly bool boundaryDiagnostics;
     private BoundaryDiagnostic? boundaryLog;
+    private bool boundaryFailureReported;
+    private readonly BoundaryFrameTimings? boundaryTimings;
     internal DesktopSession(bool diagnostics,Action exitApplication,bool boundaryDiagnostics=false)
     {
         this.boundaryDiagnostics=boundaryDiagnostics;
+        boundaryTimings=boundaryDiagnostics?new():null;
         quit=()=>{if(disposed)return;Dispose();exitApplication();};
         if(diagnostics)
         {
@@ -101,6 +104,7 @@ internal sealed class DesktopSession : IDisposable
         inspection?.Show();
         try
         {
+            if(boundaryDiagnostics)boundaryLog=new(Path.Combine(dataDirectory,"Logs",Program.BoundarySession is {} session?$"boundary-{session}.jsonl":$"boundary-{DateTime.UtcNow:yyyyMMdd-HHmmss}-{Environment.ProcessId}.jsonl"));
             settings=new BehaviorSettings(Path.Combine(dataDirectory,"settings.json"));
             var sleepEnabled=settings.AutomaticSleepEnabled;
             sizeSettings=new(Path.Combine(dataDirectory,"size.json"));savedSize=sizeSettings.Read();
@@ -117,12 +121,11 @@ internal sealed class DesktopSession : IDisposable
             petHandle=Handle(petWindow);jewelHandle=Handle(jewelWindow);
             QuartzDesktop.ConfigureWindow(petHandle,false);QuartzDesktop.ConfigureWindow(jewelHandle,true);
             native.Move(petHandle,controller.Position-new PointD(96,96));last=clock.Elapsed;timer.Start();
-            if(boundaryDiagnostics)boundaryLog=new(Path.Combine(dataDirectory,"Logs",$"boundary-{DateTime.UtcNow:yyyyMMdd-HHmmss}-{Environment.ProcessId}.jsonl"));
             using var head=typeof(DesktopSession).Assembly.GetManifestResourceStream("Dororong.head")!;using var bytes=new MemoryStream();head.CopyTo(bytes);
             try{statusItem=new StatusItem(bytes.ToArray(),()=>Dispatcher.UIThread.Post(()=>{if(!disposed)ShowMenu(true);}),e=>ReportError("메뉴 막대",e));}
             catch(Exception e){ReportError("메뉴 막대",e);}
         }
-        catch(Exception e){timer.Stop();petWindow.Hide();jewelWindow.Hide();ReportError("초기화",e);}
+        catch(Exception e){boundaryLog?.Dispose();timer.Stop();petWindow.Hide();jewelWindow.Hide();ReportError("초기화",e);}
     }
     private void ShowMenu(bool tray)
     {
@@ -159,6 +162,7 @@ internal sealed class DesktopSession : IDisposable
     }
     private void ReportError(string operation,Exception error)
     {
+        if(boundaryDiagnostics)Console.Error.WriteLine($"boundary-error: {operation} {error.GetType().Name}");
         lastError=$"{operation} 실패 ({error.GetType().Name}). 폴더 권한을 확인하거나 종료 후 다시 실행해 주세요.";status.Text=lastError;
         // No window titles, cursor coordinates, text input or exception messages.
         try{var folder=Path.Combine(dataDirectory,"Logs");Directory.CreateDirectory(folder);var path=Path.Combine(folder,"diagnostic.log");if(File.Exists(path)&&new FileInfo(path).Length>262144)File.Move(path,path+".previous",true);File.AppendAllText(path,$"{DateTimeOffset.UtcNow:O} {operation}: {error.GetType().Name}\n");}catch{/* Visible error remains; never fail the exit path. */}
@@ -177,9 +181,16 @@ internal sealed class DesktopSession : IDisposable
     private void Tick(object? sender,EventArgs args)
     {
         if(disposed||controller is null)return;
+        if(!boundaryFailureReported&&boundaryLog?.Failure is {} failure)
+        {
+            boundaryFailureReported=true;
+            ReportError("진단 로그 쓰기",new IOException(failure));
+        }
         try
         {
             var now=clock.Elapsed;var delta=now-last;last=now;
+            var measureTick=boundaryLog is {IsRecording:true};
+            var timingStart=measureTick?Stopwatch.GetTimestamp():0;
             if(now-lastMonitorRead>=TimeSpan.FromMilliseconds(80))
             {lastMonitorRead=now;try{
                 var updated=native.Monitors();
@@ -187,16 +198,22 @@ internal sealed class DesktopSession : IDisposable
                 monitors=updated;
             }catch{/* retain last valid floors */}}
             var scene=scenes.Read(now,native.Capture,monitors);var pointer=native.Pointer();
+            var primaryDown=native.PrimaryDown();
+            var readsEnd=measureTick?Stopwatch.GetTimestamp():0;
             controller.Density=petWindow.RenderScaling;
-            controller.Advance(delta,pointer,native.PrimaryDown(),scene);
+            controller.Advance(delta,pointer,primaryDown,scene);
+            var controllerEnd=measureTick?Stopwatch.GetTimestamp():0;
             if(displayedRevision!=controller.FrameRevision||displayedDensity!=controller.Density){
                 if(displayedDensity!=controller.Density)petUpdates.InvalidatePosition();
                 petImage.Upload(controller.Pixels,controller.Scale,controller.Density);
                 displayedRevision=controller.FrameRevision;displayedDensity=controller.Density;
             }
             petImage.Origin=new(96-56*controller.Scale,96-56*controller.Scale+controller.ReleaseOffset);
+            var uploadEnd=measureTick?Stopwatch.GetTimestamp():0;
             native.MoveIfChanged(petHandle,controller.Position-new PointD(96,96),petUpdates);
+            var moveEnd=measureTick?Stopwatch.GetTimestamp():0;
             boundaryLog?.Sample(now,()=>new {
+                timing=boundaryTimings?.Take(),constraintCalls=OverlayFramePolicy.Calls,
                 placement=native.PlacementEvidence(petHandle),requestedQuartz=controller.Position-new PointD(96,96),
                 controller.Position,geometry=controller.Geometry is {} g?new{g.Contact,g.Bounds}:null,
                 controller.Capturing,controller.Scale,controller.Density,
@@ -214,7 +231,7 @@ internal sealed class DesktopSession : IDisposable
             }
             var clickThrough=!contextOpen&&!controller.Capturing&&(!pointer.IsAvailable||!controller.Hit(pointer.Position));
             if(petUpdates.ClickThroughChanged(clickThrough))QuartzDesktop.ClickThrough(petHandle,clickThrough);
-            var snack=controller.Snack==SnackPhase.Chasing&&pointer.IsAvailable;
+            var snack=controller.Snack is SnackPhase.Chasing or SnackPhase.Angry or SnackPhase.Snatching&&pointer.IsAvailable;
             if(snack)
             {
                 if(!jewelWindow.IsVisible){jewelWindow.Show();QuartzDesktop.ConfigureWindow(jewelHandle,true);jewelUpdates.InvalidatePosition();}
@@ -224,6 +241,12 @@ internal sealed class DesktopSession : IDisposable
             // Never globally hide or replace the system cursor. The click-through
             // jewel overlay cannot leave other applications with a missing cursor.
             if(inspection is not null)status.Text=lastError??$"창 정보: {scene.Health} · 이동: {controller.Perch} · 매달리기: {controller.Perch}";
+            if(measureTick&&boundaryTimings is {} timings)timings.Record(delta.TotalMilliseconds,
+                Stopwatch.GetElapsedTime(timingStart,readsEnd).TotalMilliseconds,
+                Stopwatch.GetElapsedTime(readsEnd,controllerEnd).TotalMilliseconds,
+                Stopwatch.GetElapsedTime(controllerEnd,uploadEnd).TotalMilliseconds,
+                Stopwatch.GetElapsedTime(uploadEnd,moveEnd).TotalMilliseconds,
+                Stopwatch.GetElapsedTime(timingStart).TotalMilliseconds);
         }
         catch(Exception e)
         {timer.Stop();menu.Close();statusMenu.Close();controller.CancelSnack();jewelWindow.Hide();ReportError("동작 처리",e);try{QuartzDesktop.ClickThrough(petHandle,true);}catch{/* Recovery dialog still owns a usable exit. */}}

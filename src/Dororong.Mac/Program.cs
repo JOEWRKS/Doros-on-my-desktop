@@ -21,11 +21,13 @@ internal static class Program
     internal static bool DesktopPreview { get; private set; }
     internal static bool DesktopMode { get; private set; }
     internal static bool BoundaryDiagnostics { get; private set; }
+    internal static string? BoundarySession { get; private set; }
     [STAThread] public static int Main(string[] args)
     {
         MotionPreview = args.Contains("--motion-preview");
         DesktopPreview = args.Contains("--desktop-preview");
         BoundaryDiagnostics = args.Contains("--boundary-diagnostics");
+        BoundarySession=ParseBoundarySession(args);
         DesktopMode = DesktopPreview || BoundaryDiagnostics || LaunchesPet(args,MacLoginService.IsBundledApp());
         if(DesktopMode&&!OperatingSystem.IsMacOS())
         {Console.WriteLine("--desktop-preview requires macOS; use --motion-preview on Windows.");return 2;}
@@ -40,14 +42,19 @@ internal static class Program
             if(DesktopMode)
             {
                 lease=SingleInstanceLease.TryAcquire(SingleInstanceLease.UserName(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)));
-                if(lease is null){Console.WriteLine("도로롱이 이미 실행 중입니다.");return 0;}
+                if(lease is null){Console.WriteLine("도로롱이 이미 실행 중입니다.");if(BoundaryDiagnostics)Console.Error.WriteLine("boundary-error: already-running; 진단은 시작되지 않았습니다.");return 0;}
             }
             return AppBuilder.Configure<ProbeApp>().UsePlatformDetect().StartWithClassicDesktopLifetime(args);
         }
-        catch(Exception ex){Console.Error.WriteLine("시작 실패: "+ex.GetType().Name);return 1;}
+        catch(Exception ex){Console.Error.WriteLine((BoundaryDiagnostics?"boundary-error: startup ":"시작 실패: ")+ex.GetType().Name);return 1;}
         finally{lease?.Dispose();}
     }
     internal static bool LaunchesPet(string[] args,bool bundled)=>bundled&&args.Length==0;
+    internal static string? ParseBoundarySession(string[] args)
+    {
+        var value=args.FirstOrDefault(a=>a.StartsWith("--boundary-session=",StringComparison.Ordinal));
+        return value is not null&&Guid.TryParseExact(value[19..],"D",out var id)?id.ToString("D"):null;
+    }
 }
 
 public sealed class ProbeApp : Application

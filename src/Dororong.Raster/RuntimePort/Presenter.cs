@@ -76,7 +76,7 @@ internal partial class DororongPresenter {
  }
  internal bool UpdateHuntingWithPounce(PetSnapshot p,DirectInteractionSnapshot d,PointerSample pointer,TimeSpan dt,bool down)=>UpdateHuntingCore(p,d,pointer,dt,down,true);
  private void ResetHunting() { _huntSession.Reset();_pounce.Reset();_huntGaze.Reset();_huntPointer=null;_huntNear=_huntTracking=false;_huntBlendProgress=0;_huntRecoveryAge=2.6;_huntVisualFrame=156;_huntingLastFlip=null; }
- internal void SetSnack(SnackPose pose,PointerSample pointer) {if(pose.Active!=_snackPose.Active){_snackRecoveryAge=SnackRenderer.RecoveryAge(HuntPose.At(_huntVisualFrame/60d).Amount);ResetHunting();}_snackPose=pose;}
+ internal void SetSnack(SnackPose pose,PointerSample pointer) {if(pose.Active!=_snackPose.Active){_snackRecoveryAge=SnackRenderer.RecoveryAge(HuntPose.At(_huntVisualFrame/60d).Amount);ResetHunting();}if(_snackPose.Phase==SnackPhase.Angry&&pose.Phase==SnackPhase.Chasing)_snackRecoveryAge=2.6;_snackPose=pose;}
  internal PointD GetSnackMouth(){var p=HighResolutionFaceToPresenter(new(29,60));return new(p.X,p.Y);}
  private bool HighResolutionFits(double angle,double remaining,double scale) {
   var m=GrabTransform(angle,remaining,scale);

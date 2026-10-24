@@ -6,3 +6,5 @@ artifacts/
 .superpowers/
 *.user
 *.suo
+**/__pycache__/
+*.pyc

@@ -29,6 +29,8 @@ internal sealed class PetSizeMenuItem : MenuItem
         panel.RowDefinitions.Add(new RowDefinition { Height = new GridLength(24) });
         panel.RowDefinitions.Add(new RowDefinition());
         var title = new TextBlock { Text = "크기", FontSize = 12, VerticalAlignment = VerticalAlignment.Center };
+        // Preserve the already accepted Windows release-worktree title fix.
+        TextOptions.SetTextFormattingMode(title, TextFormattingMode.Ideal);
         value = new TextBlock { FontSize = 12, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
         slider = new Slider { Minimum = 100, Maximum = 150, TickFrequency = 1, IsSnapToTickEnabled = true,
             SmallChange = 1, LargeChange = 10, VerticalAlignment = VerticalAlignment.Center, IsMoveToPointEnabled = true };

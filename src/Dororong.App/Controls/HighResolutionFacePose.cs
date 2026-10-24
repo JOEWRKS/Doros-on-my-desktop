@@ -8,7 +8,7 @@ namespace Dororong.App.Controls;
 internal readonly record struct HighResolutionFacePose(Matrix Head, double EyeX, double EyeY,
     double Pull, double EyeFollow, double HairFollow, int BodyFrame, int MotionFrame=-1, bool Closed=false,
     int EffectFrame=-1, double MouthAge=-1, double DroolAge=-1, double Breathing=0,
-    int Paw=0,double PawX=0,double PawY=0,double PawAngle=0,double FlutterPhase=-1)
+    int Paw=0,double PawX=0,double PawY=0,double PawAngle=0,double FlutterPhase=-1,bool Angry=false,bool Furious=false,double StompLift=0,double StompReach=0,double StompCrouch=0,double ChuckleCover=0,double ChuckleBob=0)
 {
     internal static HighResolutionFacePose Neutral => new(Matrix.Identity,0,0,0,0,0,-1);
     private static double Bump(double v,double a,double b,double c,double d) =>
