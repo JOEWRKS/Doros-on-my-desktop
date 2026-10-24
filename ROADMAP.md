@@ -5,8 +5,11 @@
 - Explicit request: commit/push the accumulated current source and launch the tested
   Windows candidate. Use the existing feature branch; no main merge or release
   asset replacement is implied. Preserve accepted appearance/motion/preferences.
-- Candidate App/Core hashes match the previously tested380/380 output. Complete
-  after remote commit identity and same-path live process are confirmed.
+- Candidate App/Core hashes match the previously tested380/380 output. Source
+  commit150190b pushed and exact remote identity confirmed. Windows candidate
+  launched PID27656 at15:19:16KST, exact-path alive/responding; preferences retained.
+- Requested source delivery/launch complete. This entry records delivery, not new
+  visual acceptance; no additional feature work or repeated test requested.
 - Native-Mac acceptance and exact historic capture-trigger attribution remain
   outside this source-delivery verification; no new user test is requested.
 

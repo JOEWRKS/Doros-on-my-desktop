@@ -9,8 +9,12 @@
   their regression tests and evidence. Generated Python caches/artifacts excluded.
 - Reused final380/380 platform regression evidence; current candidate App/Core
   hashes match those tested binaries. No new implementation or repeated visual test.
-- Source push and launch confirmation will be recorded after completion; source
-  delivery does not claim native-Mac acceptance or update the installer/release assets.
+- Source commit `150190b0a6785e8c0bdeb8212fc2239bcca1e417` pushed successfully;
+  `git ls-remote` confirmed that exact remote branch head.83files, generated caches
+  excluded. No force push/main merge or installer/release asset replacement.
+- No pet was running at launch. Started the hash-verified Windows candidate at
+  2026-10-24 15:19:16KST, PID27656; exact path alive/responding. Preferences remain
+  150%/automatic sleepOFF. Source delivery does not claim native-Mac acceptance.
 
 ## Unexpected downward drop: metadata expiry and invisible occluder — 2026-10-24
 
