@@ -13,6 +13,9 @@
 - No app replacement/restart, settings/installer/public release change or main merge.
   Current-version selection supersedes the pending preference decision below;
   it is not additional measured manual verification of every motion.
+- Completed source delivery: `91c94d66deab1fe96edddb438955f07bd0b55502`,27 files;
+  push succeeded and `git ls-remote` confirmed the identical branch head.
+  Unaccepted comparison tool remains local/untracked, not deleted or delivered.
 
 ## Grooming sit timing comparison only — 2026-10-24
 

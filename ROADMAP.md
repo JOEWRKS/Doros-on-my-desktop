@@ -9,6 +9,8 @@
 - No public release/installer update, main merge or nativeMac delivery requested.
   This decision supersedes pending visual-preference review below, without adding
   unmeasured manual, full-suite or long-duration-memory test claims.
+- Completed: source commit `91c94d6` pushed and exact remote hash confirmed.
+  No further work remains for this bounded delivery; running version retained.
 
 ## Grooming sit preview · 2026-10-24
 
