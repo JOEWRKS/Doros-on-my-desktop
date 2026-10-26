@@ -11,7 +11,9 @@
 - PID83300 still runs the tested App SHA B09899C1…7E306DE0.
   No runtime replacement, installer update or nativeMac verification in this delivery.
 - Existing unrelated AGENTS.md and .joeness/setup-state.json edits remain outside this commit.
-- Next: commit/push and compare remote branch hash with local HEAD.
+- Completed: source commit `deb5cae17174ba3748baec2e89f35abe9f456480` pushed;
+  `git ls-remote` confirmed the exact hash on the requested existing branch.
+  This follow-up records delivery completion; no further product changes.
 
 ## Seated head residue removal and replacement — 2026-10-26
 

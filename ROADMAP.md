@@ -14,9 +14,9 @@
   inspected,348 shake frames/396 existing samples unchanged.
   [Evidence](docs/verification/2026-10-26-seated-head-occlusion.md).
 - No previous pet remained; replacement launched PID83300, responsive.
-  User accepted this version and requested commit/push. Next: deliver current
-  source on `feature/macos-r104-arm64` and verify remote HEAD. No installer/settings/
-  Mac update, no long-duration memory claim for this correction.
+  User accepted this version. Source commit `deb5cae` pushed to
+  `feature/macos-r104-arm64`; exact remote hash verified. Bounded delivery complete.
+  No installer/settings/Mac update or long-duration memory claim for this correction.
 
 ## Current below-taskbar diagnosis · 2026-10-24
 
