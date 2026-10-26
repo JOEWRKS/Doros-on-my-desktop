@@ -87,6 +87,7 @@ public partial class DororongPresenter
             if(_hrImage is not null)_hrImage.Visibility=Visibility.Collapsed;
             BodyGroup.Visibility=Visibility.Visible;_hrLag.Reset();_hrFacingCaptured=false;return false;}
         var scale=HighResolutionScale;
+        AdvanceSeatedInteraction(pet,direct,elapsed);
         if(!double.IsFinite(scale)||scale<1||scale>1.5)throw new InvalidOperationException("High resolution scale must be 1–1.5.");
         // A disabled body drag retains its actual displayed pose until release.
         if(direct.Target==DirectInteractionTarget.ClickOnly&&HighResolutionImage is not null)return true;

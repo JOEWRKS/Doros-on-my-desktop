@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><AssemblyName>Dororong.App.Tests</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dororong.App"><HintPath>../../artifacts/product-shell/candidate-idle-activities-20261024/runtime/Dororong.App.dll</HintPath></Reference>
+    <Reference Include="Dororong.Core"><HintPath>../../artifacts/product-shell/candidate-idle-activities-20261024/runtime/Dororong.Core.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

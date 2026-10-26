@@ -40,7 +40,7 @@ public partial class DororongPresenter
                 if(t>0&&t<1)swipe=Math.Pow(Math.Sin(Math.PI*t),2);
             }
             var head=_hrFace.Head;head.RotateAt(-2*swipe,43,66);
-            _hrFace=_hrFace with{Head=head,ChuckleCover=cover,GroomSweep=swipe*cover,Closed=cover>.5};
+            _hrFace=_hrFace with{Head=head,ChuckleCover=cover,GroomSweep=swipe*cover,Closed=cover>.5,GroomingPaw=true};
         }
     }
 }

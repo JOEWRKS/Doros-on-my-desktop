@@ -1,5 +1,34 @@
 # ROADMAP — 도로롱이 내 컴에?!
 
+## Accepted seated interactions · 2026-10-26
+
+- User requested cursor paw taps, seated click shake/cooldown, and flattening
+  the front-chest bump. [Scope](docs/specs/2026-10-26-seated-interactions.md).
+- First and lower-paw candidates rejected by user: source stretching does not
+  match an authored limb reaching toward the pointer. History retained in TASKS.
+- Curved and shoulder-depth candidates rejected: the latter's AFTER preview
+  still changed hair in the radial fade band; its review missed the defect.
+- Current `candidate-seated-head-occlusion-20261026` removes foreground head
+  painting entirely, preserving original head over the curved arm.
+  18 tests pass including270 real-render comparisons;768 enlarged tap frames
+  inspected,348 shake frames/396 existing samples unchanged.
+  [Evidence](docs/verification/2026-10-26-seated-head-occlusion.md).
+- No previous pet remained; replacement launched PID83300, responsive.
+  User accepted this version and requested commit/push. Next: deliver current
+  source on `feature/macos-r104-arm64` and verify remote HEAD. No installer/settings/
+  Mac update, no long-duration memory claim for this correction.
+
+## Current below-taskbar diagnosis · 2026-10-24
+
+- Current cause established from live bounds and isolated packaged-physics A/B:
+  Task Manager overlaps secondary taskbar top by5px, removing its support interval;
+  physics falls40px to monitor floor. [Evidence](docs/verification/2026-10-24-below-taskbar-current-state.md).
+- Diagnosis complete for current position; original triggering event unrecorded.
+  Product/running app unchanged. A fix would require a bounded taskbar-overlap
+  policy preserving real hide/fullscreen and ordinary-window behavior; not applied
+  under this diagnosis-only request. No repeated general motion/memory tests.
+
+
 ## Current ambient-motion source delivery · 2026-10-24
 
 - User chose to retain the current version and requested commit/push. Existing
@@ -28,8 +57,37 @@
   final Core339/339, Windows related72/72,3,258 generated frame checks and visual
   sequence review; existing396samples identical, platform/buffer checks complete.
 - Preserve accepted art/motions/settings; no additional hunger or persistent state.
-- Remaining: user visual review. NativeMac
-  is not opted in/tested; no commit/push/public release implied by this request.
+- User subsequently selected the current motion version for source delivery;
+  the smoother sit preview was declined. Source delivery is recorded above.
+- Grooming armpit correction2026-10-25: user authorized removal of retained old
+  foreleg ink only. Groom-only narrow cleanup implemented; accepted paw geometry,
+  body geometry and timings retained. [Evidence](docs/verification/2026-10-25-groom-armpit-line.md#bounded-correction--2026-10-25):
+  36 related tests,1,374 frame comparisons at100/125/150% both facings,629 distinct
+  crops visually reviewed,396 existing-motion samples unchanged. Separate Windows
+  candidate launched at user request2026-10-25 21:18KST,PID80624 after previous
+  process exit confirmed. User REJECTED it: required armpit line disappeared.
+  Prior tests/review did not protect that crease. [Restoration](docs/verification/2026-10-25-groom-crease-restoration.md)
+  now preserves the original upper crease and trims only its lower tail.39 tests,
+  all1,374 chronological frames directly inspected across72 sheets; protected
+  crease/exterior/soles unchanged and396 existing-motion samples identical.
+  New `candidate-groom-crease-20261025` launched at user replacement request,
+  PID61732,2026-10-25 21:48:56KST after no existing pet process confirmed.
+  Frame presentation/reinspection found a faint/disconnected-looking junction
+  at maximum wipe (150% Right f70); earlier no-defect visual judgment corrected.
+  [Subsequent correction](docs/verification/2026-10-25-groom-junction.md) confirms
+  standing-paw removal attenuated seated junction ink. Preserve that source
+  junction while keeping the lower-tail cleanup.37 tests pass; all1,374 frames
+  reviewed again; exterior/soles/endpoints and396 existing-motion samples unchanged.
+  That junction candidate was rejected for its retained downward branch.
+  [Branch removal2026-10-26](docs/verification/2026-10-26-groom-branch-removal.md)
+  removes it without weakening the main connection, including raise/lower.
+  Final37 tests pass; all1,374 chronological frames directly reviewed; outside
+  ROI/soles/endpoints and396 existing samples unchanged. Latest package is
+  `candidate-groom-branch-20261026`; no pet process present at final query.
+  Included in the newer seated-interaction candidate above; next replacement
+  uses that combined candidate. Live visual acceptance remains pending.
+- NativeMac is not opted in/tested. Earlier Downloads r104 diagnostic target
+  differs from the feature package; current candidate launch is recorded above.
 
 ## Accepted DORO? source delivery · 2026-10-24
 

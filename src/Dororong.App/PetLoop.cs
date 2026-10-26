@@ -492,7 +492,7 @@ internal sealed class PetLoop : IDisposable
                         ReleaseMouseCapture();
                     }
                     targetSole = platforms.Contact.SoleY;
-                    var clickHop = current.State == PetState.ClickReaction
+                    var clickHop = current.State == PetState.ClickReaction && !_sitRequested
                         ? BodyClickTransformSampler.SampleConfirmedClick(current.Phase).TranslationY : 0;
                     var pose = platforms.Advance(elapsed, delta, displayed, current.Position, platforms.Contact, directOwns,
                         cheekHop is not null ? cheekHopY : pounce.IsJump ? pounce.OffsetY : clickHop);

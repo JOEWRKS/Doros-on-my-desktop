@@ -280,7 +280,7 @@ public partial class DororongPresenter : UserControl
         // facing is legacy mirror parity (the unmirrored source looks left).
         // Convert only autonomous poses at this boundary. Captured direct poses
         // already carry the actual displayed transform and must not be flipped again.
-        if (snapshot.State is PetState.Idle or PetState.Walk &&
+        if ((snapshot.State is PetState.Idle or PetState.Walk || _sittingRequested && snapshot.State==PetState.ClickReaction) &&
             !snapshot.IsDirectInteractionPending && direct.Target == DirectInteractionTarget.None)
             snapshot = snapshot with { Facing = snapshot.Facing == FacingDirection.Right ? FacingDirection.Left : FacingDirection.Right };
         Render(snapshot, direct, elapsed);

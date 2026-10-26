@@ -1,5 +1,216 @@
 # Tasks
 
+## Accepted seated interaction source delivery — 2026-10-26
+
+- User accepted the current running candidate with “ㅇㅇ 이대로 커밋 푸시”.
+  This closes its visual acceptance boundary; earlier rejected candidates remain historical.
+- Deliver current Windows source, related grooming cleanup, tests, probe sources and
+  verification records on `feature/macos-r104-arm64`. No product code changed in delivery.
+- Reuse the final18 affected tests,270 head comparisons,768 inspected tap frames,
+ 348 unchanged shake frames and396 unchanged other samples; no repeated test claim.
+- PID83300 still runs the tested App SHA B09899C1…7E306DE0.
+  No runtime replacement, installer update or nativeMac verification in this delivery.
+- Existing unrelated AGENTS.md and .joeness/setup-state.json edits remain outside this commit.
+- Next: commit/push and compare remote branch hash with local HEAD.
+
+## Seated head residue removal and replacement — 2026-10-26
+
+- User rejected our shoulder-depth AFTER preview; prior visual review missed residue.
+- Removed all seated paw foreground head painting, including the radial fade band.
+  Original head occludes the unchanged curved body/arm; tracking and timing retained.
+-18 tests pass, including270 real-render head preservation comparisons;768 enlarged
+  tap frames inspected,348 shake frames/396 existing samples unchanged.
+- [Evidence](docs/verification/2026-10-26-seated-head-occlusion.md).
+  Packaged `candidate-seated-head-occlusion-20261026`; no pet remained, launched
+  PID83300 at22:06:44KST, responsive. Subsequently accepted; see delivery above.
+  Previous shoulder-depth candidate superseded; no installer/settings/Mac change.
+
+## Seated shoulder behind head — 2026-10-26
+
+- User found shoulder painted in front of head in curved-paw candidate;
+  previous frame review missed this overlap defect.
+- Restrict foreground compositing to distal paw; shoulder stays behind head.
+  Curved geometry, pointer tracking, timing and weak shake unchanged.
+-16 tests pass including root/head preservation across5 angles/64frames.
+  Directly inspected768 paw frames;348 shake frames and396 existing samples unchanged.
+- [Evidence](docs/verification/2026-10-26-seated-shoulder-depth.md).
+  Packaged `candidate-seated-shoulder-depth-20261026`. PID37560 retained;
+  normal exit requested for replacement, actual visual acceptance pending.
+
+## Curved seated paw replacement launch — 2026-10-26
+
+- User confirmed ready; no previous pet process remained. No forced termination.
+- Verified candidate App hash `29CD045F…9250FBF`; launched18:30:23KST,PID37560.
+- Input-idle/responsive/not-exited confirmed; [launch record](artifacts/seated-curved-paw-20261026/launch.json).
+- Settings/installer unchanged; appearance acceptance remains pending.
+
+## Rounder curved seated paw — 2026-10-26
+
+- User liked the authored reaching approach but requested a rounder, bowed
+  limb rather than a round-ended rectangle. Preserve pointer tracking/timing.
+- Changed only limb distance geometry: bowed centerline and smooth width;
+  shoulder/tip, shake, cooldowns and other product behavior unchanged.
+- 15 affected tests pass;768 paw frames directly reviewed across3 sizes,
+  both directions, fixed/moving target.348 shake frames and396 existing samples unchanged.
+- [Evidence](docs/verification/2026-10-26-seated-curved-paw.md).
+  Packaged `candidate-seated-curved-paw-20261026`; previous PID80032 retained.
+  Subsequent replacement completed as recorded above; new visual acceptance pending.
+
+## Authored seated paw and live pointer direction — 2026-10-26
+
+- User rejected upper-arm folding, then rejected lower-paw stretching itself.
+  The intermediate lower-paw candidate launched PID46496; evidence retained.
+- Replaced texture stretching with a newly authored rounded limb, shoulder
+  rotation, smoothed live pointer direction, old-leg removal and rounded junction.
+  Added foreground placement when the reaching paw crosses the face.
+- Kept weakened shake (40% amplitude), timing/cooldowns and other motions.
+- 56 related tests passed; after final foreground change,15 affected tests passed.
+  Directly reviewed768 new-paw frames;348 shake frames equal the already reviewed
+  weaker version;396 existing-motion samples unchanged. Manual acceptance pending.
+- [Detailed evidence/limits](docs/verification/2026-10-26-seated-authored-paw.md).
+  Packaged `candidate-seated-authored-paw-20261026`; installer/settings/Mac unchanged.
+- No existing pet confirmed; final candidate launched18:02:28KST,PID80032.
+  Responsive/input-idle reached; `artifacts/seated-authored-paw-20261026/launch.json`.
+
+## Seated interaction replacement launch — 2026-10-26
+
+- User requested replacement. Confirmed no existing pet process; no termination required.
+- Superseded: user rejected its paw shape/shake; see authored seated-paw entry above.
+- Verified candidate App SHA256 `2E071BC2…594F1042`, launched packaged executable.
+- PID31324,2026-10-26 17:30:18KST; input-idle reached, responsive, not exited.
+- [Launch evidence](artifacts/seated-interaction-20261026/launch.json).
+  Settings/install unchanged; live motion/contour acceptance remains pending.
+
+## Seated cursor taps, click shake and chest contour — 2026-10-26
+
+- Added seated-only cursor paw taps and click shake replacing seated jump;
+  candidate cooldowns1.5s/3s. Existing carry/cheek/snack priorities preserved.
+- User additionally requested flattening the front-chest bump; narrow source
+  transport preserves head, paw tips, belly and all non-seated source art.
+- 54 related tests pass;732 consecutive frames directly inspected across three
+  sizes/both facings. World sole maintained;396 existing samples identical.
+- [Specification](docs/specs/2026-10-26-seated-interactions.md),
+  [evidence and limits](docs/verification/2026-10-26-seated-interactions.md).
+- Packaged `candidate-seated-interaction-20261026`; tested binaries match.
+  Initially retained PID29920; subsequent replacement launch is recorded above.
+  Manual motion/contour acceptance remains pending.
+
+## Grooming downward branch removal — 2026-10-26
+
+- User rejected the previous junction candidate's remaining downward branch;
+  its earlier visual no-defect judgment does not cover this rejected appearance.
+- Remove old seated foreleg branch along a narrow diagonal while preserving
+  the required upper connection. Keep cleanup active through raising/lowering.
+- Final37 related tests pass; all1,374 chronological frames directly inspected
+  at100/125/150%,both facings. Outside ROI/soles/endpoints unchanged;396 existing
+  motion samples identical. No paw geometry/timing/artwork/Core/Mac changes.
+- [Cause, evidence and limits](docs/verification/2026-10-26-groom-branch-removal.md).
+- `candidate-groom-branch-20261026` packaged with tested binaries. No pet process
+  present at final query; not launched. Live replacement/acceptance pending.
+
+## Grooming junction opacity and residual-line correction — 2026-10-25
+
+- Superseded for retained branch: user rejected its appearance; see
+  [2026-10-26 correction](docs/verification/2026-10-26-groom-branch-removal.md).
+
+- Confirmed standing-paw removal attenuated the seated junction before overlay;
+ 20 real ink samples recovered, source alpha255 was97.16 at one failing sample.
+- Protect the seated diagonal junction and retain narrow lower-tail cleanup;
+  reject v1's unbounded restoration after spotting a faint lower dot.
+- Final37 tests pass; all1,374 consecutive frames directly reviewed in72 sheets
+  at100/125/150%,both facings. Outside ROI/endpoints/soles unchanged;396 existing
+  motion samples identical.762 wipe bridge samples improve or remain equal.
+- [Cause, verification, package and limits](docs/verification/2026-10-25-groom-junction.md).
+- Packaged `candidate-groom-junction-20261025` matching tested binaries. Running
+  PID61732 retained; replacement/live acceptance pending. No settings/install/Mac edit or push.
+
+## Grooming frame presentation and review correction — 2026-10-25
+
+- Matched running candidate App hash to the frame evidence; product unchanged.
+- Added `artifacts/groom-armpit-restore-20261025/frame-review.html` with every
+  frame0..228 at three sizes and both facings, plus all72 chronological sheets.
+- Reinspection of150% Right f60..79 shows a faint/disconnected-looking junction
+  at maximum wipe (f70). Prior no-additional-defect visual judgment is corrected.
+- Existing numeric checks do not establish resolution of that appearance;
+  origin/baseline comparison and correction remain open. No new test-pass claim.
+- [Evidence and corrected limits](docs/verification/2026-10-25-groom-crease-restoration.md#frame-presentation-and-visual-judgment-correction--2026-10-25).
+
+## Grooming crease replacement launch — 2026-10-25
+
+- User requested replacement. Before launch, no Dororong/Dororong.App process remained; no forced termination needed.
+- Verified corrected App SHA256 `6D8BB688…61F7E5`, then launched `candidate-groom-crease-20261025/runtime/Dororong.exe`.
+- PID61732,21:48:56 KST; input-idle reached, responsive/not exited. Settings/install files unchanged.
+- [Launch evidence](docs/verification/2026-10-25-groom-crease-restoration.md#replacement-launch). Live grooming acceptance pending.
+
+## Grooming crease restoration after rejection — 2026-10-25
+
+- User rejected launched cleanup: required armpit line disappeared. Prior tests
+  and visual approval missed that; prior cleanup candidate is not accepted.
+- Restore original upper crease through authored y82.5; trim only its lower tail.
+  Preserve paw/body geometry, motion timing, artwork, Core and other motions.
+- All1,374 chronological frames visually inspected in72 sheets at100/125/150%,
+  both facings with no duplicate omission; upper crease/ROI exterior/soles/endpoints
+  identical to original.39 tests pass;396 existing-motion samples identical.
+- [Cause, failed attempts, frame evidence and limits](docs/verification/2026-10-25-groom-crease-restoration.md).
+- Separate `candidate-groom-crease-20261025` package prepared. Running rejected
+  PID80624 unchanged; new candidate live acceptance/nativeMac remain untested.
+
+## Grooming armpit candidate launch — 2026-10-25
+
+- User reported exiting the previous pet and explicitly requested the correction candidate launch.
+- Confirmed no Dororong/Dororong.App process before launch and App SHA256 matched tested `08D060B7…B52B`.
+- Launched `artifacts/product-shell/candidate-groom-armpit-20261025/runtime/Dororong.exe` normally,
+  PID80624,21:18:30 KST; input-idle reached, process responsive and not exited.
+- No new artwork/code/settings/install changes or automatic interaction. Live grooming visual acceptance remains pending.
+- [Launch evidence](docs/verification/2026-10-25-groom-armpit-line.md#user-requested-launch--2026-10-25).
+
+## Grooming armpit residual-line correction — 2026-10-25
+
+- User authorized only the armpit cleanup, preserving accepted paw/body/timing.
+- Added a grooming-only flag and narrow diagonal original-paw mask; no artwork,
+  Core motion timing, settings, installed app or Mac implementation changed.
+- Final36/36 related tests;1,374 frames at100/125/150% both facings compared,
+ 629 distinct local crops directly reviewed across36 sheets. Outside cleanup ROI,
+  endpoints and sole positions unchanged;396 existing-motion samples identical.
+- Initial broad mask rejected visually; second cap rejected by far-body test.
+  Final candidate supersedes both. [Detailed evidence](docs/verification/2026-10-25-groom-armpit-line.md#bounded-correction--2026-10-25).
+- Separate `candidate-groom-armpit-20261025` ZIP built from tested App/Core binaries.
+  Current Downloads r104 PID75276 retained; live acceptance/Mac not tested. No push.
+
+## Grooming raised-paw armpit line — 2026-10-25
+
+- User requested inspection, not a fix. [Diagnosis and target distinction](docs/verification/2026-10-25-groom-armpit-line.md).
+- Reproduced the old seated foreleg contour spur in the grooming-feature package;
+ 486 generated frames, selected enlarged raise/wipe/lower sequences inspected.
+- Packaged mask/overlay texel tracing confirms original ink survives beyond the
+  removal mask and is not covered by the raised paw. Not a newly drawn crease.
+- Current running Downloads r104 is a different binary without IdleActivity APIs;
+  live process was not replaced. No product/art/settings/timing change or push.
+- Diagnosis complete; correction was then unimplemented, superseded by the correction entry above. Earlier viewport/endpoint
+  checks did not establish absence of this internal residual contour.
+
+## JOENESS 연결 갱신 — 2026-10-25
+
+- 사용자 지시로 AGENTS 연결·관리 상태에 1.1.0 운영 변경 반영. 특정 경계에서만 기록하던 문구를 허가된 실질 작업별 기록으로 정합화.
+- 새 날짜 항목·현재/다음 동기화·짧은 기록·승인 후 보관 제안·의견/결정 구분 반영.
+- 검사: 관리 연결 current/clean, 준비 본문 일치. 기존 TASKS·권리 문제·승인 디자인 원본 보존.
+- 아트·코드·승인 기준·현재 단계 변경 및 기록 이동 없음. 표준 파일 정규화·새 맥락 행동은 별도 미완료/미검증.
+- 다음 제품 작업은 ROADMAP 기준. 근거: `D:/JOEWRKS/.claude-worktrees/_data/2026-10-25-project-connection-update/README.md`.
+
+## Current below-taskbar position diagnosed — 2026-10-24
+
+- User requested autonomous current-state cause identification. [Evidence and limits](docs/verification/2026-10-24-below-taskbar-current-state.md).
+- Live TaskManagerWindow extends5px across secondary taskbar top1040; geometry
+  removes taskbar support atx2007..3128, encompassing current pet contact.
+  Packaged physics replay falls40px to1080; remove only that window in the replay
+  and the pet remains at1040. Actual neutral-foot/HWND calculation matches1080.
+- Read-only native metadata128queries/0failures plus two30-sample position runs.
+  Initial invalid MainWindowHandle=0 probe excluded. No live input, pause or restart.
+- Current cause diagnosed, not original event chronology. Product unchanged;
+  no art, grooming, Windows settings or task-manager window mutation. Any future
+  correction must distinguish shallow taskbar overlap from true hiding/fullscreen.
+
+
 ## Current ambient-motion version source delivery — 2026-10-24
 
 - User declined the smoother-sit candidate and explicitly requested commit/push

@@ -9,7 +9,8 @@ internal readonly record struct HighResolutionFacePose(Matrix Head, double EyeX,
     double Pull, double EyeFollow, double HairFollow, int BodyFrame, int MotionFrame=-1, bool Closed=false,
     int EffectFrame=-1, double MouthAge=-1, double DroolAge=-1, double Breathing=0,
     int Paw=0,double PawX=0,double PawY=0,double PawAngle=0,double FlutterPhase=-1,bool Angry=false,bool Furious=false,double StompLift=0,double StompReach=0,double StompCrouch=0,double ChuckleCover=0,double ChuckleBob=0,
-    double Stretch=0,double StretchShake=0,double GroomSweep=0)
+    double Stretch=0,double StretchShake=0,double GroomSweep=0,bool GroomingPaw=false,
+    double SeatedPawAmount=0,double SeatedPawAngle=0,double SeatedPawPulse=0,double SeatedShake=0)
 {
     internal static HighResolutionFacePose Neutral => new(Matrix.Identity,0,0,0,0,0,-1);
     private static double Bump(double v,double a,double b,double c,double d) =>

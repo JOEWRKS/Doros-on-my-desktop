@@ -195,6 +195,9 @@ internal sealed partial class HighResolutionGrabRaster
         var stomp=new StompWarp(face,inkScale);
         var chuckle=new ChuckleWarp(face,inkScale);
         var stretch=new StretchWarp(face);
+        var seated=new SeatedWarp(face);
+        var seatedPaw=new SeatedPaw(face,inkScale);
+        if(seatedPaw.Active)seatedBodyDistance??=new SeatedBodyDistance((locomotion??=new()).BorrowBody(321,1));
         var facePin=SurroundingPullRenderer.HeadFacePin(Center,grab);
         var faceInverse=face.Head;
         faceInverse.Invert();
@@ -232,7 +235,7 @@ internal sealed partial class HighResolutionGrabRaster
                 var p=transform?.Transform(corner)??corner;left=Math.Min(left,p.X);right=Math.Max(right,p.X);topBound=Math.Min(topBound,p.Y);bottom=Math.Max(bottom,p.Y);
             }
         }
-        Bounds(posedBody??body,posedBody is null?375:posedSize,posedBody is null?32:posedOffset,margin:stretch.Active?12:stomp.Active?Math.Max(6,face.StompReach+2):face.Breathing>0?1:0);
+        Bounds(posedBody??body,posedBody is null?375:posedSize,posedBody is null?32:posedOffset,margin:seatedPaw.Active?24:seated.Active?10:stretch.Active?12:stomp.Active?Math.Max(6,face.StompReach+2):face.Breathing>0?1:0);
         Bounds(activeHead,225,0,face.Head,face.Pull!=0||face.EyeFollow!=0||face.HairFollow!=0?14:2);
         if(effect is not null)Bounds(effect,225,0,face.Head);
         if(snack is not null)Bounds(snack,225,0,face.Head);
@@ -325,21 +328,28 @@ internal sealed partial class HighResolutionGrabRaster
                     Sample(effect,225,headLocal.X*225/96-.5,headLocal.Y*225/96-.5,l);
                     var clear=1-l[3]/255;for(var c=0;c<4;c++)b[c]=l[c]+b[c]*clear;
                 }
+                // Seated reach is a body layer: preserve the original head
+                // and hair, including their antialiased occlusion boundary.
                 if(b[3]>=255&&!chuckle.Active){for(var c=0;c<4;c++)total[c]+=b[c]/(coverage*coverage);continue;}
                 // Approved r35 left attachment occlusion: reuse body texels,
                 // only behind an independently raised head.
                 var bodyY=face.Head.M12>0&&uv.X>=18&&uv.X<29&&uv.Y>=57&&uv.Y<66.5?66.5:uv.Y;
                 var bodyX=uv.X;
                 if(stretch.Active){var source=stretch.Source(bodyX,bodyY);bodyX=source.X;bodyY=source.Y;}
+                if(seated.Active){var source=seated.Source(bodyX,bodyY);bodyX=source.X;bodyY=source.Y;}
                 if(chuckle.Active){var source=chuckle.BodySource(bodyX,bodyY);bodyX=source.X;bodyY=source.Y;}
                 if(stomp.Active){var source=stomp.Source(bodyX,bodyY);bodyX=source.X;bodyY=source.Y;}
                 if(face.Breathing>0&&bodyX>=50&&bodyX<84&&bodyY>=49&&bodyY<74){
                     var w=Smooth((bodyX-50)/13)*Math.Pow(Math.Sin(Math.PI*(bodyY-49)/25),2)*face.Breathing;
                     bodyX-=.4*w;bodyY+=.22*w;
                 }
-                if(posedBody is not null)Sample(posedBody,posedSize,(bodyX+posedOffset)*225/96-.5,(bodyY+posedOffset)*225/96-.5,a);
+                if(posedBody is not null){
+                    bodyX=SeatedContourSource(bodyX,bodyY,face.MotionFrame);
+                    Sample(posedBody,posedSize,(bodyX+posedOffset)*225/96-.5,(bodyY+posedOffset)*225/96-.5,a);
+                }
                 else if(flutter is not null)flutter.SampleAt(bodyX,bodyY,a,l);
                 else Sample(body,375,(InverseSpread(bodyX,bodyY,spread)+32)*225/96-.5,(bodyY+32)*225/96-.5,a);
+                if(seatedPaw.Active)seatedPaw.Composite(seatedBodyDistance!,uv.X,uv.Y,a);
                 if(stomp.RigidArm)stomp.CompositeArm(body,uv.X,uv.Y,bodyX,bodyY,a,l);
                 if(chuckle.Active)chuckle.RemovePaw(body,bodyX,bodyY,a,l);
                 if(neck is not null&&a[3]<255){Sample(neck,225,uv.X*225/96-.5,uv.Y*225/96-.5,l);var clear=1-a[3]/255;for(var c=0;c<4;c++)a[c]+=l[c]*clear;}

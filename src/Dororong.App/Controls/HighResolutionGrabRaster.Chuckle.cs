@@ -31,6 +31,8 @@ internal sealed partial class HighResolutionGrabRaster
         private readonly double roundBlend,armScaleX,armScaleY;
         private readonly Matrix groomInverse;
         private readonly bool grooming;
+        private readonly double seatedPawCleanup;
+        private readonly bool removeSeatedBranch;
         internal bool Active=>cover>1e-9;
         internal ChuckleWarp(HighResolutionFacePose face,double bodyScale=1){
             cover=face.ChuckleCover;bob=face.ChuckleBob;
@@ -43,6 +45,8 @@ internal sealed partial class HighResolutionGrabRaster
             // Keep its narrow tip, long outside edge and descending inner line.
             armScaleX=.75+.25*cover;armScaleY=.6+.4*cover;
             roundBlend=Smooth(cover/.3);
+            seatedPawCleanup=face.GroomingPaw?roundBlend:0;
+            removeSeatedBranch=face.GroomingPaw;
             groomInverse=Matrix.Identity;
             grooming=face.GroomSweep!=0;
             if(grooming){
@@ -58,8 +62,24 @@ internal sealed partial class HighResolutionGrabRaster
         }
         internal void RemovePaw(float[] body,double x,double y,Span<double> pixel,Span<double> scratch){
             var keep=1-Mask(x,y);
+            // The standing-paw cutout also crosses the seated chest/leg crease.
+            // Keep that source junction opaque: the wiping overlay moves away
+            // from it, exposing the partial cutout otherwise hidden by the paw.
+            var seatedCrease=seatedPawCleanup*Smooth(x-Math.Max(27,27.3+.55*(y-76)))*Smooth((y-74.5)/1.5)*
+                (1-Smooth((y-81)/1.5));
+            keep+=(1-keep)*seatedCrease;
+            // Keep the fork's top junction, not the obsolete inner foreleg
+            // branch descending beside the diagonal body contour. Follow the
+            // gap between those two edges instead of protecting the whole spur.
+            // Like Mask above this belongs to the replaced source paw, not
+            // the moving overlay. Fading it with cover resurrected the branch
+            // while the paw was raising/lowering.
+            if(removeSeatedBranch)
+                keep*=1-Smooth(y-78)*
+                    (1-Smooth((x-Math.Min(32.25,30.2+.65*(y-78)))/.55))*
+                    (1-Smooth((y-86)/2));
             for(var c=0;c<4;c++)pixel[c]*=keep;
-            var blend=Smooth((x-14)/2)*Smooth((40-x)/2)*Smooth((y-62)/2)*Smooth((77-y)/2);
+            var blend=Smooth((x-14)/2)*Smooth((40-x)/2)*Smooth((y-62)/2)*Smooth((77-y)/2)*(1-seatedCrease);
             if(blend<=0)return;
             var alpha=TorsoAlpha(body,x,y,scratch);var inside=alpha;
             for(var i=0;i<8;i++){
