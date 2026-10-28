@@ -11,6 +11,7 @@
     <None Include="Packaging/Info.plist" Link="Info.plist" CopyToOutputDirectory="PreserveNewest" />
     <AvaloniaResource Include="../Dororong.App/Assets/Fonts/*.otf" Link="Assets/Fonts/%(Filename)%(Extension)" />
     <None Include="../Dororong.App/Assets/Fonts/OFL-Pretendard.txt" Link="OFL-Pretendard.txt" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="Rendering/doro-question-glyph.path" LogicalName="Dororong.question-glyph" />
     <EmbeddedResource Include="../Dororong.App/Assets/dororong-head.png" LogicalName="Dororong.head" />
     <InternalsVisibleTo Include="Dororong.Mac.Tests" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.22" />

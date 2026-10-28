@@ -13,6 +13,7 @@ internal partial class DororongPresenter {
         var cheek=direct.CheekPull?.Capture.HighResolution is not null;
         var idle=direct.Target is DirectInteractionTarget.None or DirectInteractionTarget.ClickOnly||direct.PawPull is not null;
         var scale=HighResolutionScale;
+        AdvanceSeatedInteraction(pet,direct,elapsed);
         if(!double.IsFinite(scale)||scale<1||scale>1.5)throw new InvalidOperationException("High resolution scale must be 1–1.5.");
         // A disabled body drag retains its actual displayed pose until release.
         if(direct.Target==DirectInteractionTarget.ClickOnly&&_hasFrame)return true;

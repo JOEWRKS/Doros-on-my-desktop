@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><AssemblyName>Dororong.Raster.Tests</AssemblyName></PropertyGroup>
+<PropertyGroup Condition="'$(Baseline)'=='true'"><TargetFramework>net8.0-windows</TargetFramework><UseWPF>true</UseWPF><AssemblyName>Dororong.App.Tests</AssemblyName><DefineConstants>$(DefineConstants);BASELINE</DefineConstants></PropertyGroup>
+<ItemGroup Condition="'$(Baseline)'=='true'"><Reference Include="Dororong.App"><HintPath>$(ProductRoot)/Dororong.App.dll</HintPath></Reference><Reference Include="Dororong.Core"><HintPath>$(ProductRoot)/Dororong.Core.dll</HintPath></Reference></ItemGroup>
+<ItemGroup Condition="'$(Baseline)'!='true'"><ProjectReference Include="../../src/Dororong.Raster/Dororong.Raster.csproj" /></ItemGroup>
+</Project>

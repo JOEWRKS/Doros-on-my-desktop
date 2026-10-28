@@ -80,8 +80,42 @@ Run("complete_meals_at_30_60_120_fps", () =>
             var pose = session.Advance(TimeSpan.FromSeconds(1d / fps), new(true, new(100, 100)), new(100, 100), true);
             seen.Add(pose.Phase); Frame(renderer.Render(pose));
         }
-        foreach (var phase in Enum.GetValues<SnackPhase>()) Check(seen.Contains(phase), $"Missing {phase} at {fps}fps");
+        // A normal meal never enters withdrawal-only states.
+        foreach (var phase in new[]{SnackPhase.Chasing,SnackPhase.Eating,SnackPhase.Happy,SnackPhase.Settling,SnackPhase.None})
+            Check(seen.Contains(phase), $"Missing normal-meal {phase} at {fps}fps");
         Check(!session.Active, "Meal did not end");
+    }
+});
+Run("withdrawal_snatch_and_supported_chuckle_at_30_60_120_fps", () =>
+{
+    foreach(var fps in new[]{30,60,120}){
+        var session=new SnackSession();session.Begin(FacingDirection.Right);
+        var mouth=new PointD(100,100);var away=new PointerSample(true,new(220,100));var dt=TimeSpan.FromSeconds(1d/fps);
+        var seen=new HashSet<SnackPhase>();
+        for(var streak=1;streak<=6;streak++){
+            for(var i=0;i<(int)Math.Ceiling(.2*fps);i++)session.Advance(dt,new(true,mouth),mouth,true);
+            var pose=session.Advance(dt,away,mouth,true);seen.Add(pose.Phase);
+            Check(pose.WithdrawalStreak==streak,$"Wrong streak {streak} at {fps}fps");
+            if(streak<6){
+                Check(pose.Phase==SnackPhase.Angry,"Withdrawal did not become angry");
+                for(var i=0;i<fps*8&&session.Current.Phase==SnackPhase.Angry;i++)session.Advance(dt,away,mouth,true);
+                Check(session.Current.Phase==SnackPhase.Chasing,"Anger did not return to chasing");
+            }
+        }
+        Check(session.Current.Phase==SnackPhase.Snatching,"Sixth withdrawal did not snatch");
+        for(var i=0;i<fps;i++){
+            var pose=session.Advance(dt,away,mouth,false);
+            if(pose.SnatchMouth is {} actual)mouth=actual;
+            if(session.ConfirmSnatch(mouth,away))break;
+        }
+        Check(session.Current.Phase==SnackPhase.Eating,"Actual snatch contact did not consume");seen.Add(SnackPhase.Eating);
+        for(var i=0;i<fps*3;i++)session.Advance(dt,away,mouth,false);
+        Check(session.Current.Phase==SnackPhase.Eating,"Chuckle started while airborne");
+        var completed=false;
+        for(var i=0;i<fps*3;i++){var pose=session.Advance(dt,away,mouth,true);seen.Add(pose.Phase);completed|=session.MealCompleted;}
+        foreach(var phase in new[]{SnackPhase.Angry,SnackPhase.Snatching,SnackPhase.Eating,SnackPhase.Chuckling,SnackPhase.None})
+            Check(seen.Contains(phase),$"Missing withdrawal {phase} at {fps}fps");
+        Check(completed&&!session.Active,"Supported chuckle did not finish the meal");
     }
 });
 Run("seeded_desktop_sequence", () =>

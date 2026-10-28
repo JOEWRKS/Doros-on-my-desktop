@@ -103,6 +103,7 @@ internal sealed class PetLoop : IDisposable
     internal bool TryResize(Action resize)
     {
         if (!CanResize) return false;
+        _brain!.NotifyActivity();_snapshot=_brain.Current;
         var before = _host.MeasureSizeAnchor?.Invoke();
         resize();
         _host.SetWindowPosition(_snapshot.Position); // Resize native viewport before measuring.
@@ -130,6 +131,7 @@ internal sealed class PetLoop : IDisposable
             _snapshot.IsDirectInteractionPending || _directInteractionController.Current.Target != DirectInteractionTarget.None)
             return;
         _sitRequested = true;
+        _brain?.NotifyActivity();
         _host.SetSittingRequested?.Invoke(true);
     }
 
@@ -472,7 +474,7 @@ internal sealed class PetLoop : IDisposable
                         ReleaseMouseCapture();
                     }
                     targetSole = platforms.Contact.SoleY;
-                    var clickHop = current.State == PetState.ClickReaction
+                    var clickHop = current.State == PetState.ClickReaction && !_sitRequested
                         ? BodyClickTransformSampler.SampleConfirmedClick(current.Phase).TranslationY : 0;
                     var pose = platforms.Advance(elapsed, delta, displayed, current.Position, platforms.Contact, directOwns,
                         cheekHop is not null ? cheekHopY : pounce.IsJump ? pounce.OffsetY : clickHop);
@@ -578,7 +580,11 @@ internal sealed class PetLoop : IDisposable
         _host.ShowSnackCursor?.Invoke(pointer, pose.CarriesJewel);
         _host.MaintainWindowLayer?.Invoke(elapsed);
         _primaryWasDown = _host.IsPrimaryButtonDown();
-        if (!pose.Active) { platforms?.Reset(proposed); brain.ResumeAfterPlay(_snapshot.Facing); }
+        if (!pose.Active) {
+            platforms?.Reset(proposed); brain.ResumeAfterPlay(_snapshot.Facing);
+            if (_snack.MealCompleted) brain.NotifyMealCompleted();
+            _snapshot=brain.Current;
+        }
     }
 
     private double _snapshotSnackLift;

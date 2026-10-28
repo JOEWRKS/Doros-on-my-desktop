@@ -1,5 +1,28 @@
 # ROADMAP — 도로롱이 내 컴에?!
 
+## Accepted Windows installation · 2026-10-28
+
+- User-authorized local replacement complete: accepted seated/head-occlusion package
+  installed with470matching payload files; settings/data/shortcuts preserved.
+- Existing startupON migrated from old portable r104 to installed executable.
+  Installed PID64404 launched, responsive with one visible window. [Evidence](docs/verification/2026-10-28-windows-accepted-installed-update.md).
+- No new-login/reboot/uninstall or clean-PC claim. No publication/source push.
+  No remaining local replacement work; native Mac test10 gate remains below.
+
+## Accepted build memory gate and Mac test10 · 2026-10-28
+
+- Accepted Windows bounded900second memory observation completed without sustained
+  accumulation; no unchanged Windows soak repeated. [Evidence](docs/verification/2026-10-26-accepted-memory-mac-preparation.md).
+- Mac implementation/local test package complete: seated/idle/meal/DORO paths connected,
+  previous popup/screen/topology/landing fixes preserved.4848exact accepted-frame matches;
+  292Mac+109Raster+14packaging checks pass.300second post-port ownership check bounded.
+- Apple Silicon test10 version104.10 available locally; exact artifact and limits in
+  [verification](docs/verification/2026-10-28-mac-test10-accepted-motion-port.md).
+  No public upload, source delivery or Windows product changes in this stage.
+- Next/open gate: real M2 execution, Retina/input/native upload-memory/CPU, upper-screen
+  drag/external-clamshell and landing smoothness. Native acceptance is NOT_TESTED;
+  do not request repeated logs or call the host checks a native Mac pass.
+
 ## Accepted seated interactions · 2026-10-26
 
 - User requested cursor paw taps, seated click shake/cooldown, and flattening

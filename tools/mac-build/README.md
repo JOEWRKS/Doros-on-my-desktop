@@ -11,6 +11,10 @@ slider are connected. Test04 preserves the earlier coverage and update-cost fixe
 and recomputes only bounded breathing/gaze regions in unchanged poses. Other
 transitions use the full renderer; no extra image cache or FPS/quality reduction. Native
 execution remains an open gate. See the dated vector verification record.
+Test10 connects the accepted2026-10-26 seated/idle/meal/question behavior and
+preserves earlier popup theme, native frame policy, topology and parallel sole fixes.
+DORO? uses a retained vector outline; changing active body deformations fall back
+to full sampling. Its Windows-host evidence is in the2026-10-28 verification record.
 Existing packages are not overwritten.
 macOS13 is this full-feature tester's minimum, not a verified global support claim.
 

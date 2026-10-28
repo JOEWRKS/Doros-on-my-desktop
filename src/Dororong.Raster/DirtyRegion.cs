@@ -29,7 +29,9 @@ internal sealed partial class HighResolutionGrabRaster
         if(after.Near!=default||after.Far!=default||after.Spread!=0)return null;
         var face=after.Face;
         if(face.Pull!=0||face.EyeFollow!=0||face.HairFollow!=0||face.MouthAge>=0||
-            face.DroolAge>=0||face.EffectFrame>=0||face.FlutterPhase>=0||face.Paw!=0)return null;
+            face.DroolAge>=0||face.EffectFrame>=0||face.FlutterPhase>=0||face.Paw!=0||
+            face.Stretch!=0||face.StretchShake!=0||face.SeatedPawAmount!=0||face.SeatedShake!=0||
+            face.ChuckleCover!=0||face.StompLift!=0||face.StompReach!=0||face.StompCrouch!=0)return null;
         if(before with {Face=before.Face with {EyeX=face.EyeX,EyeY=face.EyeY,Breathing=face.Breathing}}!=after)return null;
 
         var forward=after.Inverse;forward.Invert();

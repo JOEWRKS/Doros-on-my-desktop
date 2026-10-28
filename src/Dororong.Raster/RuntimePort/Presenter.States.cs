@@ -1,4 +1,4 @@
-// Mac-only extraction of accepted r104 (3813312). Windows source is unchanged.
+// Port of accepted deb5cae presentation; Windows source remains unchanged.
 using System.Windows;
 using System.Windows.Media;
 using Dororong.Core.Behavior;
@@ -16,7 +16,9 @@ internal partial class DororongPresenter
         else if(frame is >=706 and <=770)frame=HighResolutionLocomotion.Sleep((frame-706)/64d*(1-u));
         if(body>=0){var start=SnackRenderer.RecoveryAge(HuntPose.At(body/60d).Amount);body=(int)Math.Round((start+(2.6-start)*u)*60);}
         var a=captured.Head;var head=new Matrix(a.M11+(1-a.M11)*u,a.M12*(1-u),a.M21*(1-u),a.M22+(1-a.M22)*u,a.OffsetX*(1-u),a.OffsetY*(1-u));
-        captured=captured with {ChuckleCover=captured.ChuckleCover*(1-u),ChuckleBob=captured.ChuckleBob*(1-u)};
+        captured=captured with {ChuckleCover=captured.ChuckleCover*(1-u),ChuckleBob=captured.ChuckleBob*(1-u),
+            Stretch=captured.Stretch*(1-u),StretchShake=captured.StretchShake*(1-u),GroomSweep=captured.GroomSweep*(1-u),
+            SeatedPawAmount=captured.SeatedPawAmount*(1-u),SeatedPawAngle=captured.SeatedPawAngle,SeatedPawPulse=captured.SeatedPawPulse,SeatedShake=captured.SeatedShake*(1-u)};
         return captured with {Head=head,MotionFrame=frame,BodyFrame=body,EyeX=captured.EyeX*(1-u),EyeY=captured.EyeY*(1-u),Breathing=captured.Breathing*(1-u),StompLift=captured.StompLift*(1-u),StompReach=captured.StompReach*(1-u),StompCrouch=captured.StompCrouch*(1-u),EffectFrame=frame is >=706 and <=770?HighResolutionLocomotion.SleepEffect(frame):-1};
     }
     private void HighResolutionMotion(int frame,bool closed=false,int effect=-1){
@@ -46,7 +48,7 @@ internal partial class DororongPresenter
                 _hrWakeAge=Math.Min(1,_hrWakeAge+Math.Max(0,elapsed.TotalSeconds)/duration);
                 var frame=HighResolutionLocomotion.Sleep(amount);
                 HighResolutionMotion(frame,_hrWakeAge<.5,HighResolutionLocomotion.SleepEffect(frame));
-            }else if(pet.State==PetState.ClickReaction){
+            }else if(pet.State==PetState.ClickReaction&&!_sittingRequested){
                 HighResolutionMotion(-1);
                 var sample=BodyClickTransformSampler.SampleConfirmedClick(phase);
                 var origin=_hrForward.Transform(new Point(96*.428987,96*.916667));
@@ -60,6 +62,13 @@ internal partial class DororongPresenter
             }else if(pet.State==PetState.Idle&&_hrFace.MotionFrame<0&&_hrFace.BodyFrame<0&&!_huntTracking){
                 _hrFace=_hrFace with {Breathing=GetBreathingAmount(phase)};
             }
+        }
+        ApplyIdleActivity(pet);
+        ApplySeatedInteraction(pet);
+        if(_showDoroQuestion && pet.DoroQuestionPhase is { } questionPhase){
+            var head=_hrFace.Head;
+            head.RotateAt(DoroQuestionMotion.HeadRoll(questionPhase)*180/Math.PI,43,66);
+            _hrFace=_hrFace with {Head=head};
         }
         if(!_snackPose.Active)return;
         var pose=_snackPose;_hrFacing=pet.Facing;_hrForward=GrabTransform(0,0,HighResolutionScale);
@@ -80,7 +89,7 @@ internal partial class DororongPresenter
             else HighResolutionMotion(-1,pose.Phase==SnackPhase.Eating||pose.Phase==SnackPhase.Settling&&pose.Age<.16);
             if(pose.Phase==SnackPhase.Eating)_hrFace=_hrFace with {MouthAge=Math.Round(pose.Age*60)/60};
             else if(pose.Phase==SnackPhase.Snatching&&pose.Age>=SnackSession.SnatchPrepareSeconds)
-                _hrFace=_hrFace with {MouthAge=.35};
+                _hrFace=_hrFace with {MouthAge=.35}; // open jaw, past the effect's jewel overlay
             else if(pose.Phase==SnackPhase.Chasing)_hrFace=_hrFace with {DroolAge=Math.Round(pose.Age*60)/60};
         }
         _snackHead=_hrFace.Head;

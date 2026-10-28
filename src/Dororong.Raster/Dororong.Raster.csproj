@@ -16,6 +16,7 @@
     <Compile Include="../Dororong.App/Runtime/ImmutableSnapshotCollection.cs" Link="Shared/ImmutableSnapshotCollection.cs" />
     <Compile Include="../Dororong.App/Runtime/PetPlatformRuntime.cs" Link="Shared/PetPlatformRuntime.cs" />
     <Compile Include="../Dororong.App/Runtime/RuntimeComposition.cs" Link="Shared/RuntimeComposition.cs" />
+    <Compile Include="../Dororong.App/Controls/SeatedInteraction.cs" Link="Shared/SeatedInteraction.cs" />
     <Compile Include="../Dororong.App/Controls/LocomotionPresentation.cs" Link="Shared/LocomotionPresentation.cs" />
     <Compile Include="../Dororong.App/Controls/PounceSession.cs" Link="Shared/PounceSession.cs" />
     <Compile Include="../Dororong.App/Controls/HuntingSession.cs" Link="Shared/HuntingSession.cs" />

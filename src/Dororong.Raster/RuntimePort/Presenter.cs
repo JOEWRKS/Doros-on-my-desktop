@@ -70,9 +70,11 @@ internal partial class DororongPresenter {
  internal void BeginHighResolutionPlatformFrame()=>_hrDeferDrawing=true;
  internal void RenderDesktop(PetSnapshot pet,DirectInteractionSnapshot direct)=>RenderDesktop(pet,direct,TimeSpan.Zero);
  internal void RenderDesktop(PetSnapshot pet,DirectInteractionSnapshot direct,TimeSpan elapsed) {
-  if(pet.State is PetState.Idle or PetState.Walk&&!pet.IsDirectInteractionPending&&direct.Target==DirectInteractionTarget.None)
+  _showDoroQuestion=CanShowDoroQuestion(pet,direct);
+  if((pet.State is PetState.Idle or PetState.Walk||pet.State==PetState.ClickReaction&&_sittingRequested)&&!pet.IsDirectInteractionPending&&direct.Target==DirectInteractionTarget.None)
    pet=pet with {Facing=pet.Facing==FacingDirection.Right?FacingDirection.Left:FacingDirection.Right};
   RenderHighResolutionGrab(pet,direct,elapsed);
+  UpdateDoroBubble(pet);
  }
  internal bool UpdateHuntingWithPounce(PetSnapshot p,DirectInteractionSnapshot d,PointerSample pointer,TimeSpan dt,bool down)=>UpdateHuntingCore(p,d,pointer,dt,down,true);
  private void ResetHunting() { _huntSession.Reset();_pounce.Reset();_huntGaze.Reset();_huntPointer=null;_huntNear=_huntTracking=false;_huntBlendProgress=0;_huntRecoveryAge=2.6;_huntVisualFrame=156;_huntingLastFlip=null; }

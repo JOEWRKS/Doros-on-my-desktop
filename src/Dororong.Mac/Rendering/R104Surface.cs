@@ -20,6 +20,14 @@ internal sealed class R104Surface : Control, IDisposable
     private double size, density;
     private Point origin;
     private bool disposed;
+    private DoroQuestionDrawing? questionDrawing;
+    private (bool Visible,bool TailRight,double Opacity) question;
+    internal void SetQuestion((bool Visible,bool TailRight,double Opacity) value){
+        Dispatcher.UIThread.VerifyAccess();
+        if(question==value)return;question=value;
+        if(value.Visible)questionDrawing??=new();
+        InvalidateVisual();
+    }
     internal int BitmapAllocations { get; private set; }
     internal int ActiveExtent { get; private set; }
     internal ReadOnlyMemory<byte> ActivePixels => pixels.AsMemory(0,ActiveExtent*ActiveExtent*4);
@@ -89,13 +97,15 @@ internal sealed class R104Surface : Control, IDisposable
         if(bitmap is not null&&!disposed)
             context.DrawImage(bitmap,new Rect(0,0,ActiveExtent,ActiveExtent),
                 new Rect(Origin,new Size(256*size,256*size)));
+        if(!disposed&&question.Visible)
+            questionDrawing!.Draw(context,new Point(Origin.X+56*size,Origin.Y+56*size),size,question.TailRight,question.Opacity);
     }
 
     public void Dispose()
     {
         Dispatcher.UIThread.VerifyAccess();
         if(disposed)return;
-        disposed=true;bitmap?.Dispose();bitmap=null;raster=null;pixels=[];lastPose=null;ActiveExtent=0;
+        disposed=true;questionDrawing=null;question=default;bitmap?.Dispose();bitmap=null;raster=null;pixels=[];lastPose=null;ActiveExtent=0;
         InvalidateVisual();
     }
 }

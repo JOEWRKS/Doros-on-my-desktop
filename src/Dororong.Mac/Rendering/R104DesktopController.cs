@@ -29,6 +29,7 @@ internal sealed class R104DesktopController : IDisposable {
  internal int Extent=>presenter.Extent;
  internal long FrameRevision=>presenter.FrameRevision;
  internal double ReleaseOffset=>presenter.ReleaseOffset;
+ internal (bool Visible,bool TailRight,double Opacity) Question=>presenter.Question;
  internal bool Capturing=>captured;
  internal bool MenuOpen {get;set;}
  internal bool Sitting=>presenter.Sitting;
@@ -55,7 +56,7 @@ internal sealed class R104DesktopController : IDisposable {
    GetPouncePose=()=>presenter.Pounce,PresentSnack=(p,m)=>{Snack=p.Phase;presenter.SetSnack(p,m);},
    GetSnackMouth=presenter.GetSnackMouth,GetSnackChaseScale=()=>Scale
   };
-  loop=new(new(()=>elapsed,()=>{},()=>{}),new(h=>tick+=h,h=>tick-=h,()=>{},()=>{}),host,p=>new(BehaviorTuning.Default,random,p));
+  loop=new(new(()=>elapsed,()=>{},()=>{}),new(h=>tick+=h,h=>tick-=h,()=>{},()=>{}),host,p=>new(BehaviorTuning.Default with {DoroQuestionDelay=TimeSpan.FromMinutes(1),IdleActivitiesEnabled=true},random,p));
   loop.Faulted+=(_,e)=>Faulted?.Invoke(e);
  }
  internal void Advance(TimeSpan delta,PointerSample sample,bool down,SceneSnapshot scene) {

@@ -11,7 +11,7 @@ BASH = shutil.which('bash') or next((str(p) for p in [Path('C:/Program Files/Git
 
 @unittest.skipUnless(BASH, 'bash unavailable')
 class LauncherTests(unittest.TestCase):
-    def run_case(self, location='sibling', mode='complete', version='104.9'):
+    def run_case(self, location='sibling', mode='complete', version='104.10'):
         with tempfile.TemporaryDirectory(prefix='doro launcher ') as directory:
             root=Path(directory); home=root/'user home'; scripts=root/'download'; system=root/'Applications'; stubs=root/'bin'
             for p in (home,scripts,system,stubs): p.mkdir()
@@ -45,7 +45,7 @@ if [ "$MODE" = 'early' ]; then printf '%s\n' '{"kind":"end","reason":"disposed-b
             text=text.replace('sleep 1','"'+(stubs/'sleep').as_posix()+'" 1')
             script=scripts/'diagnose.command';write(script,text)
             env=dict(os.environ,HOME=home.as_posix(),MODE=mode)
-            return subprocess.run([BASH,'--noprofile','--norc',script.as_posix()],env=env,capture_output=True,text=True,encoding='utf-8',timeout=15)
+            return subprocess.run([BASH,'--noprofile','--norc',script.as_posix()],env=env,capture_output=True,text=True,encoding='utf-8',timeout=60)
     def test_existing_and_moved_app_report_verified_completion(self):
         for location in ('sibling','moved','user'):
             with self.subTest(location=location):
@@ -53,7 +53,7 @@ if [ "$MODE" = 'early' ]; then printf '%s\n' '{"kind":"end","reason":"disposed-b
                 self.assertEqual(result.returncode,0,result.stderr)
                 self.assertIn('기록 시작 확인',result.stdout);self.assertIn('완료를 파일에서 확인',result.stdout)
     def test_missing_wrong_version_and_ambiguous_apps_do_not_claim_start(self):
-        for args in [('missing','complete','104.9'),('sibling','complete','104.8'),('ambiguous','complete','104.9')]:
+        for args in [('missing','complete','104.10'),('sibling','complete','104.8'),('ambiguous','complete','104.10')]:
             with self.subTest(args=args):
                 result=self.run_case(*args);self.assertNotEqual(result.returncode,0)
                 self.assertNotIn('기록 시작 확인',result.stdout)

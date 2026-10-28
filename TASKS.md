@@ -1,5 +1,47 @@
 # Tasks
 
+## Accepted Windows installed update — 2026-10-28
+
+- User requested replacing the installed Windows edition; exact accepted package pinned.
+- Builder refusal checks and package/native startup/duplicate/close validation passed.
+  Corrected test harness to close visible product windows, preserving hidden helper HWNDs.
+- Backed up installed files/data/registration/preferences/shortcut and recovery Setup.
+- Setup exit0;470payload hashes and ownership manifest match.150%/sleepOFF preserved.
+- Startup remainedON; verified old portable command migrated to installed path +login delay.
+- Launched installed PID64404; responsive, one process/visible window, accepted App hash.
+- [Evidence, installer hash and backup location](docs/verification/2026-10-28-windows-accepted-installed-update.md).
+- Local replacement complete. No logout/reboot/uninstall/commit/push/publication/Mac change.
+
+## Mac test10 accepted motion port — 2026-10-28
+
+- User approved proceeding after accepted Windows memory gate. Windows source/app/settings retained.
+- Connected seated authored paw/shake, idle activities, DORO? timing/bubble and meal callbacks.
+- Preserved popup theme, native upper-screen policy, topology, fixed surface and parallel sole work.
+- Separate accepted-DLL vs Mac comparison:4848exact frames;292Mac+109Raster+14package tests pass.
+- 300second renderer memory run completed,13424frames: ownership bounded after warmup,
+  late private medians163.64→163.75→163.76MiB; not native/all-path leak certification.
+- Corrected stale normal-meal enum assertion and Windows launcher-test timeout; reruns pass.
+- Built local Apple Silicon test10 version104.10; ZIP/resource/native hash checks pass.
+- [Deliverable, exact hashes, scope and failed-attempt history](docs/verification/2026-10-28-mac-test10-accepted-motion-port.md).
+- Native M2/Retina/window-upload/CPU/memory/external-clamshell/landing remain NOT_TESTED.
+  No public upload/commit/push or user-log request. Next: native candidate acceptance only.
+
+## Accepted build memory and Mac preparation — 2026-10-26
+
+- User requested memory-leak testing of accepted current build, then Mac update preparation.
+- Exact App hash pinned; qualified separate HWND replay150s/all required render paths.
+- Started900s probePID60004 plus read-only existing-petPID83300 observation/helper84796.
+  First180s warmup, repeated motions/size/menu to720s, final180s idle; no forced GC/trim.
+- Mac host baseline239 and raster43 checks pass; new seated/idle/DORO paths still
+  require Mac sampler/runtime wiring. Build success is not feature parity.
+- [Scope, identities, prior-failure gates and evidence](docs/verification/2026-10-26-accepted-memory-mac-preparation.md).
+- Completed normally: probe900.052s/180samples, live900.999s/178samples; identity/gaps valid.
+  No sustained accumulation: probe private medians245.23→239.59MiB,live247.71→246.64MiB;
+  cache/buffer ownership bounded,1260size applications/7menu openings recorded.
+- Mac preparation complete:239+43+14host/package checks; missing feature wiring mapped.
+  No product patch warranted; no new Mac package or native Mac pass. Existing pet retained.
+  Next: Mac-specific feature integration against the accepted baseline and preserved fixes.
+
 ## Accepted seated interaction source delivery — 2026-10-26
 
 - User accepted the current running candidate with “ㅇㅇ 이대로 커밋 푸시”.

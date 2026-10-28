@@ -209,6 +209,7 @@ internal sealed class DesktopSession : IDisposable
                 displayedRevision=controller.FrameRevision;displayedDensity=controller.Density;
             }
             petImage.Origin=new(96-56*controller.Scale,96-56*controller.Scale+controller.ReleaseOffset);
+            petImage.SetQuestion(controller.Question);
             var uploadEnd=measureTick?Stopwatch.GetTimestamp():0;
             native.MoveIfChanged(petHandle,controller.Position-new PointD(96,96),petUpdates);
             var moveEnd=measureTick?Stopwatch.GetTimestamp():0;
