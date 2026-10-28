@@ -1,5 +1,17 @@
 # Tasks
 
+## Windows and Mac public delivery — 2026-10-29
+
+- User authorized separate commits/push and immediately downloadable artifacts.
+- Windows `655c896`, Mac `91591d5` pushed to `feature/macos-r104-arm64`.
+- Published distinct prereleases `windows-accepted-20261028` / `macos-r104-test10`;
+  remote tags verified against full commit hashes. Existing releases preserved.
+- Anonymous downloads of Setup, portable ZIP, Mac ZIP and both checksum files match.
+- [Direct links, exact hashes and scope](docs/verification/2026-10-29-windows-mac-public-delivery.md).
+- No product rebuild, running-app/settings change or unrelated setup-file commit.
+- Supersedes the prior local-only/source-delivery limits below; native Mac acceptance
+  remains NOT_TESTED. Delivery complete; next gate is native candidate acceptance.
+
 ## Accepted Windows installed update — 2026-10-28
 
 - User requested replacing the installed Windows edition; exact accepted package pinned.
