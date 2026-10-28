@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF><UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
+    <AssemblyName>Dororong.App.Tests</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Using Remove="System.Drawing"/><Using Remove="System.Windows.Forms"/>
+    <Reference Include="Dororong.App"><HintPath>$(ProductDirectory)/Dororong.App.dll</HintPath></Reference>
+    <Reference Include="Dororong.Core"><HintPath>$(ProductDirectory)/Dororong.Core.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

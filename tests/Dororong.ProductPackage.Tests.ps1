@@ -253,7 +253,8 @@ namespace Dororong.PackageTests
             EnumDesktopWindows(desktop, (window, _) =>
             {
                 GetWindowThreadProcessId(window, out var owner);
-                if (owner == unchecked((uint)processId))
+                // Close the product window, not hidden WPF dispatcher/notification HWNDs.
+                if (owner == unchecked((uint)processId) && IsWindowVisible(window))
                 {
                     windows.Add(window);
                 }
