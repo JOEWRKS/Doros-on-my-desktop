@@ -11,7 +11,7 @@ BASH = shutil.which('bash') or next((str(p) for p in [Path('C:/Program Files/Git
 
 @unittest.skipUnless(BASH, 'bash unavailable')
 class LauncherTests(unittest.TestCase):
-    def run_case(self, location='sibling', mode='complete', version='104.10'):
+    def run_case(self, location='sibling', mode='complete', version='104.11'):
         with tempfile.TemporaryDirectory(prefix='doro launcher ') as directory:
             root=Path(directory); home=root/'user home'; scripts=root/'download'; system=root/'Applications'; stubs=root/'bin'
             for p in (home,scripts,system,stubs): p.mkdir()
@@ -53,7 +53,7 @@ if [ "$MODE" = 'early' ]; then printf '%s\n' '{"kind":"end","reason":"disposed-b
                 self.assertEqual(result.returncode,0,result.stderr)
                 self.assertIn('기록 시작 확인',result.stdout);self.assertIn('완료를 파일에서 확인',result.stdout)
     def test_missing_wrong_version_and_ambiguous_apps_do_not_claim_start(self):
-        for args in [('missing','complete','104.10'),('sibling','complete','104.8'),('ambiguous','complete','104.10')]:
+        for args in [('missing','complete','104.11'),('sibling','complete','104.8'),('ambiguous','complete','104.11')]:
             with self.subTest(args=args):
                 result=self.run_case(*args);self.assertNotEqual(result.returncode,0)
                 self.assertNotIn('기록 시작 확인',result.stdout)

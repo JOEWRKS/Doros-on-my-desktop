@@ -16,6 +16,9 @@ preserves earlier popup theme, native frame policy, topology and parallel sole f
 DORO? uses a retained vector outline; changing active body deformations fall back
 to full sampling. Its Windows-host evidence is in the2026-10-28 verification record.
 Existing packages are not overwritten.
+Test11 carries the2026-10-29 accepted stretch forepaw and behind-head stamp
+shoulder correction through the shared renderer. Arm transform/timing and prior
+Mac platform fixes are retained; native Mac validation remains open.
 macOS13 is this full-feature tester's minimum, not a verified global support claim.
 
 ## Build on Windows

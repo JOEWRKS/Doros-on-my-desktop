@@ -7,8 +7,12 @@
   shoulder continues behind the unchanged head. Arm size/rotation/timing retained.
 - Windows48 RID tests and24 packaged-frame matches already verified; no unchanged
   Windows tests repeated. Shared partials and Mac sampler connection included together.
-- Mac test11 packaging and distribution-code checks in progress; native Mac remains
-  unverified. Existing running Windows candidate and settings remain unchanged.
+- Source pushed as0951ad4; remote hash verified. Mac test11 built with292Mac,
+  109Raster and14packaging checks passed. Distributed-code4,848frames match v5.
+- Local arm64 ZIP verified; native Mac remains unverified. Running Windows candidate
+  and settings unchanged. [Exact artifact and limits](docs/verification/2026-10-29-mac-test11-shoulder.md).
+- Extra packaged Mac DLL execution attempt on Windows aborted because it is ARM64;
+  this attempt is not a pass. Host292tests and distributed Raster parity are separate.
 
 ## Apply and launch behind-head shoulder candidate — 2026-10-29
 

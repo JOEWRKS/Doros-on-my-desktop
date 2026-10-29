@@ -23,8 +23,11 @@
 - User authorized applying v5; packaged candidate launched locally as PID38720.
   48 RID tests pass;24 packaged keyframes match v5; visible window/startup confirmed.
   User accepted the running candidate and authorized commit/push plus Mac update.
-  Next: package the same shared correction as Apple Silicon test11 and verify
-  distributed code. NativeMac remains unverified; settings/installed releases unchanged.
+  Accepted source pushed as0951ad4. Apple Silicon test11 locally packaged;
+  292Mac/109Raster/14packaging tests pass and4,848distributed frames match v5.
+  [Exact package and limits](docs/verification/2026-10-29-mac-test11-shoulder.md).
+  Next/open gate: nativeMac test11 appearance/execution. Settings/installed releases
+  unchanged; test11 has not been publicly released.
 
 ## Accepted Windows / Mac test10 delivery · 2026-10-29
 
