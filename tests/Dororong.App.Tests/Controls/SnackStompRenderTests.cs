@@ -9,6 +9,24 @@ namespace Dororong.App.Tests.Controls;
 
 public class SnackStompRenderTests
 {
+    [Theory][InlineData(1)][InlineData(1.25)][InlineData(1.5)]
+    public void ShoulderIsFilledWithoutNeckToArmpitDivider(double scale)=>CheekProductTests.Sta(()=>{
+        var raster=new HighResolutionGrabRaster();
+        // This interior patch is below the chin and above the repaired outer
+        // shoulder in both lifted/contact poses. The rejected seam crossed it.
+        foreach(var age in new[]{.1,.19,.24,.28,.51,.60,1d}){
+            var image=raster.Render(0,Matrix.Identity,default,default,default,0,scale,
+                HighResolutionGrabRaster.SnackReaction(age,5),bodyScale:scale);
+            var pixels=PremultipliedFrame.From(image).Pixels;
+            for(var y=(int)Math.Ceiling(154*scale);y<(int)Math.Floor(157*scale);y++)
+                for(var x=(int)Math.Ceiling(114*scale);x<(int)Math.Floor(118*scale);x++){
+                    var at=(y*image.PixelWidth+x)*4;
+                    Assert.True(pixels[at+3]>=250,$"Shoulder hole {age}/{scale}/{x},{y}");
+                    Assert.True(pixels[at]>=235&&pixels[at+1]>=235&&pixels[at+2]>=235,
+                        $"Unwanted neck-to-armpit divider {age}/{scale}/{x},{y}");
+                }
+        }
+    });
     [Theory][InlineData(1)][InlineData(1.125)][InlineData(1.25)][InlineData(1.375)][InlineData(1.5)]
     public void SecondContinuesSameCadenceWithoutReturningToNeutralBetweenBeats(double scale)=>CheekProductTests.Sta(()=>{
         var raster=new HighResolutionGrabRaster();

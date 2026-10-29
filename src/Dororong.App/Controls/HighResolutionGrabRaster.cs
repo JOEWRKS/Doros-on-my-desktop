@@ -195,6 +195,7 @@ internal sealed partial class HighResolutionGrabRaster
         var stomp=new StompWarp(face,inkScale);
         var chuckle=new ChuckleWarp(face,inkScale);
         var stretch=new StretchWarp(face);
+        var stretchArm=new StompWarp(HighResolutionFacePose.Neutral with{Furious=true,StompReach=16*face.Stretch},inkScale,shoulderDrop:2);
         var seated=new SeatedWarp(face);
         var seatedPaw=new SeatedPaw(face,inkScale);
         if(seatedPaw.Active)seatedBodyDistance??=new SeatedBodyDistance((locomotion??=new()).BorrowBody(321,1));
@@ -351,6 +352,7 @@ internal sealed partial class HighResolutionGrabRaster
                 else Sample(body,375,(InverseSpread(bodyX,bodyY,spread)+32)*225/96-.5,(bodyY+32)*225/96-.5,a);
                 if(seatedPaw.Active)seatedPaw.Composite(seatedBodyDistance!,uv.X,uv.Y,a);
                 if(stomp.RigidArm)stomp.CompositeArm(body,uv.X,uv.Y,bodyX,bodyY,a,l);
+                if(stretchArm.RigidArm)stretchArm.CompositeArm(body,uv.X,uv.Y,bodyX,bodyY,a,l);
                 if(chuckle.Active)chuckle.RemovePaw(body,bodyX,bodyY,a,l);
                 if(neck is not null&&a[3]<255){Sample(neck,225,uv.X*225/96-.5,uv.Y*225/96-.5,l);var clear=1-a[3]/255;for(var c=0;c<4;c++)a[c]+=l[c]*clear;}
                 var mix=Smooth((uv.Y-74)/2)*Smooth(spread);

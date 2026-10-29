@@ -1,5 +1,119 @@
 # Tasks
 
+## Accepted shoulder repair source / Mac update — 2026-10-29
+
+- User accepted the running v5 and authorized commit/push and the Mac update.
+- Accepted stretch separates the reaching paw from the planted foreleg; stamp
+  shoulder continues behind the unchanged head. Arm size/rotation/timing retained.
+- Windows48 RID tests and24 packaged-frame matches already verified; no unchanged
+  Windows tests repeated. Shared partials and Mac sampler connection included together.
+- Mac test11 packaging and distribution-code checks in progress; native Mac remains
+  unverified. Existing running Windows candidate and settings remain unchanged.
+
+## Apply and launch behind-head shoulder candidate — 2026-10-29
+
+- User approved applying the v5 appearance and requested execution.
+- Packaged `candidate-shoulder-behind-head-20261029` with the pinned runtime;
+  48 RID-specific related tests pass and all24 packaged keyframe PNGs match v5.
+- Launched PID38720 at09:16:30UTC; Started diagnostic, responding process and
+  visible owned window confirmed. Existing pet was already stopped.
+- Size/sleep preferences and startup registration unchanged. Installed files
+  and public releases unchanged at launch. User subsequently accepted the running
+  candidate and authorized source delivery / Mac update in the entry above.
+- [Launch evidence and limits](docs/verification/2026-10-29-shoulder-behind-head.md#local-application-and-launch).
+
+## Shoulder curve behind head — 2026-10-29
+
+- User rejected v4's lowered shoulder and supplied the desired rising curve.
+- Removed clipping; extended original moving body contour upward behind the
+  unchanged head layer. Distal forepaw/rotation/timing retained.
+- 2706frames mapped to804 exact unique junction crops; all6 enlarged sheets and
+  24whole poses directly inspected.48tests pass;282geometry records exact.
+- 4848host parity frames match;3636other-motion frames unchanged.
+- [Exact build, correction and limits](docs/verification/2026-10-29-shoulder-behind-head.md).
+- v5 comparison prepared; application subsequently authorized and launched above.
+  Live motion acceptance/nativeMac remain pending.
+  Installed app/settings/packages untouched; no commit/push/replacement.
+
+## Hair / upper shoulder ledge — 2026-10-29
+
+- **Rejected by user:** taper lowered the shoulder instead of continuing its
+  curve upward behind the head. Follow-up above supersedes this candidate.
+- User identified the outer junction below the leading hair; v3 did not resolve
+  this specific step. Removed the exposed cut-cap shelf with a proximal taper.
+- Only Stomp compositor changed this follow-up; head, distal paw, transform and
+  timing retained. All282 accepted geometry records exact;48 related tests pass.
+- All18 enlarged chronological junction sheets inspected:2706frames,3sizes,
+  both facings, plus24 whole poses.4848 host parity/3636 other-motion hashes exact.
+- [Cause, exact build and limits](docs/verification/2026-10-29-stretch-stomp-upper-join.md).
+- v4 closeup/frame comparison ready; user acceptance/live/nativeMac remain pending.
+  Installed pet/settings/packages unchanged; no commit/push/replacement.
+
+## Stretch / stamp rejected divider removal — 2026-10-29
+
+- Removed the rejected chin-to-armpit stroke; prior visual-success claim withdrawn.
+- Reattached the outer shoulder at the rounded proximal foreleg rather than the
+  deep armpit notch that rotated toward the neck. Accepted stamp transform/timing retained.
+- 48 related tests pass; all282 stamp geometry records unchanged. Current host
+  Windows/Mac4848frame parity exact;3636 other-motion frames unchanged.
+- Inspected18 chronological contact sheets covering2706 frames at3sizes/both
+  facings, plus24 full-character poses. This is contact-sheet review, not nativeMac.
+- [Correction, exact build and limits](docs/verification/2026-10-29-stretch-stomp-no-divider.md).
+- v3 comparison prepared. User shape acceptance pending; no install/release/commit/push.
+
+## Stretch / stamp rework after visual rejection — 2026-10-29
+
+- **Subsequently rejected:** added inner shoulder divider was unnatural. This
+  visual-success claim is withdrawn; follow-up correction is recorded above.
+- Prior visual-success claim withdrawn; shape improvement needed more than the
+  original small warp/shoulder-volume adjustment.
+- Separate reaching stretch foreleg from planted leg; add a contour-connected
+  curved shoulder boundary to stamp without changing its rigid arm trajectory.
+- Fixed stale quick-probe DLL use with copy/hash/manifest guard. Rejected the
+  detached seam endpoint and five-unit drop that failed six sole guards.
+- Final45/45 tests; 2,706 changed-region frames inspected at three sizes/both
+  facings.282 stamp geometry records unchanged;4,848 host parity,3,636 other frames exact.
+- [Rework evidence, identities and limits](docs/verification/2026-10-29-stretch-stomp-rework.md).
+- New comparison prepared; shape acceptance/live operation/native Mac remain pending.
+  No installation, release, settings change, commit or push.
+
+## Stretch foreleg / stamp shoulder candidate — 2026-10-29
+
+- **Rejected by user:** compared result still looks the same; prior claim that
+  limb separation/shoulder appearance was fixed is withdrawn. Numeric/continuity
+  checks remain evidence only for their measured scope. Follow-up is recorded above.
+
+- User authorized bounded shape repair and frame-by-frame size comparisons.
+- Isolated stretch reach from planted foreleg; backtracked inverse removes the
+  first candidate's protrusion. Rounded stamp shoulder without changing arm matrix/timing.
+- 100/125/150%, both facings:2,706candidate frames' changed regions visually reviewed.
+  Exact282stamp root/tip/pose records preserved;45unique related tests pass.
+- Windows/Mac managed render4,848matches;3,636other-motion frames unchanged.
+- [Evidence, intermediate failures and candidate limits](docs/verification/2026-10-29-stretch-stomp-repair.md).
+- Comparison viewer/images prepared. User shape acceptance pending; installed pet,
+  public packages and settings retained. No nativeMac/live-input pass claimed.
+
+## Stretch / stomp image feedback audit — 2026-10-29
+
+- User questioned image1 and missing-looking shoulder in image2 from the overview.
+- Identified Stretch1.0s and fifth-withdrawal Angry1.0s; reproduced24key poses from
+  the exact accepted Windows DLL and visually inspected both panels.
+- Rechecked the two exact Windows/Mac frame hashes: identical. The shapes predate
+  Mac delivery; matching pixels did not validate their appearance.
+- Broad stretch deformation flattens the front-body silhouette; stomp union/re-ink
+  removes shoulder definition. [Evidence and scope](docs/verification/2026-10-29-stretch-stomp-shape-audit.md).
+- Diagnosis complete; correction remains open. No product/release/runtime changed.
+
+## Accepted motion image handoff — 2026-10-29
+
+- User requested images of the delivered animations. Copied existing accepted
+  overview, three seated GIF previews, twelve size/facing frame sheets and six
+  bubble images without changing image contents or product code.
+- Local `artifacts/Doro-motion-images-20261029.zip` includes those22images and README.
+  Source/limits recorded inside: diagnostic rendered previews, not native Mac capture;
+  GIF endpoints include preview holds and tracking red dot is a diagnostic target.
+- Handoff complete; no additional test, acceptance or public upload claim.
+
 ## Windows and Mac public delivery — 2026-10-29
 
 - User authorized separate commits/push and immediately downloadable artifacts.

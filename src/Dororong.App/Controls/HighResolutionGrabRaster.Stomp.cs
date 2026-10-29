@@ -31,7 +31,8 @@ internal sealed partial class HighResolutionGrabRaster
         private readonly double jointSlope;
         internal bool RigidArm=>forwardSlap&&Active;
         internal bool Active=>lift>0||reach>0||crouch>0;
-        internal StompWarp(HighResolutionFacePose face,double bodyScale=1){
+        internal StompWarp(HighResolutionFacePose face,double bodyScale=1):this(face,bodyScale,0){}
+        internal StompWarp(HighResolutionFacePose face,double bodyScale,double shoulderDrop){
             forwardSlap=face.Furious;
             lift=Math.Clamp(face.StompLift,0,forwardSlap?4.8:2.4);
             reach=Math.Clamp(face.StompReach,0,forwardSlap?16:4);
@@ -48,13 +49,16 @@ internal sealed partial class HighResolutionGrabRaster
                 var a=1+amount*ux*ux;var b=amount*ux*uy;var d=1+amount*uy*uy;
                 arm=new Matrix(a,b,b,d,29-a*29-b*74,74-b*29-d*74);
                 arm.RotateAt(10*deploy+40*lift/4.8,29,74);
-                arm.Translate(deploy,-4.7*deploy);
+                arm.Translate(deploy,(-4.7+shoulderDrop)*deploy);
             }
             armInverse=arm;armInverse.Invert();
             jointTop=arm.Transform(new Point(26,70));
-            jointBottom=arm.Transform(new Point(28,76.4));
-            var next=arm.Transform(new Point(28.5,75.75));
-            var previous=arm.Transform(new Point(27.5,77.05));
+            // Join on the rounded proximal foreleg, before the original deep
+            // armpit notch. Rotating the notch itself lifted it into the neck
+            // and removed the shoulder's visible thickness.
+            jointBottom=arm.Transform(new Point(27,79.4));
+            var next=arm.Transform(new Point(27.25,78.55));
+            var previous=arm.Transform(new Point(26.75,79.85));
             jointSlope=(next.Y-previous.Y)/Math.Max(.1,next.X-previous.X);
             inkWidth=1.295415959252971/Math.Max(1,bodyScale);
         }
@@ -62,6 +66,15 @@ internal sealed partial class HighResolutionGrabRaster
         internal Point ArmSource(Point point)=>armInverse.Transform(point);
         private static double ArmMask(double x,double y)=>
             Smooth((y-68)/2)*(1-Smooth((x-29)/3));
+        private double ArmCoverage(Point p){
+            var mask=ArmMask(p.X,p.Y);
+            // Continue the existing upper shoulder contour behind the head.
+            // Ending the moving layer at y=68 exposed its cut cap; trimming
+            // that cap lowered the shoulder instead of completing the overlap.
+            // The head is composited over this extended body layer unchanged.
+            var extended=Smooth((p.Y-60)/4)*(1-Smooth((p.X-29)/3));
+            return mask+(extended-mask)*Smooth(reach/16);
+        }
         internal void CompositeArm(float[] body,double x,double y,double sourceX,double sourceY,Span<double> result,Span<double> temporary){
             if(!RigidArm)return;
             var keep=1-ArmMask(sourceX,sourceY);
@@ -71,7 +84,7 @@ internal sealed partial class HighResolutionGrabRaster
             // interior cutout ink and the old drifting diagonal repair line.
             var shoulder=ShoulderAlpha(x,y);
             for(var c=0;c<4;c++)result[c]=255*shoulder+result[c]*(1-shoulder);
-            var p=ArmSource(new(x,y));var mask=ArmMask(p.X,p.Y);
+            var p=ArmSource(new(x,y));var mask=ArmCoverage(p);
             if(mask>0){
                 Sample(body,375,(p.X+32)*225/96-.5,(p.Y+32)*225/96-.5,temporary);
                 // Complementary cut masks partition one surface. Source-over
@@ -110,20 +123,23 @@ internal sealed partial class HighResolutionGrabRaster
             return (dx*(y-a.Y)-dy*(x-a.X))/Math.Max(1e-9,Math.Sqrt(dx*dx+dy*dy));
         }
         private double JointDistance(double x,double y){
+            JointCurve(x,out var edge,out var slope);
+            return (edge-y)/Math.Sqrt(1+slope*slope);
+        }
+        private void JointCurve(double x,out double edge,out double slope){
             var width=Math.Max(1,39-jointBottom.X);
             var t=Math.Clamp((x-jointBottom.X)/width,0,1);var t2=t*t;var t3=t2*t;
-            var edge=(2*t3-3*t2+1)*jointBottom.Y+(t3-2*t2+t)*width*jointSlope+
+            edge=(2*t3-3*t2+1)*jointBottom.Y+(t3-2*t2+t)*width*jointSlope+
                 (-2*t3+3*t2)*86.2+(t3-t2)*width*.8;
-            var slope=((6*t2-6*t)*jointBottom.Y+(3*t2-4*t+1)*width*jointSlope+
+            slope=((6*t2-6*t)*jointBottom.Y+(3*t2-4*t+1)*width*jointSlope+
                 (-6*t2+6*t)*86.2+(3*t2-2*t)*width*.8)/width;
-            return (edge-y)/Math.Sqrt(1+slope*slope);
         }
         private double UnionAlpha(float[] body,double x,double y,Span<double> temporary){
             var p=Source(x,y);
             Sample(body,375,(p.X+32)*225/96-.5,(p.Y+32)*225/96-.5,temporary);
             var alpha=temporary[3]*(1-ArmMask(p.X,p.Y));
             var shoulder=ShoulderAlpha(x,y);alpha=255*shoulder+alpha*(1-shoulder);
-            p=ArmSource(new(x,y));var mask=ArmMask(p.X,p.Y);
+            p=ArmSource(new(x,y));var mask=ArmCoverage(p);
             Sample(body,375,(p.X+32)*225/96-.5,(p.Y+32)*225/96-.5,temporary);
             alpha=Math.Min(255,temporary[3]*mask+alpha);
             // Replace the vacated lower shoulder, not just fill over its old

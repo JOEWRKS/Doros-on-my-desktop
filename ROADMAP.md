@@ -1,5 +1,31 @@
 # ROADMAP — 도로롱이 내 컴에?!
 
+## Current stretch / stomp visual feedback · 2026-10-29
+
+- Delivered overview exposes flattened wake-stretch forelimb and missing-looking
+  stamp shoulder. Exact accepted Windows keyframe reproduction confirms both shapes;
+  existing Mac frame hashes match. [Diagnosis](docs/verification/2026-10-29-stretch-stomp-shape-audit.md).
+- First comparison rejected as visually unchanged; second rejected because its
+  inner shoulder divider unnaturally split the body. Both visual-success claims
+  withdrawn; prior evidence retained in TASKS and verification documents.
+- Current candidate removes the divider and joins the rounded proximal foreleg
+  to the body, preserving the accepted stamp arm transform/timing. Stretch keeps
+  a separate reaching paw and planted leg.48 related tests pass;282 stamp geometry
+  records exact;4848 host parity and3636 unaffected-motion hashes exact.
+- Contact-sheet inspection covers2706 chronological frames at3sizes/both facings,
+  plus24 full-character poses. [Current correction and limits](docs/verification/2026-10-29-stretch-stomp-no-divider.md).
+- User pinpointed the hair/upper-shoulder step, then rejected v4's lowered edge.
+  Current v5 removes clipping and extends the original shoulder contour upward
+  behind the head, matching the direction of the user's red reference line.
+  All804 unique junction images covering2706frames inspected;48tests pass;
+  282geometry records,4848host parity and3636unrelated frames remain exact.
+  [Behind-head correction](docs/verification/2026-10-29-shoulder-behind-head.md).
+- User authorized applying v5; packaged candidate launched locally as PID38720.
+  48 RID tests pass;24 packaged keyframes match v5; visible window/startup confirmed.
+  User accepted the running candidate and authorized commit/push plus Mac update.
+  Next: package the same shared correction as Apple Silicon test11 and verify
+  distributed code. NativeMac remains unverified; settings/installed releases unchanged.
+
 ## Accepted Windows / Mac test10 delivery · 2026-10-29
 
 - Separate Windows `655c896` and Mac `91591d5` commits pushed on the existing feature
@@ -8,6 +34,8 @@
   [Direct downloads and evidence](docs/verification/2026-10-29-windows-mac-public-delivery.md).
 - Delivery complete; installed pet/settings retained. Native Mac acceptance below
   remains open; publication does not convert host checks into real Mac verification.
+- Requested motion image handoff also complete: existing overview/GIFs/frame sheets
+  bundled in `artifacts/Doro-motion-images-20261029.zip`; details in TASKS.
 
 ## Accepted Windows installation · 2026-10-28
 
