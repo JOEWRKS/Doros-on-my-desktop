@@ -26,8 +26,11 @@
   Accepted source pushed as0951ad4. Apple Silicon test11 locally packaged;
   292Mac/109Raster/14packaging tests pass and4,848distributed frames match v5.
   [Exact package and limits](docs/verification/2026-10-29-mac-test11-shoulder.md).
-  Next/open gate: nativeMac test11 appearance/execution. Settings/installed releases
-  unchanged; test11 has not been publicly released.
+  Windows portable and Mac test11 now published with refreshed47-image ZIP;
+  all7download assets anonymously hash-verified and remote tags checked.
+  [Direct delivery](docs/verification/2026-10-29-shoulder-public-delivery.md).
+  Next/open gate: nativeMac test11 appearance/execution. Settings/local installation
+  unchanged; publishing does not establish native acceptance.
 
 ## Accepted Windows / Mac test10 delivery · 2026-10-29
 

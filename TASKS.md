@@ -1,5 +1,15 @@
 # Tasks
 
+## Accepted shoulder downloads / refreshed images — 2026-10-29
+
+- User authorized direct downloads of both platforms and renewed image handoff.
+- Published exact Windows portable and Mac test11 as separate prereleases; remote
+  tags verified. All7download assets anonymously fetched and hash/size matched.
+- Refreshed image ZIP:44PNG+3GIF; old overview excluded, accepted stretch/stamp
+  sheets and24keyframes included alongside unchanged seated/question images.
+- No app rebuild/restart/install or settings change. Actual Mac remains unverified.
+- [Direct links, hashes and boundaries](docs/verification/2026-10-29-shoulder-public-delivery.md).
+
 ## Accepted shoulder repair source / Mac update — 2026-10-29
 
 - User accepted the running v5 and authorized commit/push and the Mac update.
