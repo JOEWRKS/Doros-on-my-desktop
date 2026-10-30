@@ -1,5 +1,64 @@
 # Tasks
 
+## Accepted ribbon correction / Mac test12 delivery — 2026-10-30
+
+- User accepted the connected-fold result and authorized commit/push plus Mac update.
+- Windows/shared source correction retains accepted motion/timing, with final
+  Windows5/Raster3focused checks and72pose visual samples already verified.
+- Mac test12 package identity/README updated; published-code verification in progress.
+- Running Windows pet, installation/settings and prior public packages unchanged.
+
+## Connect ribbon fold to contour — 2026-10-30
+
+- User rejected the preceding smoothing: their red reference requires an actual
+  shallow line connecting the left fold to the right contour, not a rounded free tip.
+- Replaced that interpretation with the connecting stroke; erased old downward tip.
+  Prior visual-success statement does not establish compliance with this requirement.
+- Directly inspected72pose samples at3sizes/both facings,4head variants and
+  -12/0/+12degree head angles on2backgrounds. These are samples, not every frame.
+- Windows5/Raster3focused checks pass, including continuous ink across the join,
+  removed old tip, alpha validity and exact pixels outside the bounded repair.
+- [Latest comparison/evidence](docs/verification/2026-10-30-ribbon-junction.md#correction-to-the-users-connecting-line).
+- Existing app/packages unchanged. Candidate ready for visual acceptance/application.
+
+## Ribbon inner fold follow-up — 2026-10-30
+
+- User identified the adjacent left kink after the exterior-spur correction.
+- Smoothed the short inner fold and inward contour remnant only; retained alpha,
+  outside-region pixels, ribbon silhouette, all motion geometry and timing.
+- Final600pose conditions on12light/dark sheets directly inspected at3sizes,
+  both facings,4head variants/25angles. Focused Windows4+Raster3tests pass.
+- [Evidence and comparison](docs/verification/2026-10-30-ribbon-junction.md#follow-up-left-inner-fold-correction).
+- Source/build candidate ready; running/installed/public packages unchanged.
+  Next: acceptance/application. Native Mac screen remains unverified.
+
+## Ribbon-side pixel spur correction — 2026-10-30
+
+- Reproduced the reported spur in the accepted package's separated225px head layer.
+- Added bounded shared head preparation for x162–166/y109–116; surrounding
+  source pixels, body, motion timing and original banks retained.
+- Directly inspected600pose conditions on2backgrounds at3sizes/both facings;
+  comparison shows the spur removed. These are sampled poses, not live input.
+- Windows78tests pass; Raster106pass plus3historical-hash assertions corrected
+  to preserve the old hashes and prove changes confined to the repaired region:3pass.
+- [Cause, exact evidence and limits](docs/verification/2026-10-30-ribbon-junction.md).
+- Source/build candidate ready; running/installed/published apps unchanged.
+  Next: acceptance/application of this visual correction; nativeMac unverified.
+
+## One highlight per added motion — 2026-10-29
+
+- User clarified: one image per motion, starting with snack withdrawal stages.
+- Exported13transparent PNGs from the exact accepted Windows App/Core DLLs;
+  assembly hashes match the running candidate. Each final image directly inspected.
+- Includes withdrawals1–6, chuckle, DORO?, stretch, beg, groom, seated tap and shake.
+  Uses authored pose samples, including product bubble drawing/placement for DORO?.
+- Published `Doro-motion-highlights-13.zip` and checksum on windows-shoulder-20261029;
+  both anonymously downloaded and hash-matched. Prior assets retained.
+- Evidence `artifacts/motion-highlights-20261029/`:identity/manifest,13PNGs,source,
+  publication and anonymous verification. No product/settings change or nativeMac claim.
+- Still images do not demonstrate hit counts/speed; sixth frame is character-only
+  snatch pose, with no pointer/jewel overlay. Scope complete.
+
 ## Accepted shoulder downloads / refreshed images — 2026-10-29
 
 - User authorized direct downloads of both platforms and renewed image handoff.

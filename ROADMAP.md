@@ -1,5 +1,23 @@
 # ROADMAP — 도로롱이 내 컴에?!
 
+## Current ribbon-side pixel defect · 2026-10-30
+
+- User reported a dark spur outside the ribbon in the delivered appearance.
+  Separated-layer inspection reproduces inherited head-layer ink; bounded shared
+  head preparation removes it while preserving surrounding source pixels.
+- Candidate built;600pose conditions directly inspected at3sizes/both facings
+  on2backgrounds. Windows78checks pass. Raster106checks pass and3historical-hash
+  checks pass after explicitly accounting for only the repaired pixels.
+  [Evidence and original failed assertions](docs/verification/2026-10-30-ribbon-junction.md).
+- User accepted the connected-fold appearance and authorized commit/push plus Mac
+  update. Source/Mac test12 delivery in progress; running/installed/public packages
+  remain the prior accepted version; actualMac remains unverified.
+- Inner-fold smoothing was rejected: the user requires joining the left fold
+  into the right contour along their red line. Current candidate connects it
+  and removes the old downward tip. Latest72pose samples directly inspected;
+  Windows5/Raster3focused checks pass. Previous600pose inspection belongs to the
+  rejected smoothing, not this correction. Visual acceptance is now recorded above.
+
 ## Current stretch / stomp visual feedback · 2026-10-29
 
 - Delivered overview exposes flattened wake-stretch forelimb and missing-looking
@@ -29,6 +47,8 @@
   Windows portable and Mac test11 now published with refreshed47-image ZIP;
   all7download assets anonymously hash-verified and remote tags checked.
   [Direct delivery](docs/verification/2026-10-29-shoulder-public-delivery.md).
+  Follow-up image handoff:13single-motion highlights published and download-verified;
+  snack withdrawals1–6 and subsequent added motions each have one PNG (TASKS).
   Next/open gate: nativeMac test11 appearance/execution. Settings/local installation
   unchanged; publishing does not establish native acceptance.
 

@@ -48,7 +48,7 @@ internal sealed partial class HighResolutionGrabRaster
         Steps=reader.ReadInt32();if(Steps!=224)throw new InvalidDataException("Grab bank count.");
         entries=new (int,int)[Steps+3];
         for(var i=0;i<entries.Length;i++){var n=reader.ReadInt32();var at=checked((int)reader.BaseStream.Position);if(n<=0||at+n>bank.Length)throw new InvalidDataException();entries[i]=(at,n);reader.BaseStream.Position+=n;}
-        head=Read(0,225);nativeBody=Read(1,160);
+        head=Read(0,225);TrimRibbonSpur(head);nativeBody=Read(1,160);
         double x=0,y=0,count=0;for(var i=0;i<225*225;i++)if(head[i*4+3]>=128&&head[i*4+2]>head[i*4]+12&&head[i*4]>head[i*4+1]+12){x+=i%225;y+=i/225;count++;}
         Center=new(x/count*96/225,y/count*96/225);
     }
@@ -410,6 +410,7 @@ internal sealed partial class HighResolutionGrabRaster
         Array.Copy(source,(106*225+45)*4,closedHead,(108*225+44)*4,3*4);
         Array.Copy(source,(110*225+44)*4,closedHead,(109*225+44)*4,2*4);
         closedHead=HighResolutionClosedInk.Prepare(closedHead);
+        TrimRibbonSpur(closedHead);
         return closedHead;
     }
     private float[] PerchPaw(float[] source,HighResolutionFacePose face){

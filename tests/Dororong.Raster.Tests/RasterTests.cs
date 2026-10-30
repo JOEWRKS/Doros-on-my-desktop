@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Reflection;
 using Dororong.Raster;
 using System.Windows.Media;
 
@@ -10,7 +11,7 @@ public sealed class RasterTests
     [InlineData("neutral","1F38A0EB13F23A7A41C9F76A7171AE12DAA56ED99EFF5EB00B8B5134E427E5D9")]
     [InlineData("closed","010EA6438B35F56CAFF68D7279724132158F813235634B37BCAC2A2ED9781BDB")]
     [InlineData("cheek","FE68111F4F5426F13757989E51C6150503FEBE671C8F83D827267FA6EF50C023")]
-    public void SourcePixelsMatchAcceptedR104(string name,string expected)
+    public void SourcePixelsMatchAcceptedR104OutsideRibbonRepair(string name,string expected)
     {
         var pose = name switch
         {
@@ -19,7 +20,29 @@ public sealed class RasterTests
             _ => new RasterPose()
         };
         var pixels = new R104Raster().Render(pose,1);
-        Assert.Equal(expected,Convert.ToHexString(SHA256.HashData(pixels.AsSpan(0,256*256*4))));
+        // Retain the historical accepted hash. Restore only the repaired source
+        // texels in an isolated renderer to prove all other output stays exact.
+        var baseline = new R104Raster();
+        const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+        var sampler = typeof(R104Raster).GetField("renderer",flags)!.GetValue(baseline)!;
+        var type = sampler.GetType();
+        var original = (float[])type.GetMethod("Read",flags)!.Invoke(sampler,new object?[]{0,225,null})!;
+        var head = (float[])type.GetField("head",flags)!.GetValue(sampler)!;
+        var closed = (float[])type.GetMethod("ClosedHead",flags)!.Invoke(sampler,null)!;
+        for(var y=109;y<=116;y++)for(var x=162;x<=166;x++)for(var c=0;c<4;c++){
+            var at=(y*225+x)*4+c;head[at]=original[at];closed[at]=original[at];
+        }
+        for(var y=107;y<=114;y++)for(var x=153;x<=161;x++)for(var c=0;c<4;c++){
+            var at=(y*225+x)*4+c;head[at]=original[at];closed[at]=original[at];
+        }
+        var oldPixels = baseline.Render(pose,1);
+        Assert.Equal(expected,Convert.ToHexString(SHA256.HashData(oldPixels.AsSpan(0,256*256*4))));
+        var changed=0;
+        for(var i=0;i<256*256*4;i++)if(pixels[i]!=oldPixels[i]){
+            changed++;var pixel=i/4;
+            Assert.InRange(pixel%256,140,158);Assert.InRange(pixel/256,118,138);
+        }
+        Assert.True(changed>0);
     }
 
     [Fact]
