@@ -23,7 +23,7 @@ internal sealed class BoundaryDiagnostic : IDisposable
                 Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path)!);
                 await using var stream=new FileStream(path,FileMode.CreateNew,FileAccess.Write,FileShare.Read);
                 await using var writer=new StreamWriter(stream);
-                await writer.WriteLineAsync(JsonSerializer.Serialize(new{kind="start",schema=2,build="r104-test12",pid=Environment.ProcessId,utc=DateTimeOffset.UtcNow,
+                await writer.WriteLineAsync(JsonSerializer.Serialize(new{kind="start",schema=2,build="r104-test13",pid=Environment.ProcessId,utc=DateTimeOffset.UtcNow,
                     durationSeconds=90,intervalSeconds=.5,scope="placement, geometry and handler timing maxima; not GPU or CPU/memory acceptance"}));
                 await writer.FlushAsync();
                 await foreach(var item in queue.Reader.ReadAllAsync()){

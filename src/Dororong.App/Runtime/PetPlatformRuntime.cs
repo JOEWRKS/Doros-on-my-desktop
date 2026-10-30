@@ -48,6 +48,12 @@ internal sealed class PetPlatformRuntime
     }
     internal bool SuspendsAutonomousMotion => _perch is { Current.Phase: not EdgePerchPhase.None } || !_reliable || !_hasGeometry ||
         _motion.Current.Phase is PlatformPhase.Falling or PlatformPhase.Landing or PlatformPhase.Lifting;
+    // An unavailable desktop query freezes world motion; it does not revoke
+    // the retained support or ask a seated pet to flash its standing source.
+    // Confirmed falling/landing/lifting and perch ownership still take priority.
+    internal bool BlocksLocomotionPresentation(bool sittingRequested) => SuspendsAutonomousMotion &&
+        !(sittingRequested && _hasGeometry && _motion.Current.Phase == PlatformPhase.Supported &&
+          PerchPhase == EdgePerchPhase.None);
     internal FootContact Contact { get; private set; }
     internal PointD FramePosition => _framePosition ?? _lastPosition ?? new();
     internal EdgePerchPhase PerchPhase => _perch?.Current.Phase ?? EdgePerchPhase.None;

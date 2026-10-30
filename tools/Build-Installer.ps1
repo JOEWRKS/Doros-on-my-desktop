@@ -14,7 +14,7 @@ $payload = Get-InstallerPayload -PackagePath $PackagePath
 $archive = (Resolve-Path -LiteralPath $ArchivePath).Path
 $archiveHash = (Get-FileHash -LiteralPath $archive).Hash
 # Accepted connected-ribbon build; installer update authorized 2026-10-30.
-if ($archiveHash -cne '2725F07ECC6B1642BB5812AF9B0401482E6E463C0650003E39416B5759B7574D') {
+if ($archiveHash -cne 'F09B9F367807A4CDC9FC4E1644CF03DCDDF5ED84C89AED07BB32BD66B423FCE2') {
     throw 'Archive hash does not match the approved 0.1.3 candidate.'
 }
 $compiler = (Resolve-Path -LiteralPath $CompilerPath).Path

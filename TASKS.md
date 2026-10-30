@@ -1,5 +1,31 @@
 # Tasks
 
+## Seated continuity Windows / Mac delivery — 2026-10-30
+
+- User authorized Mac correction, commit/push, installed replacement and downloads.
+- Mac four loop handoffs now use the shared supported-sitting gate. Before3fail;
+  after295host tests pass. Packaging14checks pass; test13arm64 ZIP verified.
+- Windows installer built with required native startup/duplicate/close checks;
+  host installation470files verified. Settings/data/startup preserved, PID32788
+  reopened responsive with1visible window. Old PID19480 closed normally.
+- [Exact artifacts, hashes, backup and limits](docs/verification/2026-10-30-seated-continuity-delivery.md).
+- Commit/publication verification in progress. Actual user acceptance and nativeMac
+  remain open; no changes to accepted art/timing or extra memory soak.
+
+## Seated pointer standing-frame flicker — 2026-10-30
+
+- User reported intermittent standing images while the mouse approaches sitting.
+- Real Windows loop/presenter reproduced16standing frames per size at100/125/150%
+  when desktop query failure incorrectly blocked the retained supported pose.
+- Separated world-motion suspension from supported seated presentation; no raster,
+  paw geometry/timing, physics, or settings change. Actual fall/perch stays prioritized.
+- Final self-contained win-x64 checks21/21pass;270chronological frames directly
+  inspected on9sheets. Initial fixture/command/compiler failures retained in evidence.
+- Local portable candidate built:470files/CRC/testedDLL match; ZIPf09b9f36…23fce2.
+- [Cause, before/after, scope and package](docs/verification/2026-10-30-seated-pointer-continuity.md).
+- Current installed app remains running unchanged; live replacement/acceptance and
+  original-incident trigger remain unverified. No Mac update/publication in this task.
+
 ## Ribbon installer update — 2026-10-30
 
 - User requested the installer edition after the latest portable/Mac direct links.

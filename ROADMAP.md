@@ -1,5 +1,20 @@
 # ROADMAP — 도로롱이 내 컴에?!
 
+## Current seated pointer flicker · 2026-10-30
+
+- Reported standing flashes reproduced by transient desktop-query failure while
+  seated and still physically supported. World-motion suspension had also disabled
+  the seated source. The Windows loop now preserves that supported presentation.
+- 21focused RID tests pass;270chronological frames at100/125/150% inspected with
+  no standing frames. Expired queries retain window support; confirmed removal
+  still falls. Accepted paw/art/timing and physics are unchanged.
+- [Evidence and local candidate](docs/verification/2026-10-30-seated-pointer-continuity.md).
+  User authorized Mac/update/publication. Mac295host tests and14packaging checks
+  pass; test13arm64 ZIP ready. Windows installed470files verified and new app
+  reopened; settings/startup retained. [Delivery](docs/verification/2026-10-30-seated-continuity-delivery.md).
+  Current: commit/direct-download publication. Next/open: live acceptance/nativeMac.
+  Original incident's exact native trigger is not recorded.
+
 ## Current ribbon-side pixel defect · 2026-10-30
 
 - User reported a dark spur outside the ribbon in the delivered appearance.

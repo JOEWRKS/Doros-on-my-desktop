@@ -7,8 +7,8 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $artifacts = Join-Path $root 'artifacts/installer'
-$runtime = Join-Path $root 'artifacts/product-shell/candidate-ribbon-connected-20261030/runtime'
-$archive = Join-Path $root 'artifacts/product-shell/candidate-ribbon-connected-20261030/Doros-on-my-desktop-Portable-0.1.3-win-x64.zip'
+$runtime = Join-Path $root 'artifacts/product-shell/candidate-seated-continuity-20261030/runtime'
+$archive = Join-Path $root 'artifacts/product-shell/candidate-seated-continuity-20261030/Doros-on-my-desktop-Portable-0.1.3-win-x64.zip'
 $builder = Join-Path $root 'tools/Build-Installer.ps1'
 if (-not $CompilerPath) { $CompilerPath = Join-Path $artifacts 'toolchain-reference-update-20261002/ISCC.exe' }
 function Check([bool]$condition, [string]$message) { if (-not $condition) { throw $message } }

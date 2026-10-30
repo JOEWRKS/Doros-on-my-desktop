@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
-version='104.12'
+version='104.13'
 valid_app() {
   [ -x "$1/Contents/MacOS/Dororong.Mac" ] &&
   [ "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$1/Contents/Info.plist" 2>/dev/null)" = "$version" ]
@@ -13,7 +13,7 @@ else
   for candidate in '/Applications/Doro Mac Test.app' "$HOME/Applications/Doro Mac Test.app"; do
     if valid_app "$candidate"; then
       if [ -n "$APP" ]; then
-        printf '%s\n' '실행 중단: test12 앱이 여러 위치에 있습니다. 사용할 앱과 이 .command를 같은 폴더에 두세요.' >&2
+        printf '%s\n' '실행 중단: test13 앱이 여러 위치에 있습니다. 사용할 앱과 이 .command를 같은 폴더에 두세요.' >&2
         exit 1
       fi
       APP="$candidate"
@@ -21,7 +21,7 @@ else
   done
 fi
 if [ -z "$APP" ]; then
-  printf '%s\n' '실행 실패: test12의 Doro Mac Test.app을 찾지 못했습니다. 앱과 이 .command를 같은 폴더에 두세요. 진단은 시작되지 않았습니다.' >&2
+  printf '%s\n' '실행 실패: test13의 Doro Mac Test.app을 찾지 못했습니다. 앱과 이 .command를 같은 폴더에 두세요. 진단은 시작되지 않았습니다.' >&2
   exit 1
 fi
 session=$(/usr/bin/uuidgen | tr '[:upper:]' '[:lower:]')

@@ -178,7 +178,7 @@ internal sealed class PetLoop : IDisposable
             _brain.SetAutomaticSleepEnabled(_automaticSleepEnabled);
             _snapshot = _brain.Current;
             _host.SetWindowPosition(_snapshot.Position);
-            _host.SetLocomotionBlocked?.Invoke(platforms?.SuspendsAutonomousMotion ?? false);
+            _host.SetLocomotionBlocked?.Invoke(platforms?.BlocksLocomotionPresentation(_sitRequested) ?? false);
             if(platforms is not null)_host.BeginPlatformFrame?.Invoke();
             _host.Render(_snapshot, _directInteractionController.Current);
             _host.Platforms?.AfterRender(null, null);
@@ -378,7 +378,7 @@ internal sealed class PetLoop : IDisposable
                 !OwnsCapturedPosition(_snapshot, _directInteractionController.Current))) bodyPosition = null;
             var directBeforeCore = _directInteractionController.Current;
             var previous = _snapshot;
-            _host.SetLocomotionBlocked?.Invoke(platforms?.SuspendsAutonomousMotion ?? false);
+            _host.SetLocomotionBlocked?.Invoke(platforms?.BlocksLocomotionPresentation(_sitRequested) ?? false);
             var holdHunt = _host.UpdateHunting?.Invoke(previous, directBeforeCore, pointer, delta,
                 primaryButtonDown || queuedPress is not null) ?? false;
             var pounce = _host.GetPouncePose?.Invoke() ?? PouncePose.Rest;
@@ -516,7 +516,7 @@ internal sealed class PetLoop : IDisposable
             if(cheekHop is not null && directCurrent.CheekPull is { } renderedCheek)
                 directCurrent=directCurrent with { CheekPull=renderedCheek with { RecoilOffset=0,RecoilLift=0 } };
             _host.SetWindowPosition(current.Position);
-            _host.SetLocomotionBlocked?.Invoke(platforms?.SuspendsAutonomousMotion ?? false);
+            _host.SetLocomotionBlocked?.Invoke(platforms?.BlocksLocomotionPresentation(_sitRequested) ?? false);
             if(platforms is not null)_host.BeginPlatformFrame?.Invoke();
             _host.Render(current, directCurrent, delta);
             platforms?.AfterRender(platformPose, targetSole);
@@ -588,7 +588,7 @@ internal sealed class PetLoop : IDisposable
             proposed, pose.Active ? pose.Facing : _snapshot.Facing, 0, false, null);
         _host.PresentSnack?.Invoke(pose, pointer);
         _host.SetWindowPosition(proposed);
-        _host.SetLocomotionBlocked?.Invoke(platforms?.SuspendsAutonomousMotion ?? false);
+        _host.SetLocomotionBlocked?.Invoke(platforms?.BlocksLocomotionPresentation(_sitRequested) ?? false);
         if(platforms is not null)_host.BeginPlatformFrame?.Invoke();
         _host.Render(_snapshot, DirectInteractionSnapshot.None, delta);
         platforms?.AfterRender(support, platforms.Contact.SoleY);
