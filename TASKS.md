@@ -9,8 +9,10 @@
   host installation470files verified. Settings/data/startup preserved, PID32788
   reopened responsive with1visible window. Old PID19480 closed normally.
 - [Exact artifacts, hashes, backup and limits](docs/verification/2026-10-30-seated-continuity-delivery.md).
-- Commit/publication verification in progress. Actual user acceptance and nativeMac
-  remain open; no changes to accepted art/timing or extra memory soak.
+- Source74ff2ba pushed; Windows Setup/ZIP and Mac test13 released with checksums.
+  All5assets anonymously downloaded/hash-matched; remote tags match source.
+- Actual user acceptance and nativeMac remain open; no changes to accepted
+  art/timing or extra memory soak. Earlier unchanged-installation boundary superseded.
 
 ## Seated pointer standing-frame flicker — 2026-10-30
 

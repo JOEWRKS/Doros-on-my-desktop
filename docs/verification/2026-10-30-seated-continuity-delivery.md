@@ -55,7 +55,18 @@ Test13/bundle104.13 identifies this package; test12 ribbon corrections included.
 
 ## Publication
 
-Local artifacts ready. Source commit/push and direct release verification will
-be recorded here after completion. Previous release assets will be retained.
+Source committed/pushed as `74ff2ba2baac21d5fc8b05bf56aeece2fd4291d6` on
+`feature/macos-r104-arm64`. Both remote release tags resolve to that exact commit.
+Separate new prereleases published; previous release assets retained.
+
+- [Windows Setup](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/windows-seated-20261030/Doros-on-my-desktop-Setup-0.1.3-win-x64.exe)
+- [Windows portable ZIP](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/windows-seated-20261030/Doros-on-my-desktop-Portable-0.1.3-win-x64.zip)
+- [Mac test13 ZIP](https://github.com/JOEWRKS/Doros-on-my-desktop/releases/download/macos-r104-test13/Doro-Mac-arm64-r104-test13.zip)
+
+All3binaries plus2checksum assets downloaded anonymously with exact hash/size
+matches. Release API upload digests also matched. Evidence:
+`artifacts/release-seated-20261030/anonymous-verification.json`, `plan.json` and
+the two `*-published.json` receipts. Host PID32788 remains responsive.
+
 The original user's transient native trigger remains unrecorded; the regression
 demonstrates and fixes the reproduced cause without claiming incident telemetry.

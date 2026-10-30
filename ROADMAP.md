@@ -12,7 +12,8 @@
   User authorized Mac/update/publication. Mac295host tests and14packaging checks
   pass; test13arm64 ZIP ready. Windows installed470files verified and new app
   reopened; settings/startup retained. [Delivery](docs/verification/2026-10-30-seated-continuity-delivery.md).
-  Current: commit/direct-download publication. Next/open: live acceptance/nativeMac.
+  Source74ff2ba pushed; Windows Setup/ZIP and Mac test13 published. All5assets
+  anonymously downloaded/hash-matched. Next/open: live acceptance/nativeMac.
   Original incident's exact native trigger is not recorded.
 
 ## Current ribbon-side pixel defect · 2026-10-30
