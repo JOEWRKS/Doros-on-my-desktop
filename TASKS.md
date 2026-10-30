@@ -1,5 +1,21 @@
 # Tasks
 
+## Ribbon installer update — 2026-10-30
+
+- User requested the installer edition after the latest portable/Mac direct links.
+- Builder archive pin and test fixture now target the accepted ribbon ZIP2725f07e…;
+  four refusal cases pass; compiler/payload/lifecycle policies unchanged.
+- Build's required native-start check stopped before output because installed
+  PID51968 owns the per-user instance mutex. Isolated duplicate reproduction
+  PID63736 exits0 while owner stays alive; this is not a startup-crash finding.
+- User authorized normal close/reopen. Fixed the validator's fixed-time startup
+  assumption to wait for an actual visible window; final startup/duplicate/close pass.
+- Installer built with470matching product files and published with checksum;
+  both new assets anonymously downloaded and hash/size matched.
+- Same installed app reopened as PID19480, responsive/one visible window, old hashes
+  retained. No host installation/upgrade performed; no forced user-app termination.
+- [Setup link, exact hash, failures and limits](docs/verification/2026-10-30-ribbon-installer.md).
+
 ## Accepted ribbon direct downloads — 2026-10-30
 
 - User requested direct Windows/Mac downloads; published separate new prereleases.

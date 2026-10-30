@@ -408,6 +408,18 @@ function Invoke-NativeSmoke([string]$ExecutablePath)
             $runningProcess.Dispose()
         }
 
+        # Loading the complete motion banks can outlast the initial process/runtime
+        # probe. Wait for the actual visible pet window before testing duplicate
+        # launch and WM_CLOSE; a living process alone is not startup readiness.
+        $ready = [Diagnostics.Stopwatch]::StartNew()
+        while ($desktop.VisibleWindows($firstId) -eq 0 -and $ready.ElapsedMilliseconds -lt 30000)
+        {
+            Assert-True $desktop.IsRunning($firstId) 'Packaged owner exited before its window was ready.'
+            Start-Sleep -Milliseconds 200
+        }
+        Assert-True ($desktop.VisibleWindows($firstId) -gt 0) 'Packaged owner did not show a window within 30 seconds.'
+        Write-Output "PRODUCT WINDOW READY: owned PID $firstId after $($ready.ElapsedMilliseconds) ms readiness wait."
+
         $duplicateId = $desktop.Start($ExecutablePath)
         $ownedProcessIds.Add($duplicateId)
         $duplicateExitCode = $desktop.WaitForExit($duplicateId, 15000)

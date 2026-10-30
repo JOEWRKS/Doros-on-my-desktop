@@ -16,6 +16,11 @@
   downloads hash-verified. [Direct delivery](docs/verification/2026-10-30-ribbon-public-delivery.md).
   Next/open: nativeMac test12 execution/appearance. Running/installed apps and
   previous public releases remain unchanged.
+- Installer follow-up complete:470matching product files, native startup/duplicate/
+  normal close checks passed; Setup/checksum published and downloads hash-verified.
+  User-authorized temporary closure completed and the original installed app reopened.
+  [Installer evidence/link](docs/verification/2026-10-30-ribbon-installer.md).
+  Host installation/upgrade was not performed; its lifecycle is not a new pass.
 - Inner-fold smoothing was rejected: the user requires joining the left fold
   into the right contour along their red line. Current candidate connects it
   and removes the old downward tip. Latest72pose samples directly inspected;

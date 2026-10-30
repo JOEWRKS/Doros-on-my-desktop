@@ -13,8 +13,8 @@ $output = Assert-InstallerOutputPath -OutputPath $OutputPath
 $payload = Get-InstallerPayload -PackagePath $PackagePath
 $archive = (Resolve-Path -LiteralPath $ArchivePath).Path
 $archiveHash = (Get-FileHash -LiteralPath $archive).Hash
-# Accepted seated/head-occlusion build; local installed update authorized 2026-10-28.
-if ($archiveHash -cne '0D607A095B27DA750DFE8729344516E76D9E872873747F2B55F6038D743ACCDE') {
+# Accepted connected-ribbon build; installer update authorized 2026-10-30.
+if ($archiveHash -cne '2725F07ECC6B1642BB5812AF9B0401482E6E463C0650003E39416B5759B7574D') {
     throw 'Archive hash does not match the approved 0.1.3 candidate.'
 }
 $compiler = (Resolve-Path -LiteralPath $CompilerPath).Path
