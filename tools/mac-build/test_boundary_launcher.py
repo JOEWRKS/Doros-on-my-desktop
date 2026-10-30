@@ -11,7 +11,7 @@ BASH = shutil.which('bash') or next((str(p) for p in [Path('C:/Program Files/Git
 
 @unittest.skipUnless(BASH, 'bash unavailable')
 class LauncherTests(unittest.TestCase):
-    def run_case(self, location='sibling', mode='complete', version='104.11'):
+    def run_case(self, location='sibling', mode='complete', version='104.12'):
         with tempfile.TemporaryDirectory(prefix='doro launcher ') as directory:
             root=Path(directory); home=root/'user home'; scripts=root/'download'; system=root/'Applications'; stubs=root/'bin'
             for p in (home,scripts,system,stubs): p.mkdir()
@@ -43,6 +43,10 @@ if [ "$MODE" = 'early' ]; then printf '%s\n' '{"kind":"end","reason":"disposed-b
             text=text.replace('/usr/bin/uuidgen','"'+(stubs/'uuid').as_posix()+'"').replace('/usr/bin/open','"'+(stubs/'open').as_posix()+'"')
             text=text.replace("'/Applications/Doro Mac Test.app'", "'"+(system/'Doro Mac Test.app').as_posix()+"'")
             text=text.replace('sleep 1','"'+(stubs/'sleep').as_posix()+'" 1')
+            # Stubs publish their complete result synchronously during open.
+            # Preserve both polling paths without spawning hundreds of Windows
+            # shell processes to simulate elapsed time; production bounds stay intact.
+            text=text.replace('i<30','i<2').replace('i<120','i<3')
             script=scripts/'diagnose.command';write(script,text)
             env=dict(os.environ,HOME=home.as_posix(),MODE=mode)
             return subprocess.run([BASH,'--noprofile','--norc',script.as_posix()],env=env,capture_output=True,text=True,encoding='utf-8',timeout=60)
@@ -53,7 +57,7 @@ if [ "$MODE" = 'early' ]; then printf '%s\n' '{"kind":"end","reason":"disposed-b
                 self.assertEqual(result.returncode,0,result.stderr)
                 self.assertIn('기록 시작 확인',result.stdout);self.assertIn('완료를 파일에서 확인',result.stdout)
     def test_missing_wrong_version_and_ambiguous_apps_do_not_claim_start(self):
-        for args in [('missing','complete','104.11'),('sibling','complete','104.8'),('ambiguous','complete','104.11')]:
+        for args in [('missing','complete','104.12'),('sibling','complete','104.8'),('ambiguous','complete','104.12')]:
             with self.subTest(args=args):
                 result=self.run_case(*args);self.assertNotEqual(result.returncode,0)
                 self.assertNotIn('기록 시작 확인',result.stdout)

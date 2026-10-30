@@ -9,9 +9,11 @@
   on2backgrounds. Windows78checks pass. Raster106checks pass and3historical-hash
   checks pass after explicitly accounting for only the repaired pixels.
   [Evidence and original failed assertions](docs/verification/2026-10-30-ribbon-junction.md).
-- User accepted the connected-fold appearance and authorized commit/push plus Mac
-  update. Source/Mac test12 delivery in progress; running/installed/public packages
-  remain the prior accepted version; actualMac remains unverified.
+- User accepted the connected-fold appearance; shared source92fa865 pushed.
+  Mac test12 local ZIP complete:292host tests,14packaging checks,4,848exact
+  distributed-render frame matches. [Package and limits](docs/verification/2026-10-30-mac-test12-ribbon.md).
+  Next/open: nativeMac test12 execution/appearance. Running/installed/public packages
+  remain unchanged; no release upload in this update.
 - Inner-fold smoothing was rejected: the user requires joining the left fold
   into the right contour along their red line. Current candidate connects it
   and removes the old downward tip. Latest72pose samples directly inspected;

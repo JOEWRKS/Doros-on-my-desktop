@@ -5,8 +5,13 @@
 - User accepted the connected-fold result and authorized commit/push plus Mac update.
 - Windows/shared source correction retains accepted motion/timing, with final
   Windows5/Raster3focused checks and72pose visual samples already verified.
-- Mac test12 package identity/README updated; published-code verification in progress.
+- Shared source committed/pushed as92fa865. Mac test12 ZIP built and verified:
+  Windows-host Mac292checks, packaging14checks,4,848distributed-render frame matches.
+- Initial build/cache collision and launcher-fixture timeout were preserved as
+  failed attempts; sequential rebuild and bounded mock polling passed final checks.
+- [Exact package, hash and limits](docs/verification/2026-10-30-mac-test12-ribbon.md).
 - Running Windows pet, installation/settings and prior public packages unchanged.
+- NativeMac remains NOT_TESTED; no new release upload or long soak performed.
 
 ## Connect ribbon fold to contour — 2026-10-30
 

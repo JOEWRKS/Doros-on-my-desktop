@@ -19,6 +19,8 @@ Existing packages are not overwritten.
 Test11 carries the2026-10-29 accepted stretch forepaw and behind-head stamp
 shoulder correction through the shared renderer. Arm transform/timing and prior
 Mac platform fixes are retained; native Mac validation remains open.
+Test12 carries the2026-10-30 accepted ribbon spur removal and connected inner fold.
+Only bounded head pixels change; motion/timing and prior native fixes remain.
 macOS13 is this full-feature tester's minimum, not a verified global support claim.
 
 ## Build on Windows
