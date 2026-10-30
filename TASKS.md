@@ -1,5 +1,15 @@
 # Tasks
 
+## Accepted ribbon direct downloads — 2026-10-30
+
+- User requested direct Windows/Mac downloads; published separate new prereleases.
+- New Windows portable:5self-contained RID checks pass; packaged16PNGs/72poses
+  match accepted reference, ZIP470files and CRC verified. Initial missing-runtime
+  test abort is retained, not counted as pass. Exact existing Mac test12 uploaded.
+- Both ZIPs and checksum files anonymously downloaded and hash/size matched.
+- [Direct URLs, hashes and limits](docs/verification/2026-10-30-ribbon-public-delivery.md).
+- Existing apps/settings/installers/releases retained. NativeMac gate stays open.
+
 ## Accepted ribbon correction / Mac test12 delivery — 2026-10-30
 
 - User accepted the connected-fold result and authorized commit/push plus Mac update.
